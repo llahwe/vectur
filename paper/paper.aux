@@ -1,0 +1,116 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{turing1936}
+\citation{touvron2023llama2,dubey2024llama3}
+\citation{vaswani2017attention}
+\citation{hochreiter1997lstm}
+\citation{graves2014ntm,graves2016dnc}
+\citation{cobbe2021gsm8k}
+\citation{clark2018arc}
+\citation{zellers2019hellaswag}
+\citation{merity2016wikitext}
+\citation{freivalds1977}
+\citation{graves2014ntm,graves2016dnc}
+\citation{graves2016act}
+\citation{turing1936}
+\citation{vaswani2017attention}
+\citation{graves2014ntm}
+\citation{touvron2023llama2,dubey2024llama3}
+\citation{vaswani2017attention}
+\citation{hochreiter1997lstm}
+\citation{graves2014ntm,graves2016dnc}
+\citation{freivalds1977,miller1976,rabin1980}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{vaswani2017attention}
+\citation{touvron2023llama2,dubey2024llama3}
+\citation{hochreiter1997lstm}
+\citation{graves2014ntm}
+\citation{graves2016dnc}
+\citation{graves2016act}
+\citation{freivalds1977}
+\citation{miller1976,rabin1980}
+\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Sequence models and attention.}{2}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Differentiable memory and neural machines.}{2}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Adaptive computation.}{2}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Randomized algorithms.}{2}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}VecTur: Vector Turing Machines}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Vectorized machine state}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Sparse addressing (keeping I and J fixed)}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Read, transition, and halting}{3}{subsection.3.3}\protected@file@percent }
+\newlabel{eq:vectur_tape_update}{{6}{4}{Read, transition, and halting}{equation.3.6}{}}
+\newlabel{eq:vectur_head_update}{{10}{4}{Read, transition, and halting}{equation.3.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{Early stopping and block output.}{4}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Differentiability and efficient backpropagation.}{4}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Concrete parameterization (used in experiments).}{4}{section*.8}\protected@file@percent }
+\citation{touvron2023llama2,dubey2024llama3}
+\citation{vaswani2017attention}
+\citation{hochreiter1997lstm}
+\citation{graves2014ntm,graves2016dnc}
+\citation{cobbe2021gsm8k}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textbf  {Placeholder.} Block-swap experiment: a fixed Llama-style macro architecture where the per-layer computational block is one of \{Attention, LSTM, NTM/DNC, \textsc  {VecTur}{}, \textsc  {VecSTur}{}\}.}}{5}{figure.1}\protected@file@percent }
+\newlabel{fig:blockswap}{{1}{5}{\textbf {Placeholder.} Block-swap experiment: a fixed Llama-style macro architecture where the per-layer computational block is one of \{Attention, LSTM, NTM/DNC, \vectur {}, \vecstur {}\}}{figure.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Algorithm (forward pass).}{5}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}VecTur Blocks inside Llama-style Models}{5}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Macro architecture}{5}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Compared blocks}{5}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation Benchmarks}{5}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Reasoning and knowledge}{5}{subsection.5.1}\protected@file@percent }
+\citation{clark2018arc}
+\citation{zellers2019hellaswag}
+\citation{merity2016wikitext}
+\citation{freivalds1977}
+\citation{miller1976,rabin1980}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \textbf  {Placeholder.} \textsc  {CompGen}{} program families and intended \((T(n),S(n))\) buckets.}}{6}{table.1}\protected@file@percent }
+\newlabel{tab:compgen}{{1}{6}{\textbf {Placeholder.} \compgen {} program families and intended \((T(n),S(n))\) buckets}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Language modeling}{6}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}CompGen: Complexity-Stratified Program Generation}{6}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Task format}{6}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Generalization protocol}{6}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Randomized Computation Suite}{6}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Experimental Setup}{6}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Model sizes.}{6}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Training.}{6}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Compute control.}{6}{section*.12}\protected@file@percent }
+\bibcite{turing1936}{{1}{1936}{{Turing}}{{}}}
+\bibcite{hochreiter1997lstm}{{2}{1997}{{Hochreiter and Schmidhuber}}{{}}}
+\bibcite{vaswani2017attention}{{3}{2017}{{Vaswani et~al.}}{{}}}
+\bibcite{graves2014ntm}{{4}{2014}{{Graves et~al.}}{{}}}
+\bibcite{graves2016dnc}{{5}{2016}{{Graves et~al.}}{{}}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \textbf  {Placeholder.} Benchmark performance for a mid-size model at matched parameter budget. Accuracy in \%, perplexity lower is better.}}{7}{table.2}\protected@file@percent }
+\newlabel{tab:benchmarks}{{2}{7}{\textbf {Placeholder.} Benchmark performance for a mid-size model at matched parameter budget. Accuracy in \%, perplexity lower is better}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {Placeholder.} \textsc  {CompGen}{} extrapolation: accuracy vs.\ input size \(n\), showing \textsc  {VecTur}{} degrades more gracefully and increases effective steps via learned \(\kappa \).}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:compgen}{{2}{7}{\textbf {Placeholder.} \compgen {} extrapolation: accuracy vs.\ input size \(n\), showing \vectur {} degrades more gracefully and increases effective steps via learned \(\kappa \)}{figure.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Results (Illustrative Placeholders)}{7}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Important note.}{7}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Discussion}{7}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11}Limitations and Future Work}{7}{section.11}\protected@file@percent }
+\bibcite{graves2016act}{{6}{2016}{{Graves}}{{}}}
+\bibcite{touvron2023llama2}{{7}{2023}{{Touvron et~al.}}{{}}}
+\bibcite{dubey2024llama3}{{8}{2024}{{Dubey et~al.}}{{}}}
+\bibcite{cobbe2021gsm8k}{{9}{2021}{{Cobbe et~al.}}{{}}}
+\bibcite{clark2018arc}{{10}{2018}{{Clark et~al.}}{{}}}
+\bibcite{zellers2019hellaswag}{{11}{2019}{{Zellers et~al.}}{{}}}
+\bibcite{merity2016wikitext}{{12}{2016}{{Merity et~al.}}{{}}}
+\bibcite{freivalds1977}{{13}{1977}{{Freivalds}}{{}}}
+\bibcite{miller1976}{{14}{1976}{{Miller}}{{}}}
+\bibcite{rabin1980}{{15}{1980}{{Rabin}}{{}}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \textbf  {Placeholder.} Randomized computation suite: \textsc  {VecSTur}{} benefits from stochastic symbols \(z\).}}{8}{table.3}\protected@file@percent }
+\newlabel{tab:random}{{3}{8}{\textbf {Placeholder.} Randomized computation suite: \vecstur {} benefits from stochastic symbols \(z\)}{table.3}{}}

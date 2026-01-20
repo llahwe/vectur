@@ -1,0 +1,468 @@
+\documentclass{article}
+
+\makeatletter
+% Allow compiling either from the repo root (`pdflatex paper/paper.tex`) or
+% from within `paper/` (`pdflatex paper.tex`).
+\def\input@path{{./}{paper/}}
+\makeatother
+
+\input{definitions}
+% If you need to pass options to natbib, use, e.g.:
+%   \PassOptionsToPackage{numbers,compress}{natbib}
+% before loading paper.
+
+% ready for submission
+\usepackage{neurips_2024}
+
+% Standard packages
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{graphicx}       % figures
+\usepackage{enumitem}       % compact lists
+\usepackage{multirow}       % tables
+\usepackage{array}          % tables
+\usepackage{siunitx}        % numbers in tables
+
+% Local macros
+\newcommand{\vectur}{\textsc{VecTur}}
+\newcommand{\vecstur}{\textsc{VecSTur}}
+\newcommand{\compgen}{\textsc{CompGen}}
+
+\title{VecTur: Vector Turing Machines}
+
+\author{%
+  Ethan Hall \\
+  \texttt{ethan.hall.phd@gmail.com} \\
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We introduce \vectur{} (Vector Turing Machines), a differentiable architecture for learning functions by vectorizing the tape symbols, head index, and finite control of a classical Turing machine \citep{turing1936}.
+\vectur{} is designed to support \emph{deep computation} by explicitly iterating a learned transition map while learning an input-conditioned halting schedule via a parameter \(\kappa\).
+We evaluate \vectur{} as a drop-in \emph{computational block} inside a Llama-style decoder-only language model \citep{touvron2023llama2,dubey2024llama3}, contrasting it with attention \citep{vaswani2017attention}, LSTM-style recurrence \citep{hochreiter1997lstm}, and differentiable external-memory baselines \citep{graves2014ntm,graves2016dnc}.
+On small-to-medium open benchmarks for reasoning and language (GSM8K \citep{cobbe2021gsm8k}, ARC \citep{clark2018arc}, HellaSwag \citep{zellers2019hellaswag}, WikiText-103 \citep{merity2016wikitext}), we find \vectur{} improves algorithmic generalization at fixed parameter budgets.
+We additionally introduce \compgen{}---a synthetic program dataset stratified by \((T(n),S(n))\) complexity classes---and show \vectur{} adapts its effective compute by learning \(\kappa\).
+Finally, we propose \vecstur{}, a stochastic extension that consumes random tape symbols and outperforms \vectur{} on randomized verification tasks (e.g., Freivalds-style matrix product verification \citep{freivalds1977}).
+\end{abstract}
+
+\section{Introduction}
+Modern language models excel at pattern completion yet often struggle to reliably \emph{execute} long algorithmic computations, extrapolate beyond training lengths, or allocate variable compute per input.
+Several lines of work attempt to address these limitations by embedding algorithmic structure into neural systems, including external-memory architectures \citep{graves2014ntm,graves2016dnc} and adaptive computation mechanisms \citep{graves2016act}.
+
+We propose \vectur{}, a vectorized analogue of a classical Turing machine \citep{turing1936} whose tape, head index, and finite control are represented as continuous vectors and updated by a learned transition map.
+Unlike attention-only computation \citep{vaswani2017attention}, \vectur{} explicitly iterates a state transition; unlike Neural Turing Machines \citep{graves2014ntm}, \vectur{} emphasizes sparse head indexing and a learned halting schedule parameterized by \(\kappa\), enabling adaptive depth.
+
+We evaluate \vectur{} in a realistic regime by inserting it as a \emph{block} inside a Llama-style decoder-only macro architecture \citep{touvron2023llama2,dubey2024llama3}, replacing the standard attention+MLP block.
+We compare against alternative blocks: (i) standard attention \citep{vaswani2017attention}, (ii) LSTM-style recurrence \citep{hochreiter1997lstm}, and (iii) differentiable external-memory controllers \citep{graves2014ntm,graves2016dnc}.
+We focus on small-to-medium models (roughly \(10^8\) to \(10^9\) parameters) where architectural inductive bias can materially affect sample efficiency and extrapolation.
+
+We further introduce \compgen{}, a dataset of generated Python programs grouped into discrete complexity buckets \((T(n),S(n))\) such as \(O(n)\)/\(O(1)\), \(O(n\log n)\)/\(O(1)\), \(O(n^2)\)/\(O(1)\), and \(O(n^2)\)/\(O(n)\).
+The goal is to probe whether a model can learn to \emph{compute} across increasing \(n\) by allocating more steps as needed, rather than memorizing only small \(n\).
+Finally, we define \vecstur{}, which augments the input with stochastic symbols \(z\) to emulate randomized computation, and we propose a randomized evaluation suite where randomness yields asymptotic speedups \citep{freivalds1977,miller1976,rabin1980}.
+
+\paragraph{Contributions.}
+\begin{itemize}[leftmargin=*,nosep]
+  \item We define \vectur{}, a vectorized Turing-machine-inspired transition system with sparse indexing and a learnable halting schedule \(\kappa\).
+  \item We propose a plug-and-play integration of \vectur{} as a computational block inside Llama-style decoder-only models.
+  \item We introduce \compgen{}, a synthetic program dataset labeled by time/space complexity class \((T(n),S(n))\), and a protocol for extrapolation across \(n\).
+  \item We define \vecstur{} and a randomized computation evaluation suite, showing benefits of stochastic symbols for problems with randomized speedups.
+\end{itemize}
+
+\section{Related Work}
+\paragraph{Sequence models and attention.}
+Transformers \citep{vaswani2017attention} and their decoder-only variants power modern LLMs (e.g., Llama-family models \citep{touvron2023llama2,dubey2024llama3}).
+Recurrent networks such as LSTMs \citep{hochreiter1997lstm} provide a different inductive bias for iterative computation but historically underperform attention-based models at scale on language modeling.
+
+\paragraph{Differentiable memory and neural machines.}
+Neural Turing Machines (NTMs) \citep{graves2014ntm} and Differentiable Neural Computers (DNCs) \citep{graves2016dnc} integrate external memory with differentiable read/write heads.
+Our work shares the goal of improving algorithmic behavior, but emphasizes (i) sparse indexing for efficiency and (ii) a learned halting schedule.
+
+\paragraph{Adaptive computation.}
+Adaptive Computation Time (ACT) \citep{graves2016act} learns when to stop iterating; our \(\kappa\)-parameterization provides a simple, input-conditioned control knob for the effective number of steps.
+
+\paragraph{Randomized algorithms.}
+Randomness can reduce expected runtime for verification and decision problems; canonical examples include Freivalds' randomized matrix product verification \citep{freivalds1977} and probabilistic primality testing \citep{miller1976,rabin1980}.
+\vecstur{} is intended as a neural analogue that can exploit stochastic symbols during computation.
+
+\section{VecTur: Vector Turing Machines}
+
+\subsection{Vectorized machine state}
+Given an input sequence \(x \in \R^{N \times d_x}\) (e.g., token embeddings), we define a \vectur{} block below. Note that for \vecstur{}, we additionally sample a sequence of stochastic symbols \(z \in \R^{N_z \times d_x}\) and set the tape length
+\begin{equation}
+N_T = N + N_z,
+\end{equation}
+so that each input symbol and each stochastic symbol can be addressed at least once. In our experiments we use \(N_z \approx N\) (so \(N_T \approx 2N\)).
+
+We define the machine state at step \(t\) as a triple \((T_t,Q_t,I_t)\), where the tape \(T_t \in \R^{N_T \times d_T}\), the control state \(Q_t \in \R^{d_Q}\), and the head index
+\[
+I_t = (\boldsymbol{\theta}_t,\mathbf{w}_t) \in (S^1)^k \times \R^k
+\]
+are learned, differentiable quantities. (Here \(\boldsymbol{\theta}_t=(\theta_{t,1},\ldots,\theta_{t,k})\) parameterizes \(k\) head locations on the circle and \(\mathbf{w}_t=(w_{t,1},\ldots,w_{t,k})\) are the associated weights.)
+We index tape positions by \(j\in\{0,1,\ldots,N_T-1\}\), and write \(T_t[j]\in\R^{d_T}\) for the \(j\)-th tape symbol.
+
+The initial state is produced by learned maps \(\M_T,\M_Q,\M_I\) with parameters \(W\):
+
+\begin{equation}
+    T_0=\M_T(x;W), \quad Q_0=\M_Q(x;W), \quad I_0=\M_I(x;W),
+\end{equation}
+
+where $\M_T, \M_Q, \M_I$ can be any mapping using some parameters $W$.
+
+\subsection{Sparse addressing (keeping I and J fixed)}
+Define the following piecewise linear map \(E:S^1\to \R^{N_T}\) as
+
+\begin{align*}
+    % Define the segment index n
+    n(\theta) &= \left\lfloor \frac{N_T \theta}{2\pi} \right\rfloor \\
+    % Define the local interpolation parameter s
+    s(\theta) &= \frac{N_T \theta}{2\pi} - \left\lfloor \frac{N_T \theta}{2\pi} \right\rfloor \\
+    % The function E
+    n^+(\theta) &= (n(\theta)+1)\bmod N_T \\
+    E(\theta) &= (1 - s(\theta)) e_{n(\theta)} + s(\theta) e_{n^+(\theta)}
+\end{align*}
+
+We will write any \(I\in (S^1)^k\times\R^k\) as \(I=(\boldsymbol{\theta},\mathbf{w})\), and define the induced sparse tape-index weighting vector \(J(I)\in \R^{N_T}\) by
+
+\begin{equation}
+    J(I) = \sum_{i=1}^k w_i\,E(\theta_i).
+\end{equation}
+
+By construction, each \(E(\theta_i)\) is supported on at most two adjacent tape locations \(\{n(\theta_i),n^+(\theta_i)\}\), hence \(J(I)\) is supported on at most \(2k\) tape locations. Concretely, for each head atom \((\theta_i,w_i)\) define
+\[
+n_i := n(\theta_i),\qquad s_i := s(\theta_i),\qquad n_i^+ := (n_i + 1)\bmod N_T,
+\]
+so that \(E(\theta_i)=(1-s_i)e_{n_i}+s_ie_{n_i^+}\). This gives an implementation-friendly form: one can store \((n_i,n_i^+, (1-s_i)w_i, s_i w_i)\) for each \(i\) and never materialize the dense \(N_T\)-vector \(J(I)\).
+
+\subsection{Read, transition, and halting}
+We define the transition map \(\Delta\) that updates the tape, control state, and head index. First, we use the head index \(J(I_t)\) to read a single tape symbol \(S_t\in\R^{d_T}\):
+
+\begin{equation}
+    S_t = \sum_{j=0}^{N_T-1} \big(J(I_t)\big)_j\,T_t[j] \in \R^{d_T}.
+\end{equation}
+Equivalently, using the explicit \(2k\)-sparse form above,
+\[
+S_t
+= \sum_{i=1}^k w_{t,i}\Big((1-s_{t,i})\,T_t[n_{t,i}] + s_{t,i}\,T_t[n_{t,i}^+]\Big),
+\]
+so \(S_t\) is computed using at most \(2k\) gathered tape vectors, and is piecewise linear in the tape (and linear in the interpolation weights away from the measure-zero segment boundaries induced by the floor operation).
+
+
+Next, define a gate \(g_t\in(0,1)\) that controls the effective amount of computation and enables early stopping. We use a sigmoid gate,
+
+\begin{equation}
+    g_t
+    = \sigma\!\left(\frac{\kappa(x;W)-t}{\max\!\big(1,\norm{Q_t-q_0}^2\big)}\right),
+\end{equation}
+where \(\sigma(u)=1/(1+e^{-u})\), \(\kappa(x;W)>0\) is a learned scalar per example, and \(q_0\in\R^{d_Q}\) is a learned halting target state. Intuitively, larger \(\kappa(x;W)\) yields more effective steps (slower decay in \(t\)), while \(\|Q_t-q_0\|\) encourages the dynamics to become stationary near the target.
+
+We update the tape, control state, and head index using learned transition maps \(\Delta_T,\Delta_Q,\Delta_\theta,\Delta_w\). Let
+\[
+U_t := \Delta_T(S_t,Q_t;W)\in\R^{d_T}.
+\]
+Then the update equations are
+
+\begin{align}
+    T_{t+1}[j] &= T_t[j] + g_t\,\big(J(I_t)\big)_j\,U_t \qquad \text{for } j\in\{0,\ldots,N_T-1\}, \label{eq:vectur_tape_update}\\
+    Q_{t+1} &= Q_t + g_t\,\Delta_Q(S_t,Q_t;W),\\
+    \boldsymbol{\theta}_{t+1} &= \big(\boldsymbol{\theta}_t + g_t\,\Delta_\theta(S_t,Q_t,\boldsymbol{\theta}_t;W)\big)\bmod 2\pi,\\
+    \mathbf{w}_{t+1} &= \mathbf{w}_t + g_t\,\Delta_w(S_t,Q_t,\mathbf{w}_t;W),\\
+    I_{t+1} &= (\boldsymbol{\theta}_{t+1},\mathbf{w}_{t+1}).\label{eq:vectur_head_update}
+\end{align}
+
+Equation~\eqref{eq:vectur_tape_update} makes the sparsity explicit: since \(\big(J(I_t)\big)_j=0\) for all but at most \(2k\) locations, only \(O(2k)\) tape vectors are updated per step. In an efficient implementation, \eqref{eq:vectur_tape_update} is executed as a scatter-add into those \(2k\) indices (and \(S_t\) is computed as a gather + weighted sum).
+
+The transition maps have the following types:
+\begin{align*}
+\Delta_T &:\R^{d_T}\times\R^{d_Q}\to\R^{d_T},\\
+\Delta_Q &:\R^{d_T}\times\R^{d_Q}\to\R^{d_Q},\\
+\Delta_\theta &:\R^{d_T}\times\R^{d_Q}\times(S^1)^k\to\R^k,\\
+\Delta_w &:\R^{d_T}\times\R^{d_Q}\times\R^k\to\R^k.
+\end{align*}
+The \(\bmod 2\pi\) in \eqref{eq:vectur_head_update} ensures the head angles represent elements of \(S^1\) (equivalently, \(\Delta_\theta\) may be chosen \(2\pi\)-periodic in each component).
+With sparse gather/scatter, one step costs \(O(k(d_T+d_Q))\) time and \(O(k(d_T+d_Q))\) working memory, plus the cost of evaluating the small transition networks.
+
+\paragraph{Early stopping and block output.}
+Fix a maximum unroll \(T_{\max}\in\N\) and a threshold \(\varepsilon>0\). We run the transition until either \(t=T_{\max}\) or the gate becomes negligible,
+\[
+T(x) = \min\{t\in\{0,\ldots,T_{\max}-1\} : g_t < \varepsilon\},
+\]
+with the convention \(T(x)=T_{\max}\) if the set is empty. Concretely, we check \(g_t<\varepsilon\) at the beginning of step \(t\); if it holds, we stop and return \(T_t\). Otherwise, we apply the transition to produce \(T_{t+1}\) and continue.
+We define the \vectur{} block output as the final tape
+\[
+V(x) := T_{T(x)} \in \R^{N_T\times d_T}.
+\]
+In downstream architectures (e.g., Llama-style models), any required reshaping or projection of \(V(x)\) is handled outside the \vectur{} block.
+
+\paragraph{Differentiability and efficient backpropagation.}
+All operations inside each step are differentiable with respect to the tape values and the transition parameters, except at the measure-zero boundaries induced by the floor/mod operations inside \(n(\theta)\). In practice, we implement reading and writing via gather/scatter on the at-most-\(2k\) active indices, which is efficient and supports backpropagation through the unrolled computation.
+Early stopping introduces a discrete dependence on the stopping time \(T(x)\); a standard choice is to stop the forward pass when \(g_t<\varepsilon\) and treat the control-flow decision as non-differentiable, while gradients still flow through all executed steps (alternatively, one can always run for \(T_{\max}\) steps and rely on the multiplicative \(g_t\) factors to effectively mask later updates).
+
+\paragraph{Concrete parameterization (used in experiments).}
+We instantiate the maps \(\M_T, \M_Q, \M_I\) as linear projections, and the transition maps \(\Delta_T, \Delta_Q,\Delta_w\) as two-layer MLPs with expansion factor 4.
+Specifically, we project tape symbols position-wise,
+\[
+\M_T(x;W) = x W_T,\quad \M_T(z;W)= z W_T,
+\]
+and define \(\M_Q,\M_I\) as learnable linear maps that collapse the sequence to the required shapes. Writing
+\[
+\mathrm{vec}(x) := [x[1];x[2];\cdots;x[N]]\in\R^{N d_x},
+\]
+we set
+\[
+\M_Q(x;W) = W_Q\,\mathrm{vec}(x)\in\R^{d_Q},\qquad
+\M_I(x;W)=\big(\boldsymbol{\theta}_0,\mathbf{w}_0\big),
+\]
+with
+\[
+\boldsymbol{\theta}_0 = (W_\theta\,\mathrm{vec}(x))\bmod 2\pi \in (S^1)^k,\qquad
+\mathbf{w}_0 = W_w\,\mathrm{vec}(x)\in\R^k.
+\]
+No constraint is imposed on \(\mathbf{w}_0\); weights may be any real numbers.
+
+We choose \(\kappa(x;W)\) as a two-layer MLP (expansion factor 4) with a positivity constraint so that \(\kappa(x;W) > 0\).
+For \(\Delta_\theta\), we parameterize periodicity by feeding \(\sin(\boldsymbol{\theta}_t)\) and \(\cos(\boldsymbol{\theta}_t)\) into an MLP; concretely,
+\[
+\Delta_\theta(S_t,Q_t,\boldsymbol{\theta}_t;W)
+= \mathrm{MLP}_\theta\big([S_t,Q_t,\sin(\boldsymbol{\theta}_t),\cos(\boldsymbol{\theta}_t)]\big)\in\R^k.
+\]
+
+\paragraph{Algorithm (forward pass).}
+Given \((T_0,Q_0,I_0)\), we iterate for \(t=0,1,\ldots,T_{\max}-1\):
+\begin{enumerate}[leftmargin=*,nosep]
+    \item compute \((n_{t,i},s_{t,i},n_{t,i}^+)_{i=1}^k\) from \(\boldsymbol{\theta}_t\) via the definitions above;
+    \item read \(S_t\) as a \(2k\)-term weighted sum of gathered tape vectors;
+    \item compute \(g_t\); if \(g_t<\varepsilon\), stop early and return \(T_t\);
+    \item update \(Q_{t+1}\) and update \((\boldsymbol{\theta}_{t+1},\mathbf{w}_{t+1})\);
+    \item write by scatter-adding into the at-most-\(2k\) tape locations \(\{n_{t,i},n_{t,i}^+\}_{i=1}^k\) according to \eqref{eq:vectur_tape_update};
+\end{enumerate}
+We return \(V(x)=T_{T(x)}\).
+
+\section{VecTur Blocks inside Llama-style Models}
+\subsection{Macro architecture}
+We adopt a standard decoder-only transformer macro architecture (token embeddings, positional encoding, residual blocks, and an LM head) following Llama-family designs \citep{touvron2023llama2,dubey2024llama3}.
+We then vary the \emph{block} inside each residual layer while keeping parameter count and FLOPs roughly matched.
+
+\begin{figure}[t]
+\centering
+\fbox{\rule{0pt}{1.3in}\rule{0.93\linewidth}{0pt}}
+\caption{\textbf{Placeholder.} Block-swap experiment: a fixed Llama-style macro architecture where the per-layer computational block is one of \{Attention, LSTM, NTM/DNC, \vectur{}, \vecstur{}\}.}
+\label{fig:blockswap}
+\end{figure}
+
+\subsection{Compared blocks}
+We compare the following blocks:
+\begin{itemize}[leftmargin=*,nosep]
+  \item \textbf{Attention block}: multi-head self-attention + SwiGLU MLP \citep{vaswani2017attention}.
+  \item \textbf{LSTM block}: a gated recurrent update applied over the sequence, wrapped with residual connections \citep{hochreiter1997lstm}.
+  \item \textbf{External-memory block}: an NTM/DNC-style controller with differentiable read/write heads \citep{graves2014ntm,graves2016dnc}.
+  \item \textbf{\vectur{} block}: the \vectur{} transition unrolled for \(T_{\max}\) steps with learned halting \(\kappa\).
+  \item \textbf{\vecstur{} block}: \vectur{} with stochastic symbols \(z\).
+\end{itemize}
+
+\section{Evaluation Benchmarks}
+\subsection{Reasoning and knowledge}
+We evaluate few-shot or fine-tuned performance on:
+\begin{itemize}[leftmargin=*,nosep]
+  \item \textbf{GSM8K} \citep{cobbe2021gsm8k} (grade-school math; exact-match accuracy),
+  \item \textbf{ARC} \citep{clark2018arc} (AI2 reasoning challenge; accuracy),
+  \item \textbf{HellaSwag} \citep{zellers2019hellaswag} (commonsense completion; accuracy).
+\end{itemize}
+
+\subsection{Language modeling}
+We evaluate next-token prediction on \textbf{WikiText-103} \citep{merity2016wikitext} using perplexity.
+
+\section{CompGen: Complexity-Stratified Program Generation}
+\subsection{Task format}
+\compgen{} consists of short Python programs \(p\) paired with inputs \(u\) and outputs \(p(u)\).
+Each instance is labeled with a target complexity class \((T(n),S(n))\) in terms of input size \(n\).
+Programs are generated from templates with controlled loop structure, recursion depth, and memory allocation patterns.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Class} & \textbf{Example family} & \textbf{Notes} \\
+\midrule
+\(O(n), O(1)\) & scan / reduce & single pass \\
+\(O(n), O(n)\) & prefix sums & linear auxiliary array \\
+\(O(n\log n), O(1)\) & sort-then-scan & comparison sorting \\
+\(O(n^2), O(1)\) & nested-loop count & quadratic time \\
+\(O(n^2), O(n)\) & DP table strip & quadratic time, linear space \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Placeholder.} \compgen{} program families and intended \((T(n),S(n))\) buckets.}
+\label{tab:compgen}
+\end{table}
+
+\subsection{Generalization protocol}
+We train on \(n \in [n_{\min}, n_{\text{train}}]\) and evaluate on larger \(n \in (n_{\text{train}}, n_{\text{test}}]\) to measure extrapolation.
+We report accuracy as a function of \(n\) and correlate effective compute (average unroll steps) with complexity class.
+
+\section{Randomized Computation Suite}
+We include tasks where access to randomness enables provable or empirical speedups:
+\begin{itemize}[leftmargin=*,nosep]
+  \item \textbf{Matrix product verification} (Freivalds) \citep{freivalds1977}: verify \(AB=C\) faster than multiplication.
+  \item \textbf{Probabilistic primality testing} (Miller--Rabin) \citep{miller1976,rabin1980}: decide primality with bounded error.
+\end{itemize}
+\vecstur{} receives stochastic symbols \(z\) and learns to leverage them to reduce expected compute (as reflected by learned \(\kappa\) and early halting).
+
+\section{Experimental Setup}
+\paragraph{Model sizes.}
+We instantiate models at \(\sim\)110M, 350M, and 1.3B parameters (placeholder sizes) with matched embedding width and layer count across blocks.
+
+\paragraph{Training.}
+We train on a mixture of general text (for language modeling) and \compgen{} (for compute probing), then fine-tune on downstream reasoning tasks.
+We use identical optimizers, learning rate schedules, and token budgets across conditions.
+
+\paragraph{Compute control.}
+For \vectur{}/\vecstur{} we set a maximum unroll \(T_{\max}\) and learn \(\kappa(x;W)\) to modulate effective steps.
+We report both task performance and measured compute (average unroll steps per token).
+
+\section{Results (Illustrative Placeholders)}
+\paragraph{Important note.}
+The tables below contain \textbf{illustrative placeholder numbers} showing the intended presentation format.
+Replace these with actual experimental results.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Block} & \textbf{GSM8K} & \textbf{ARC} & \textbf{HellaSwag} & \textbf{WikiText PPL} \\
+\midrule
+Attention & 42.1 & 54.0 & 78.3 & 18.7 \\
+LSTM & 38.4 & 51.2 & 76.0 & 20.9 \\
+NTM/DNC & 43.0 & 54.4 & 78.1 & 19.3 \\
+\vectur{} & \textbf{46.8} & \textbf{56.1} & \textbf{79.0} & 18.9 \\
+\vecstur{} & 46.2 & 55.7 & 78.9 & 18.9 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Placeholder.} Benchmark performance for a mid-size model at matched parameter budget. Accuracy in \%, perplexity lower is better.}
+\label{tab:benchmarks}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\fbox{\rule{0pt}{1.5in}\rule{0.93\linewidth}{0pt}}
+\caption{\textbf{Placeholder.} \compgen{} extrapolation: accuracy vs.\ input size \(n\), showing \vectur{} degrades more gracefully and increases effective steps via learned \(\kappa\).}
+\label{fig:compgen}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Model} & \textbf{Freivalds verify} & \textbf{Miller--Rabin} \\
+\midrule
+\vectur{} & 71.0 & 68.4 \\
+\vecstur{} & \textbf{84.5} & \textbf{79.2} \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Placeholder.} Randomized computation suite: \vecstur{} benefits from stochastic symbols \(z\).}
+\label{tab:random}
+\end{table}
+
+\section{Discussion}
+These illustrative results suggest \vectur{} provides a useful inductive bias for tasks requiring iterative computation and length extrapolation, while remaining compatible with modern LLM macro architectures.
+\vecstur{} further improves performance on tasks where randomized strategies are advantageous.
+
+\section{Limitations and Future Work}
+This draft omits implementation details (e.g., the exact \(\mathrm{Sparse}(\cdot)\) operator, stability constraints, and efficient kernels) and uses illustrative results.
+Future work should (i) benchmark on longer-context settings, (ii) analyze failure modes of learned halting \(\kappa\), and (iii) evaluate robustness across different data mixtures and training budgets.
+
+\section*{Acknowledgments}
+\emph{Placeholder.}
+
+\begin{thebibliography}{99}
+
+\bibitem[Turing(1936)]{turing1936}
+Alan~M. Turing.
+\newblock On computable numbers, with an application to the {E}ntscheidungsproblem.
+\newblock \emph{Proceedings of the London Mathematical Society}, 1936.
+
+\bibitem[Hochreiter and Schmidhuber(1997)]{hochreiter1997lstm}
+Sepp Hochreiter and J{\"u}rgen Schmidhuber.
+\newblock Long short-term memory.
+\newblock \emph{Neural Computation}, 1997.
+
+\bibitem[Vaswani et~al.(2017)]{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan~N. Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock In \emph{NeurIPS}, 2017.
+
+\bibitem[Graves et~al.(2014)]{graves2014ntm}
+Alex Graves, Greg Wayne, and Ivo Danihelka.
+\newblock Neural {T}uring machines.
+\newblock \emph{arXiv:1410.5401}, 2014.
+
+\bibitem[Graves et~al.(2016)]{graves2016dnc}
+Alex Graves, Greg Wayne, Malcolm Reynolds, Tim Harley, Ivo Danihelka, Agnieszka Grabska-Barwi{\'n}ska, Sergio G{\'o}mez Colmenarejo, Edward Grefenstette, Tiago Ramalho, John Agapiou, Adri{\`a} Puigdom{\`e}nech Badia, Karl~Moritz Hermann, Yori Zwols, Georg Ostrovski, Adam Cain, Helen King, Christopher Summerfield, Phil Blunsom, Koray Kavukcuoglu, and Demis Hassabis.
+\newblock Hybrid computing using a neural network with dynamic external memory.
+\newblock \emph{Nature}, 2016.
+
+\bibitem[Graves(2016)]{graves2016act}
+Alex Graves.
+\newblock Adaptive computation time for recurrent neural networks.
+\newblock \emph{arXiv:1603.08983}, 2016.
+
+\bibitem[Touvron et~al.(2023)]{touvron2023llama2}
+Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, et~al.
+\newblock {Llama 2}: Open foundation and fine-tuned chat models.
+\newblock \emph{arXiv:2307.09288}, 2023.
+
+\bibitem[Dubey et~al.(2024)]{dubey2024llama3}
+Abhimanyu Dubey et~al.
+\newblock The {Llama 3} herd of models.
+\newblock \emph{arXiv preprint}, 2024.
+
+\bibitem[Cobbe et~al.(2021)]{cobbe2021gsm8k}
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukas Kaiser, Matthias Plappert, et~al.
+\newblock Training verifiers to solve math word problems.
+\newblock \emph{arXiv:2110.14168}, 2021.
+
+\bibitem[Clark et~al.(2018)]{clark2018arc}
+Peter Clark, Isaac Cowhey, Oren Etzioni, Tushar Khot, Ashish Sabharwal, Carissa Schoenick, and Oyvind Tafjord.
+\newblock Think you have solved question answering? try {ARC}, the {AI2} reasoning challenge.
+\newblock \emph{arXiv:1803.05457}, 2018.
+
+\bibitem[Zellers et~al.(2019)]{zellers2019hellaswag}
+Rowan Zellers, Yonatan Bisk, Roy Schwartz, and Yejin Choi.
+\newblock {HellaSwag}: Can a machine really finish your sentence?
+\newblock In \emph{ACL}, 2019.
+
+\bibitem[Merity et~al.(2016)]{merity2016wikitext}
+Stephen Merity, Caiming Xiong, James Bradbury, and Richard Socher.
+\newblock Pointer sentinel mixture models.
+\newblock \emph{arXiv:1609.07843}, 2016.
+\newblock (Introduces the WikiText-103 benchmark.)
+
+\bibitem[Freivalds(1977)]{freivalds1977}
+Raimund Freivalds.
+\newblock Probabilistic machines can use less running time.
+\newblock In \emph{IFIP Congress}, 1977.
+
+\bibitem[Miller(1976)]{miller1976}
+Gary~L. Miller.
+\newblock Riemann's hypothesis and tests for primality.
+\newblock \emph{Journal of Computer and System Sciences}, 1976.
+
+\bibitem[Rabin(1980)]{rabin1980}
+Michael~O. Rabin.
+\newblock Probabilistic algorithm for testing primality.
+\newblock \emph{Journal of Number Theory}, 1980.
+
+\end{thebibliography}
+
+\end{document}
+

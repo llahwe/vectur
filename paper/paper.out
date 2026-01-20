@@ -1,0 +1,20 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Related Work}{}% 2
+\BOOKMARK [1][-]{section.3}{VecTur: Vector Turing Machines}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Vectorized machine state}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Sparse addressing \(keeping I and J fixed\)}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Read, transition, and halting}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{VecTur Blocks inside Llama-style Models}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Macro architecture}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Compared blocks}{section.4}% 9
+\BOOKMARK [1][-]{section.5}{Evaluation Benchmarks}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{Reasoning and knowledge}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.2}{Language modeling}{section.5}% 12
+\BOOKMARK [1][-]{section.6}{CompGen: Complexity-Stratified Program Generation}{}% 13
+\BOOKMARK [2][-]{subsection.6.1}{Task format}{section.6}% 14
+\BOOKMARK [2][-]{subsection.6.2}{Generalization protocol}{section.6}% 15
+\BOOKMARK [1][-]{section.7}{Randomized Computation Suite}{}% 16
+\BOOKMARK [1][-]{section.8}{Experimental Setup}{}% 17
+\BOOKMARK [1][-]{section.9}{Results \(Illustrative Placeholders\)}{}% 18
+\BOOKMARK [1][-]{section.10}{Discussion}{}% 19
+\BOOKMARK [1][-]{section.11}{Limitations and Future Work}{}% 20
