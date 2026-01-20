@@ -17,6 +17,17 @@ Output formats:
 Hugging Face:
 - Optional upload/download helpers using `huggingface_hub` (if installed).
   No hard dependency: generation works without HF packages.
+
+Example (generate ~1M examples per task, then upload to HF datasets):
+
+    python3 -m datasets.compgen generate \\
+      --out-dir datasets/compgen_runs \\
+      --run-name compgen_v1 \\
+      --dataset-size 1000000 \\
+      --fmt jsonl \\
+      --hf-user YOUR_HF_USERNAME \\
+      --hf-repo YOUR_HF_USERNAME/compgen-compgen_v1 \\
+      --hf-upload
 """
 
 from __future__ import annotations
@@ -26,9 +37,10 @@ import dataclasses
 import datetime as dt
 import json
 import random
+import zlib
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, Literal, Sequence
+from typing import Any, Callable, Iterable, Iterator, Literal, Sequence
 
 
 TaskName = Literal["scan_reduce", "prefix_sums", "sort_then_scan", "nested_loop_count", "dp_table_stripe"]
@@ -111,12 +123,14 @@ class CompGenConfig:
 
     # Problem sizing defaults
     min_n: int = 8
-    max_n: int = 64
+    # NOTE: For default ~1M examples, keep quadratic tasks tractable in Python.
+    # You can raise this at generation time via CLI flags.
+    max_n: int = 32
     int_lo: int = -50
     int_hi: int = 50
     alphabet: str = "abcd"
     min_str_len: int = 8
-    max_str_len: int = 64
+    max_str_len: int = 32
 
     # HF optional
     hf_user: str = "ethanhallphd"
@@ -247,8 +261,10 @@ def generate_to_dir(cfg: CompGenConfig) -> Path:
 
     _write_json(run_dir / "meta.json", dataclasses.asdict(cfg) | {"created_utc": dt.datetime.now(dt.timezone.utc).isoformat()})
 
-    rng = random.Random(int(cfg.seed))
     for task in cfg.tasks:
+        # Ensure each task file is reproducible independent of task order.
+        task_seed = int(cfg.seed) ^ int(zlib.adler32(task.encode("utf-8")))
+        rng = random.Random(task_seed)
         gen = _TASK_GEN[task]
         out_path = run_dir / f"{task}.{cfg.fmt}"
 
@@ -373,7 +389,7 @@ def main() -> None:
         run_dir = generate_to_dir(cfg)
         print(f"Wrote: {run_dir}")
         if bool(args.hf_upload):
-            repo_id = cfg.hf_repo or f\"{cfg.hf_user}/compgen-{run_dir.name}\"
+            repo_id = cfg.hf_repo or f"{cfg.hf_user}/compgen-{run_dir.name}"
             hf_upload_folder(folder=run_dir, repo_id=repo_id, private=bool(cfg.hf_private))
             print(f"Uploaded to HF: {repo_id}")
 
@@ -386,7 +402,7 @@ def main() -> None:
         folder = Path(str(args.folder))
         if not folder.exists():
             raise FileNotFoundError(folder)
-        repo_id = str(args.hf_repo) if args.hf_repo else f\"{str(args.hf_user)}/{folder.name}\"
+        repo_id = str(args.hf_repo) if args.hf_repo else f"{str(args.hf_user)}/{folder.name}"
         hf_upload_folder(folder=folder, repo_id=repo_id, private=bool(args.hf_private))
         print(f"Uploaded to HF: {repo_id}")
 
