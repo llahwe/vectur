@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1768940478 "/Users/ethanhall/research/papers/vectur/paper/paper.tex" "/Users/ethanhall/research/papers/vectur/paper/paper.pdf" "paper" 1768940899
-  "/Users/ethanhall/research/papers/vectur/paper/paper.aux" 1768940479 12036 86e1b242344dc29dcdcdb73f5c9beb3f ""
-  "/Users/ethanhall/research/papers/vectur/paper/paper.tex" 1768940899 38249 f91c2d607664bb14214c7e5f3a5b9dab ""
+["pdflatex"] 1768945215 "/Users/ethanhall/research/papers/vectur/paper/paper.tex" "/Users/ethanhall/research/papers/vectur/paper/paper.pdf" "paper" 1768945216
+  "/Users/ethanhall/research/papers/vectur/paper/paper.aux" 1768945216 14370 44fe45702e7cdd3a59c3497f765c5065 ""
+  "/Users/ethanhall/research/papers/vectur/paper/paper.tex" 1768945215 46559 4cf7b35b8297b247b58a7218e28fa328 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -165,13 +165,13 @@
   "/usr/local/texlive/2020/texmf.cnf" 1586288231 577 d60164b4589a341208aff7a667fbbdcb ""
   "definitions.tex" 1768851903 985 2e9012b59c15c094a709a4c763d74a27 ""
   "neurips_2024.sty" 1768851903 11402 ce547b15432a0bbe820b413cb282ca37 ""
-  "paper.aux" 1768940479 12036 86e1b242344dc29dcdcdb73f5c9beb3f "pdflatex"
-  "paper.out" 1768940479 1509 6c1f3f2447917cbcd99bd6563d356f67 "pdflatex"
-  "paper.tex" 1768940899 38249 f91c2d607664bb14214c7e5f3a5b9dab ""
+  "paper.aux" 1768945216 14370 44fe45702e7cdd3a59c3497f765c5065 "pdflatex"
+  "paper.out" 1768945216 1509 6c1f3f2447917cbcd99bd6563d356f67 "pdflatex"
+  "paper.tex" 1768945215 46559 4cf7b35b8297b247b58a7218e28fa328 ""
   (generated)
   "paper.log"
   "/Users/ethanhall/research/papers/vectur/paper/paper.log"
-  "paper.pdf"
-  "/Users/ethanhall/research/papers/vectur/paper/paper.pdf"
   "paper.out"
   "paper.aux"
+  "paper.pdf"
+  "/Users/ethanhall/research/papers/vectur/paper/paper.pdf"

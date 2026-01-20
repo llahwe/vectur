@@ -66,6 +66,15 @@ Classic NTMs \citep{graves2014ntm} relied on dense, content-based attention over
 In contrast, \vectur{} maintains a continuous head position on a circular tape (\(S^1\)) and enforces \emph{strictly local} access: each step reads and writes via interpolation over only \(2k\) tape indices (sparse gather/scatter), yielding per-step cost independent of tape length and an inductive bias closer to pointer machines \citep{vinyals2015pointer}.
 For adaptive depth, \vectur{} includes an ACT-style halting mechanism \citep{graves2016act}; our particular \(\kappa\) parameterization is presented as a practical, input-conditioned control knob rather than a conceptual departure from ACT.
 
+\paragraph{Why this helps for long context.}
+Self-attention provides direct interaction between all token pairs but incurs \(O(N^2)\) compute in sequence length \(N\).
+Linear-time alternatives avoid this quadratic cost, but typically do so by enforcing a \emph{linear progression} of computation through the sequence: in an LSTM, information from the past must be compressed into a fixed-size hidden state, and each new token updates that state once in time order.
+More recent linear-time memory perspectives (e.g., the MIRAS viewpoint connecting retention, memorization, and online optimization \citep{behrouz2025miras}) likewise maintain and update memory in lockstep with the token stream.
+In contrast, \vectur{} decouples interaction from all-pairs attention by introducing an explicit \emph{Turing index} (the head index \(I_t\)) whose motion over the tape is learned.
+Across transition steps, head motion allows the model to create relationships between \emph{arbitrary} tokens by moving to (or copying from) the corresponding tape locations and combining them through the finite-control state, without computing a dense \(N\times N\) similarity matrix.
+Crucially, this enables \emph{non-linear} token processing: the controller can revisit selected tokens or intermediate scratchpad cells multiple times, in an order determined by the evolving machine state, while leaving the rest of the tape unchanged by construction.
+This selective persistence---deciding what to write to the tape, what to overwrite, and what to ignore---matches the operational structure of Turing-style computation (state + tape) more directly than recurrence with a single compressed memory vector.
+
 We evaluate \vectur{} in a realistic regime by inserting it as a \emph{block} inside a Llama-style decoder-only macro architecture \citep{touvron2023llama2,dubey2024llama3}, replacing the standard attention+MLP block.
 We compare against alternative blocks: (i) standard attention \citep{vaswani2017attention}, (ii) LSTM-style recurrence \citep{hochreiter1997lstm}, and (iii) differentiable external-memory controllers \citep{graves2014ntm,graves2016dnc}.
 We focus on small-to-medium models (roughly \(10^8\) to \(10^9\) parameters) where architectural inductive bias can materially affect sample efficiency and extrapolation \citep{kaiser2016neuralgpu,press2022trainshort}.

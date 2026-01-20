@@ -39,6 +39,7 @@
 \citation{vinyals2015pointer}
 \citation{graves2016act}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{behrouz2025miras}
 \citation{touvron2023llama2,dubey2024llama3}
 \citation{vaswani2017attention}
 \citation{hochreiter1997lstm}
@@ -51,15 +52,11 @@
 \citation{brown2020gpt3}
 \citation{touvron2023llama2,dubey2024llama3}
 \citation{hochreiter1997lstm}
+\@writefile{toc}{\contentsline {paragraph}{Why this helps for long context.}{2}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.2}\protected@file@percent }
 \citation{graves2014ntm}
 \citation{graves2016dnc}
 \citation{graves2014ntm}
-\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Sequence models and attention.}{2}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Differentiable memory and neural machines.}{2}{section*.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Remark: Neural Turing Machines vs.\ \textsc  {VecTur}{}}{2}{subsection.2.1}\protected@file@percent }
-\newlabel{sec:remark_ntm_vs_vectur}{{2.1}{2}{Remark: Neural Turing Machines vs.\ \vectur {}}{subsection.2.1}{}}
 \citation{vinyals2015pointer}
 \citation{graves2014ntm}
 \citation{graves2014ntm}
@@ -67,33 +64,36 @@
 \citation{banino2021pondernet}
 \citation{tandon2025ttt}
 \citation{behrouz2025miras}
-\citation{freivalds1977}
-\citation{miller1976,rabin1980}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textbf  {NTM vs.\ \textsc  {VecTur}{}.} NTMs \citep  {graves2014ntm} provide dense, content-addressable memory access, while \textsc  {VecTur}{} enforces sparse, local tape access with adaptive depth. The rightmost column highlights regimes where \textsc  {VecTur}{} is especially advantageous as a computational block inside attention-based macro-architectures.}}{3}{figure.1}\protected@file@percent }
 \newlabel{fig:ntm_vs_vectur}{{1}{3}{\textbf {NTM vs.\ \vectur {}.} NTMs \citep {graves2014ntm} provide dense, content-addressable memory access, while \vectur {} enforces sparse, local tape access with adaptive depth. The rightmost column highlights regimes where \vectur {} is especially advantageous as a computational block inside attention-based macro-architectures}{figure.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Adaptive computation.}{3}{section*.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Test-time training and online optimization.}{3}{section*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Randomized algorithms.}{3}{section*.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}VecTur: Vector Turing Machines}{3}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Vectorized machine state}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Sequence models and attention.}{3}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Differentiable memory and neural machines.}{3}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Remark: Neural Turing Machines vs.\ \textsc  {VecTur}{}}{3}{subsection.2.1}\protected@file@percent }
+\newlabel{sec:remark_ntm_vs_vectur}{{2.1}{3}{Remark: Neural Turing Machines vs.\ \vectur {}}{subsection.2.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Adaptive computation.}{3}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Test-time training and online optimization.}{3}{section*.6}\protected@file@percent }
+\citation{freivalds1977}
+\citation{miller1976,rabin1980}
+\@writefile{toc}{\contentsline {paragraph}{Randomized algorithms.}{4}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}VecTur: Vector Turing Machines}{4}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Vectorized machine state}{4}{subsection.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Sparse addressing (keeping I and J fixed)}{4}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Read, transition, and halting}{4}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Read, transition, and halting}{5}{subsection.3.3}\protected@file@percent }
 \newlabel{eq:vectur_tape_update}{{6}{5}{Read, transition, and halting}{equation.3.6}{}}
 \newlabel{eq:vectur_head_update}{{10}{5}{Read, transition, and halting}{equation.3.10}{}}
-\@writefile{toc}{\contentsline {paragraph}{Early stopping and block output.}{5}{section*.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Differentiability and efficient backpropagation.}{5}{section*.8}\protected@file@percent }
 \citation{su2021roformer}
 \citation{touvron2023llama2,dubey2024llama3}
 \citation{tandon2025ttt}
 \citation{behrouz2025miras}
-\citation{vaswani2017attention}
-\citation{shazeer2020gluvariants}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {Placeholder.} Block-swap experiment: a fixed Llama-style macro architecture where the per-layer computational block is one of \{Attention, LSTM, NTM/DNC, \textsc  {VecTur}{}, \textsc  {VecSTur}{}\}.}}{6}{figure.2}\protected@file@percent }
-\newlabel{fig:blockswap}{{2}{6}{\textbf {Placeholder.} Block-swap experiment: a fixed Llama-style macro architecture where the per-layer computational block is one of \{Attention, LSTM, NTM/DNC, \vectur {}, \vecstur {}\}}{figure.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Concrete parameterization (used in experiments).}{6}{section*.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Algorithm (forward pass).}{6}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Early stopping and block output.}{6}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Differentiability and efficient backpropagation.}{6}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Concrete parameterization (used in experiments).}{6}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Algorithm (forward pass).}{6}{section*.11}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}VecTur Blocks inside Llama-style Models}{6}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Macro architecture}{6}{subsection.4.1}\protected@file@percent }
+\citation{vaswani2017attention}
+\citation{shazeer2020gluvariants}
 \citation{hochreiter1997lstm}
 \citation{graves2014ntm,graves2016dnc}
 \citation{cobbe2021gsm8k}
@@ -102,54 +102,54 @@
 \citation{merity2016wikitext}
 \citation{sipser2012toc}
 \citation{velickovic2022clrs}
-\citation{freivalds1977}
-\citation{miller1976,rabin1980}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \textbf  {Placeholder.} \textsc  {CompGen}{} program families and intended \((T(n),S(n))\) buckets.}}{7}{table.1}\protected@file@percent }
-\newlabel{tab:compgen}{{1}{7}{\textbf {Placeholder.} \compgen {} program families and intended \((T(n),S(n))\) buckets}{table.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {Placeholder.} Block-swap experiment: a fixed Llama-style macro architecture where the per-layer computational block is one of \{Attention, LSTM, NTM/DNC, \textsc  {VecTur}{}, \textsc  {VecSTur}{}\}.}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:blockswap}{{2}{7}{\textbf {Placeholder.} Block-swap experiment: a fixed Llama-style macro architecture where the per-layer computational block is one of \{Attention, LSTM, NTM/DNC, \vectur {}, \vecstur {}\}}{figure.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Compared blocks}{7}{subsection.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation Benchmarks}{7}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Reasoning and knowledge}{7}{subsection.5.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Language modeling}{7}{subsection.5.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}CompGen: Complexity-Stratified Program Generation}{7}{section.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Task format}{7}{subsection.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Generalization protocol}{7}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Randomized Computation Suite}{7}{section.7}\protected@file@percent }
+\citation{freivalds1977}
+\citation{miller1976,rabin1980}
 \citation{cobbe2021gsm8k}
 \citation{clark2018arc}
 \citation{zellers2019hellaswag}
 \citation{merity2016wikitext}
 \citation{velickovic2022clrs}
 \citation{velickovic2022clrs}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \textbf  {Placeholder (Protocol 1).} Language pretraining on FineWeb, evaluated on downstream benchmarks. Entries are Lorem ipsum placeholders.}}{8}{table.2}\protected@file@percent }
-\newlabel{tab:benchmarks}{{2}{8}{\textbf {Placeholder (Protocol 1).} Language pretraining on FineWeb, evaluated on downstream benchmarks. Entries are Lorem ipsum placeholders}{table.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \textbf  {Placeholder.} \textsc  {CompGen}{} program families and intended \((T(n),S(n))\) buckets.}}{8}{table.1}\protected@file@percent }
+\newlabel{tab:compgen}{{1}{8}{\textbf {Placeholder.} \compgen {} program families and intended \((T(n),S(n))\) buckets}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Generalization protocol}{8}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Randomized Computation Suite}{8}{section.7}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {8}Experimental Setup}{8}{section.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Model sizes.}{8}{section*.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Blocks and controlled comparisons.}{8}{section*.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Experimental protocols (run per block).}{8}{section*.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Optimization and budgets.}{8}{section*.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Compute control.}{8}{section*.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {9}Results (Illustrative Placeholders)}{8}{section.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Important note.}{8}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Model sizes.}{8}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Blocks and controlled comparisons.}{8}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Experimental protocols (run per block).}{8}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Optimization and budgets.}{8}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Compute control.}{8}{section*.16}\protected@file@percent }
 \citation{olah2020zoomin,elhage2021framework}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \textbf  {Placeholder (Protocol 1).} Language pretraining on FineWeb, evaluated on downstream benchmarks. Entries are Lorem ipsum placeholders.}}{9}{table.2}\protected@file@percent }
+\newlabel{tab:benchmarks}{{2}{9}{\textbf {Placeholder (Protocol 1).} Language pretraining on FineWeb, evaluated on downstream benchmarks. Entries are Lorem ipsum placeholders}{table.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \textbf  {Placeholder (Protocol 2a).} Train on CLRS, test on \textsc  {CompGen}{} under zero-shot / few-shot / fine-tune adaptation regimes. Results are placeholders.}}{9}{table.3}\protected@file@percent }
 \newlabel{tab:clrs_to_compgen}{{3}{9}{\textbf {Placeholder (Protocol 2a).} Train on CLRS, test on \compgen {} under zero-shot / few-shot / fine-tune adaptation regimes. Results are placeholders}{table.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces \textbf  {Placeholder (Protocol 2b).} Train on \textsc  {CompGen}{}, test on held-out \textsc  {CompGen}{} (including extrapolation across larger \(n\)). Results are placeholders.}}{9}{table.4}\protected@file@percent }
-\newlabel{tab:compgen_holdout}{{4}{9}{\textbf {Placeholder (Protocol 2b).} Train on \compgen {}, test on held-out \compgen {} (including extrapolation across larger \(n\)). Results are placeholders}{table.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Results (Illustrative Placeholders)}{9}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Important note.}{9}{section*.17}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {10}Discussion}{9}{section.10}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {11}Limitations and Future Work}{9}{section.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Future Work: Mechanistic Interpretability}{9}{subsection.11.1}\protected@file@percent }
-\newlabel{sec:future_mi}{{11.1}{9}{Future Work: Mechanistic Interpretability}{subsection.11.1}{}}
 \citation{hinton2015distilling,romero2015fitnets}
 \bibcite{turing1936}{{1}{1936}{{Turing}}{{}}}
 \bibcite{hochreiter1997lstm}{{2}{1997}{{Hochreiter and Schmidhuber}}{{}}}
 \bibcite{vaswani2017attention}{{3}{2017}{{Vaswani et~al.}}{{}}}
 \bibcite{graves2014ntm}{{4}{2014}{{Graves et~al.}}{{}}}
 \bibcite{graves2016dnc}{{5}{2016}{{Graves et~al.}}{{}}}
-\bibcite{graves2016act}{{6}{2016}{{Graves}}{{}}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces \textbf  {Placeholder (Protocol 2b).} Train on \textsc  {CompGen}{}, test on held-out \textsc  {CompGen}{} (including extrapolation across larger \(n\)). Results are placeholders.}}{10}{table.4}\protected@file@percent }
+\newlabel{tab:compgen_holdout}{{4}{10}{\textbf {Placeholder (Protocol 2b).} Train on \compgen {}, test on held-out \compgen {} (including extrapolation across larger \(n\)). Results are placeholders}{table.4}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces \textbf  {Placeholder (Protocol 3).} Train on CLRS and evaluate on a held-out CLRS split. Results are placeholders.}}{10}{table.5}\protected@file@percent }
 \newlabel{tab:clrs_holdout}{{5}{10}{\textbf {Placeholder (Protocol 3).} Train on CLRS and evaluate on a held-out CLRS split. Results are placeholders}{table.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {Placeholder.} \textsc  {CompGen}{} extrapolation: accuracy vs.\ input size \(n\), showing how blocks degrade with larger \(n\) and how \textsc  {VecTur}{} modulates effective steps via learned \(\kappa \).}}{10}{figure.3}\protected@file@percent }
-\newlabel{fig:compgen}{{3}{10}{\textbf {Placeholder.} \compgen {} extrapolation: accuracy vs.\ input size \(n\), showing how blocks degrade with larger \(n\) and how \vectur {} modulates effective steps via learned \(\kappa \)}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Future Work: Mechanistic Interpretability}{10}{subsection.11.1}\protected@file@percent }
+\newlabel{sec:future_mi}{{11.1}{10}{Future Work: Mechanistic Interpretability}{subsection.11.1}{}}
+\bibcite{graves2016act}{{6}{2016}{{Graves}}{{}}}
 \bibcite{touvron2023llama2}{{7}{2023}{{Touvron et~al.}}{{}}}
 \bibcite{dubey2024llama3}{{8}{2024}{{Dubey et~al.}}{{}}}
 \bibcite{cobbe2021gsm8k}{{9}{2021}{{Cobbe et~al.}}{{}}}
@@ -163,6 +163,10 @@
 \bibcite{dehghani2019universal}{{17}{2019}{{Dehghani et~al.}}{{}}}
 \bibcite{banino2021pondernet}{{18}{2021}{{Banino et~al.}}{{}}}
 \bibcite{behrouz2025miras}{{19}{2025}{{Behrouz et~al.}}{{}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {Placeholder.} \textsc  {CompGen}{} extrapolation: accuracy vs.\ input size \(n\), showing how blocks degrade with larger \(n\) and how \textsc  {VecTur}{} modulates effective steps via learned \(\kappa \).}}{11}{figure.3}\protected@file@percent }
+\newlabel{fig:compgen}{{3}{11}{\textbf {Placeholder.} \compgen {} extrapolation: accuracy vs.\ input size \(n\), showing how blocks degrade with larger \(n\) and how \vectur {} modulates effective steps via learned \(\kappa \)}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces \textbf  {Placeholder.} Randomized computation suite: train/test bookkeeping with placeholder results.}}{11}{table.6}\protected@file@percent }
+\newlabel{tab:random}{{6}{11}{\textbf {Placeholder.} Randomized computation suite: train/test bookkeeping with placeholder results}{table.6}{}}
 \bibcite{elhage2021framework}{{20}{2021}{{Elhage et~al.}}{{}}}
 \bibcite{kaiser2016neuralgpu}{{21}{2016}{{Kaiser and Sutskever}}{{}}}
 \bibcite{olah2020zoomin}{{22}{2020}{{Olah et~al.}}{{}}}
@@ -171,8 +175,6 @@
 \bibcite{romero2015fitnets}{{25}{2015}{{Romero et~al.}}{{}}}
 \bibcite{shazeer2020gluvariants}{{26}{2020}{{Shazeer}}{{}}}
 \bibcite{sipser2012toc}{{27}{2012}{{Sipser}}{{}}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces \textbf  {Placeholder.} Randomized computation suite: train/test bookkeeping with placeholder results.}}{11}{table.6}\protected@file@percent }
-\newlabel{tab:random}{{6}{11}{\textbf {Placeholder.} Randomized computation suite: train/test bookkeeping with placeholder results}{table.6}{}}
 \bibcite{su2021roformer}{{28}{2021}{{Su et~al.}}{{}}}
 \bibcite{vinyals2015pointer}{{29}{2015}{{Vinyals et~al.}}{{}}}
 \bibcite{velickovic2022clrs}{{30}{2022}{{Veli{\v {c}}kovi{\'c} et~al.}}{{}}}
