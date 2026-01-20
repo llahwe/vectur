@@ -13,6 +13,10 @@ from typing import Any, Callable, Dict, Mapping
 import torch.nn as nn
 
 from llama_macro import IdentitySequenceBlock
+from blocks.attention_block import make_attention_block
+from blocks.lstm_block import make_lstm_block
+from blocks.moneta_block import make_moneta_block
+from blocks.ntm_block import make_ntm_block
 from blocks.vectur_block import make_vecstur_block, make_vectur_block
 
 
@@ -51,20 +55,62 @@ _REGISTRY: Dict[str, tuple[BlockSpec, Callable[[Mapping[str, Any]], BlockFactory
     ),
     # Future blocks (stubs)
     "attention": (
-        BlockSpec(name="attention", description="Transformer attention block (stub)"),
-        lambda _kwargs: _not_implemented("attention"),
+        BlockSpec(name="attention", description="Causal self-attention block (SDPA + RoPE; configurable size)"),
+        lambda kwargs: (
+            lambda dim: make_attention_block(
+                dim=dim,
+                attn_dim=(int(kwargs["attn_dim"]) if "attn_dim" in kwargs else None),
+                head_dim=int(kwargs.get("head_dim", 64)),
+                n_heads=(int(kwargs["n_heads"]) if "n_heads" in kwargs else None),
+                bias=bool(kwargs.get("bias", False)),
+                attn_dropout=float(kwargs.get("attn_dropout", 0.0)),
+                proj_dropout=float(kwargs.get("proj_dropout", 0.0)),
+            )
+        ),
     ),
     "lstm": (
-        BlockSpec(name="lstm", description="LSTM-style recurrent block (stub)"),
-        lambda _kwargs: _not_implemented("lstm"),
+        BlockSpec(name="lstm", description="LSTM sequence block (fused nn.LSTM; configurable size)"),
+        lambda kwargs: (
+            lambda dim: make_lstm_block(
+                dim=dim,
+                hidden_size=(int(kwargs["hidden_size"]) if "hidden_size" in kwargs else None),
+                num_layers=int(kwargs.get("num_layers", 1)),
+                dropout=float(kwargs.get("dropout", 0.0)),
+                bias=bool(kwargs.get("bias", True)),
+                proj_to_dim=bool(kwargs.get("proj_to_dim", True)),
+            )
+        ),
     ),
     "moneta": (
-        BlockSpec(name="moneta", description="MONETA / MIRAS-style block (stub)"),
-        lambda _kwargs: _not_implemented("moneta"),
+        BlockSpec(name="moneta", description="MONETA-style recurrent memory block (ported from miras)"),
+        lambda kwargs: (
+            lambda dim: make_moneta_block(
+                dim=dim,
+                p=int(kwargs.get("p", 3)),
+                q=int(kwargs.get("q", 4)),
+                eps=float(kwargs.get("eps", 1e-6)),
+                detach_state_every=int(kwargs.get("detach_state_every", 256)),
+                chunk_size=(int(kwargs["chunk_size"]) if "chunk_size" in kwargs else None),
+                tbptt_horizon_chunks=int(kwargs.get("tbptt_horizon_chunks", 4)),
+                grad_checkpoint_inner=bool(kwargs.get("grad_checkpoint_inner", True)),
+            )
+        ),
     ),
     "ntm": (
-        BlockSpec(name="ntm", description="Neural Turing Machine / external memory block (stub)"),
-        lambda _kwargs: _not_implemented("ntm"),
+        BlockSpec(name="ntm", description="Neural Turing Machine style controller+memory block (best-effort adapter)"),
+        lambda kwargs: (
+            lambda dim: make_ntm_block(
+                dim=dim,
+                controller_hidden=(int(kwargs["controller_hidden"]) if "controller_hidden" in kwargs else None),
+                mem_slots=int(kwargs.get("mem_slots", 128)),
+                mem_width=(int(kwargs["mem_width"]) if "mem_width" in kwargs else None),
+                n_read_heads=int(kwargs.get("n_read_heads", 1)),
+                n_write_heads=int(kwargs.get("n_write_heads", 1)),
+                shift_range=int(kwargs.get("shift_range", 1)),
+                bias=bool(kwargs.get("bias", True)),
+                learned_init_memory=bool(kwargs.get("learned_init_memory", True)),
+            )
+        ),
     ),
     "vectur": (
         BlockSpec(name="vectur", description="VecTur block (stub)"),
