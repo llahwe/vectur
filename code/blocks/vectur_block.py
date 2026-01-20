@@ -107,7 +107,7 @@ class VecTurBlock(nn.Module):
     def _gate(self, *, kappa: torch.Tensor, t: int, q: torch.Tensor) -> torch.Tensor:
         """
         Paper gate:
-          g_t = sigmoid((kappa - t) / max(1, ||Q_t - q0||^2))
+          g_t = sigmoid((-kappa * t) / max(1, ||Q_t - q0||^2))
 
         kappa: (B,1), q: (B,d_q)
         """
@@ -115,7 +115,7 @@ class VecTurBlock(nn.Module):
         diff = q - self.q0.view(1, -1)
         dq2 = diff.pow(2).sum(dim=-1, keepdim=True)
         denom = torch.clamp(dq2, min=1.0)
-        g = torch.sigmoid((kappa - float(t)) / denom)
+        g = torch.sigmoid((-kappa * float(t)) / denom)
         return g
 
     def forward(self, x: torch.Tensor, *, freqs_cis: torch.Tensor) -> torch.Tensor:  # noqa: ARG002

@@ -31,7 +31,7 @@ class MonetaState:
     Cached state for fast incremental inference.
 
     - A/W: recurrence state (b, d, d)
-    - *_hist: last 3 pre-conv inputs for depthwise conv (b, 3, d)
+    - *_hist: last 3 pre-conv inputs for depthwise conv (b, d, 3)
     """
 
     A: torch.Tensor
@@ -112,8 +112,10 @@ class MonetaBlock(nn.Module):
         b = int(batch_size)
         d = int(self.dim)
         A = torch.zeros((b, d, d), device=device, dtype=dtype)
-        W = self.W0.to(device=device, dtype=dtype).unsqueeze(0).expand(b, -1, -1).contiguous()
-        zeros_hist = torch.zeros((b, 3, d), device=device, dtype=dtype)
+        # Avoid an upfront `.contiguous()` copy; W will become contiguous after the first update anyway.
+        W = self.W0.to(device=device, dtype=dtype).unsqueeze(0).expand(b, -1, -1)
+        # For kernel_size=4 with padding=3 and slicing back to length n, y_t depends on inputs x_{t-3..t}.
+        zeros_hist = torch.zeros((b, d, 3), device=device, dtype=dtype)
         return MonetaState(A=A, W=W, q_hist=zeros_hist.clone(), k_hist=zeros_hist.clone(), v_hist=zeros_hist.clone())
 
     def apply_rope(self, x: torch.Tensor, freqs_cis: torch.Tensor) -> torch.Tensor:
@@ -121,17 +123,36 @@ class MonetaBlock(nn.Module):
         x: (b, n, dim) real
         freqs_cis: (n, dim/2) complex (as produced by `ModularLlama`)
         """
-        x_ri = x.float().reshape(*x.shape[:-1], -1, 2).contiguous()
-        x_complex = torch.view_as_complex(x_ri)
-        freqs_cis = freqs_cis.view(1, x.shape[1], -1)
-        x_rotated = x_complex * freqs_cis
-        return torch.view_as_real(x_rotated).flatten(2).type_as(x)
+        if x.dim() != 3:
+            raise ValueError(f"apply_rope expects x (b,n,d), got {tuple(x.shape)}")
+        b, n, d = x.shape
+        if d % 2 != 0:
+            raise ValueError(f"RoPE requires even dim, got dim={d}")
+        if freqs_cis.dim() != 2:
+            raise ValueError(f"freqs_cis must have shape (n,d/2) complex (or (1,d/2)), got {tuple(freqs_cis.shape)}")
+        if freqs_cis.shape[0] not in (1, n):
+            raise ValueError(f"freqs_cis length mismatch: got {freqs_cis.shape[0]} vs n={n}")
+
+        # Avoid complex ops + float32 casts; use cos/sin from complex freqs and strided even/odd views.
+        freqs = freqs_cis[:, : (d // 2)]
+        cos = freqs.real.to(dtype=x.dtype).view(1, freqs.shape[0], -1)  # (1, n|1, d/2)
+        sin = freqs.imag.to(dtype=x.dtype).view(1, freqs.shape[0], -1)
+
+        x_even = x[..., ::2]
+        x_odd = x[..., 1::2]
+        y_even = x_even * cos - x_odd * sin
+        y_odd = x_even * sin + x_odd * cos
+
+        y = torch.empty_like(x)
+        y[..., ::2] = y_even
+        y[..., 1::2] = y_odd
+        return y
 
     def _depthwise_conv_step(
         self,
         conv: nn.Conv1d,
         *,
-        x_hist: torch.Tensor,  # (b, 3, d)
+        x_hist: torch.Tensor,  # (b, d, 3)
         x_t: torch.Tensor,  # (b, d)
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
@@ -139,12 +160,20 @@ class MonetaBlock(nn.Module):
           conv(x_seq.transpose(1,2))[:, :, :n].transpose(1,2)
         for the last position.
         """
-        stacked = torch.cat([x_hist, x_t.unsqueeze(1)], dim=1)  # (b,4,d)
+        # stacked inputs correspond to [x_{t-3}, x_{t-2}, x_{t-1}, x_t]
         w = conv.weight.squeeze(1)  # (d,4)
-        y_t = (stacked.permute(0, 2, 1) * w.unsqueeze(0)).sum(dim=-1)
+        y_t = (
+            x_hist[..., 0] * w[:, 0].unsqueeze(0)
+            + x_hist[..., 1] * w[:, 1].unsqueeze(0)
+            + x_hist[..., 2] * w[:, 2].unsqueeze(0)
+            + x_t * w[:, 3].unsqueeze(0)
+        )
         if conv.bias is not None:
             y_t = y_t + conv.bias.unsqueeze(0)
-        new_hist = stacked[:, 1:, :].contiguous()
+        new_hist = torch.empty_like(x_hist)
+        new_hist[..., 0] = x_hist[..., 1]
+        new_hist[..., 1] = x_hist[..., 2]
+        new_hist[..., 2] = x_t
         return y_t, new_hist
 
     def forward_step(

@@ -185,12 +185,13 @@ class LSTMBlock(nn.Module):
     def forward(self, x: torch.Tensor, *, freqs_cis: torch.Tensor) -> torch.Tensor:  # noqa: ARG002
         if x.dim() != 3:
             raise ValueError(f"LSTMBlock expects (B,T,D), got {tuple(x.shape)}")
+        # Ensures cuDNN uses a contiguous weight buffer on CUDA for best performance.
+        # (No-op on CPU; safe to call repeatedly.)
+        if x.is_cuda:
+            self.lstm.flatten_parameters()
         y, _state = self.lstm(x)
         return self.proj(y)
 
-    # Optional: allow incremental decode state init, but we intentionally do NOT implement
-    # `forward_step` here because `nn.LSTM` doesn't expose an efficient per-token step without
-    # duplicating parameters into LSTMCell(s). The macro will fall back to a length-1 forward.
     def init_state(self, *, batch_size: int, device: torch.device, dtype: torch.dtype) -> Any:  # noqa: ARG002
         # (num_layers, batch, hidden)
         L = int(self.lstm.num_layers)
@@ -198,6 +199,89 @@ class LSTMBlock(nn.Module):
         h0 = torch.zeros((L, int(batch_size), h), device=device, dtype=dtype)
         c0 = torch.zeros((L, int(batch_size), h), device=device, dtype=dtype)
         return (h0, c0)
+
+    def _step_one_layer(
+        self,
+        x_t: torch.Tensor,  # (B, input_size)
+        h_t: torch.Tensor,  # (B, H)
+        c_t: torch.Tensor,  # (B, H)
+        *,
+        layer: int,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """
+        One LSTM cell step using the parameters inside `nn.LSTM`, without duplicating weights.
+        """
+        w_ih = getattr(self.lstm, f"weight_ih_l{layer}")
+        w_hh = getattr(self.lstm, f"weight_hh_l{layer}")
+        b_ih = getattr(self.lstm, f"bias_ih_l{layer}", None)
+        b_hh = getattr(self.lstm, f"bias_hh_l{layer}", None)
+
+        gates = torch.nn.functional.linear(x_t, w_ih, b_ih) + torch.nn.functional.linear(h_t, w_hh, b_hh)
+        i, f, g, o = gates.chunk(4, dim=-1)
+        i = torch.sigmoid(i)
+        f = torch.sigmoid(f)
+        g = torch.tanh(g)
+        o = torch.sigmoid(o)
+
+        c_next = f * c_t + i * g
+        h_next = o * torch.tanh(c_next)
+        return h_next, c_next
+
+    def forward_step(
+        self,
+        x_t: torch.Tensor,  # (B,D)
+        *,
+        freqs_cis_t: torch.Tensor,  # noqa: ARG002
+        state: Any,
+    ) -> tuple[torch.Tensor, Any]:
+        """
+        Efficient 1-token forward using cached recurrent state.
+
+        This avoids llama_macro's fallback path (which would run an entire length-1 LSTM forward each step),
+        and is the key to making decoding compute/VRAM efficient.
+        """
+        if x_t.dim() != 2:
+            raise ValueError(f"LSTMBlock.forward_step expects (B,D), got {tuple(x_t.shape)}")
+        b, d = x_t.shape
+        if d != int(self.lstm.input_size):
+            raise ValueError(f"Input dim mismatch: got D={d}, expected {int(self.lstm.input_size)}")
+
+        if state is None:
+            # Best-effort default if caller didn't initialize state.
+            state = self.init_state(batch_size=b, device=x_t.device, dtype=x_t.dtype)
+        h_all, c_all = state
+        if not (isinstance(h_all, torch.Tensor) and isinstance(c_all, torch.Tensor)):
+            raise TypeError("LSTMBlock state must be (h, c) tensors")
+        if h_all.dim() != 3 or c_all.dim() != 3:
+            raise ValueError("LSTMBlock state tensors must have shape (num_layers, B, H)")
+
+        L = int(self.lstm.num_layers)
+        if int(h_all.shape[0]) != L or int(c_all.shape[0]) != L:
+            raise ValueError(f"State num_layers mismatch: got {h_all.shape[0]}/{c_all.shape[0]}, expected {L}")
+
+        # Run through the stacked layers.
+        x_in = x_t
+        h_outs: list[torch.Tensor] = []
+        c_outs: list[torch.Tensor] = []
+        p_drop = float(self.lstm.dropout)
+
+        for layer in range(L):
+            h_prev = h_all[layer]
+            c_prev = c_all[layer]
+            h_next, c_next = self._step_one_layer(x_in, h_prev, c_prev, layer=layer)
+            h_outs.append(h_next)
+            c_outs.append(c_next)
+
+            x_in = h_next
+            # Match nn.LSTM behavior: dropout between layers (not on last layer).
+            if layer < L - 1 and p_drop > 0.0:
+                x_in = torch.nn.functional.dropout(x_in, p=p_drop, training=self.training)
+
+        h_new = torch.stack(h_outs, dim=0)
+        c_new = torch.stack(c_outs, dim=0)
+
+        y_t = self.proj(x_in)
+        return y_t, (h_new, c_new)
 
 
 def make_lstm_block(

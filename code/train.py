@@ -10,7 +10,7 @@ Key features:
 - Activation checkpointing per layer (via ModularLlama.grad_checkpoint).
 - Checkpointing/resume with RNG state.
 
-This is a template: it does not implement alternative sequence blocks yet.
+This script can train `ModularLlama` with any registered sequence block via `--block`.
 """
 
 import argparse
@@ -36,6 +36,14 @@ ModelSize = Literal["s", "m", "l"]
 DeviceChoice = Literal["auto", "cpu", "mps", "cuda"]
 PrecisionChoice = Literal["auto", "fp32", "bf16", "fp16"]
 DataSource = Literal["random", "hf_buffer", "pt_buffer"]
+
+_SIZE_TARGET_PARAMS: dict[ModelSize, int] = {
+    # Target TOTAL parameter counts (roughly, depends on vocab size).
+    # These are intended to be "Llama-like" scale buckets for fair comparisons across sequence blocks.
+    "s": 100_000_000,
+    "m": 500_000_000,
+    "l": 1_000_000_000,
+}
 
 
 def _now_tag() -> str:
@@ -120,17 +128,139 @@ def _param_breakdown(model: ModularLlama) -> dict[str, Any]:
     }
 
 
-def _model_hparams_from_size(model_size: ModelSize) -> tuple[int, int]:
+def _preset_dim_from_size(model_size: ModelSize) -> int:
     """
-    Returns (dim, n_layers). Tunable; these are sane laptop-friendly defaults.
+    Width presets chosen to be Tensor Core friendly (multiples of 128) and to land near:
+    - s: ~100M params
+    - m: ~500M params
+    - l: ~1B params
+
+    Note: exact totals depend on vocab size and block choice; we solve n_layers later.
     """
     if model_size == "s":
-        return 768, 12
+        return 512
     if model_size == "m":
-        return 1024, 24
+        return 1024
     if model_size == "l":
-        return 1536, 24
+        return 1536
     raise ValueError(f"Unknown model_size: {model_size}")
+
+
+def _default_block_kwargs_for_size(*, block: str, size: ModelSize, dim: int) -> dict[str, Any]:
+    """
+    Reasonable GPU/VRAM-friendly defaults per block type when user doesn't specify --block-kwargs.
+    These are *not* meant to be exhaustive; users can always override via JSON.
+    """
+    _ = size
+    _ = dim
+    if block == "attention":
+        # Prefer standard head_dim=64 (good Flash/SDPA behavior) and let the block auto-pick attn_dim
+        # to match VecTur's per-layer parameter count at this dim.
+        return {"head_dim": 64, "bias": False, "attn_dropout": 0.0, "proj_dropout": 0.0}
+    if block == "lstm":
+        # Keep the block-internal stack small; the macro already provides depth.
+        return {"num_layers": 1, "dropout": 0.0, "bias": True, "proj_to_dim": True}
+    if block == "moneta":
+        # Chunk inner loop to keep activation memory bounded for long sequences.
+        # Defaults already do this, but we make it explicit here.
+        return {"chunk_size": 256, "tbptt_horizon_chunks": 4, "grad_checkpoint_inner": True}
+    if block == "ntm":
+        # NTM memory width/slots are the main VRAM/compute levers; keep them modest and enable
+        # chunk+checkpoint for long sequences.
+        # (mem_width defaults to min(dim, 128) in the block if omitted.)
+        return {
+            "mem_slots": 128,
+            "n_read_heads": 1,
+            "n_write_heads": 1,
+            "shift_range": 1,
+            "learned_init_memory": True,
+            "chunk_size": 128,
+            "grad_checkpoint_inner": True,
+            "tbptt_horizon_chunks": 4,
+        }
+    if block == "vectur" or block == "vecstur":
+        # Keep paper-default block hyperparams. (t_max affects compute, not params.)
+        return {"k": 8, "t_max": 4, "expansion": 4}
+    if block.startswith("identity"):
+        return {}
+    # Fallback for unknown/experimental blocks.
+    return {}
+
+
+def _estimate_total_params(
+    *,
+    vocab_size: int,
+    dim: int,
+    n_layers: int,
+    hidden_dim: int,
+    block_params_per_layer: int,
+) -> int:
+    """
+    Estimate total parameters without instantiating the full model.
+
+    We do instantiate ONE sequence block to get exact block param count at this dim (block-dependent),
+    but avoid building a huge full model just to size it.
+    """
+    d = int(dim)
+    v = int(vocab_size)
+    L = int(n_layers)
+    hd = int(hidden_dim)
+
+    # Embeddings + output head (both are weight-only matrices in llama_macro.py).
+    emb_out = 2 * v * d
+    # Final norm weight.
+    final_norm = d
+    # Per-layer norms: RMSNorm weights (attention_norm + ffn_norm).
+    norms_per_layer = 2 * d
+    # Per-layer SwiGLU MLP params: w13 (D -> 2H) + w2 (H -> D) == 3*D*H
+    mlp_per_layer = 3 * d * hd
+
+    return int(emb_out + final_norm + L * (norms_per_layer + mlp_per_layer + int(block_params_per_layer)))
+
+
+def _solve_n_layers_for_target(
+    *,
+    target_params: int,
+    vocab_size: int,
+    dim: int,
+    hidden_dim: int,
+    block: str,
+    block_kwargs: dict[str, Any],
+    min_layers: int = 1,
+    max_layers: int = 256,
+) -> int:
+    """
+    Pick n_layers so total params are close to the target for this block.
+    """
+    d = int(dim)
+    v = int(vocab_size)
+    hd = int(hidden_dim)
+    target = int(target_params)
+
+    # Base (non-layer) params:
+    base = int(2 * v * d + d)
+
+    blk = get_block_factory(block, kwargs=block_kwargs)(d)
+    block_per_layer = int(_count_params(blk, trainable_only=False))
+    per_layer = int(2 * d + 3 * d * hd + block_per_layer)
+
+    if per_layer <= 0:
+        return int(min_layers)
+
+    # Initial guess, then clamp.
+    L0 = int(round((target - base) / float(per_layer)))
+    L0 = int(max(min_layers, min(max_layers, L0)))
+
+    # Check a small neighborhood to compensate for rounding.
+    best_L = L0
+    best_err = float("inf")
+    for L in range(max(min_layers, L0 - 4), min(max_layers, L0 + 4) + 1):
+        total = _estimate_total_params(vocab_size=vocab_size, dim=d, n_layers=L, hidden_dim=hd, block_params_per_layer=block_per_layer)
+        err = abs(total - target)
+        if err < best_err:
+            best_err = err
+            best_L = L
+    return int(best_L)
 
 
 def _resolve_precision(device: torch.device, precision: PrecisionChoice) -> tuple[torch.dtype, bool]:
@@ -176,7 +306,7 @@ class TrainConfig:
 
     # Sequence
     seq_len: int = 1024
-    max_seq_len: int = 2048
+    max_seq_len: int = 4096
 
     # Data
     data_source: DataSource = "pt_buffer"
@@ -432,7 +562,7 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--dim", type=int, default=None, help="Override dim for custom model.")
     p.add_argument("--n-layers", type=int, default=None, help="Override n_layers for custom model.")
     p.add_argument("--hidden-dim", type=int, default=None)
-    p.add_argument("--max-seq-len", type=int, default=2048)
+    p.add_argument("--max-seq-len", type=int, default=4096)
     p.add_argument(
         "--block",
         type=str,
@@ -496,9 +626,10 @@ def _parse_args() -> argparse.Namespace:
 def main() -> None:
     args = _parse_args()
 
-    base_dim, base_layers = _model_hparams_from_size(args.model_size)
-    dim = int(args.dim) if args.dim is not None else base_dim
-    n_layers = int(args.n_layers) if args.n_layers is not None else base_layers
+    base_dim = _preset_dim_from_size(args.model_size)
+    dim = int(args.dim) if args.dim is not None else int(base_dim)
+    # n_layers is finalized later (after we know vocab_size and have finalized block_kwargs).
+    n_layers = int(args.n_layers) if args.n_layers is not None else 1
 
     cfg = TrainConfig(
         run_name=args.run_name,
@@ -599,6 +730,29 @@ def main() -> None:
 
     eff_mb = int(cfg.dry_run_microbatch_size if cfg.dry_run else cfg.microbatch_size)
     eff_global_bs = int(eff_mb * cfg.grad_accum_steps)
+
+    # Finalize model dims/depth now that vocab_size is known.
+    merged_block_kwargs = _default_block_kwargs_for_size(block=cfg.block, size=cfg.model_size, dim=cfg.dim)
+    if cfg.block_kwargs:
+        merged_block_kwargs.update(cfg.block_kwargs)
+    object.__setattr__(cfg, "block_kwargs", merged_block_kwargs)  # type: ignore[misc]
+
+    if args.hidden_dim is None:
+        object.__setattr__(cfg, "hidden_dim", int(4 * cfg.dim))  # type: ignore[misc]
+
+    if args.n_layers is None:
+        target = int(_SIZE_TARGET_PARAMS[cfg.model_size])
+        solved_layers = _solve_n_layers_for_target(
+            target_params=target,
+            vocab_size=vocab_size,
+            dim=cfg.dim,
+            hidden_dim=int(cfg.hidden_dim or 4 * cfg.dim),
+            block=cfg.block,
+            block_kwargs=cfg.block_kwargs or {},
+            min_layers=1,
+            max_layers=256,
+        )
+        object.__setattr__(cfg, "n_layers", int(solved_layers))  # type: ignore[misc]
 
     model = ModularLlama(
         vocab_size=vocab_size,

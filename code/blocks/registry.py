@@ -109,6 +109,9 @@ _REGISTRY: Dict[str, tuple[BlockSpec, Callable[[Mapping[str, Any]], BlockFactory
                 shift_range=int(kwargs.get("shift_range", 1)),
                 bias=bool(kwargs.get("bias", True)),
                 learned_init_memory=bool(kwargs.get("learned_init_memory", True)),
+                chunk_size=(int(kwargs["chunk_size"]) if "chunk_size" in kwargs else None),
+                grad_checkpoint_inner=bool(kwargs.get("grad_checkpoint_inner", False)),
+                tbptt_horizon_chunks=int(kwargs.get("tbptt_horizon_chunks", 0)),
             )
         ),
     ),

@@ -40,6 +40,13 @@ class NTMConfig:
     bias: bool = True
     # If True, include a learnable initial memory (N,W). If False, start from zeros.
     learned_init_memory: bool = True
+    # VRAM controls for training:
+    # - chunk_size: if set, process time loop in chunks (enables checkpointing + TBPTT)
+    # - grad_checkpoint_inner: checkpoint each chunk to reduce activation memory (recompute on backward)
+    # - tbptt_horizon_chunks: detach the recurrent state every H chunks (truncated BPTT)
+    chunk_size: int | None = None
+    grad_checkpoint_inner: bool = False
+    tbptt_horizon_chunks: int = 0
 
 
 def _count_params(m: nn.Module) -> int:
@@ -180,7 +187,7 @@ def _circular_convolution(w: torch.Tensor, s: torch.Tensor, shift_range: int) ->
     out = w.new_zeros((b, h, n))
     # Small S (default 3) => loop is cheap; avoids FFT overhead.
     for i, shift in enumerate(range(-r, r + 1)):
-        out = out + s[:, :, i].unsqueeze(-1) * torch.roll(w, shifts=shift, dims=-1)
+        out.add_(s[:, :, i].unsqueeze(-1) * torch.roll(w, shifts=shift, dims=-1))
     return out
 
 
@@ -199,12 +206,14 @@ def _address(
     """
     NTM addressing pipeline producing weights w_t: (B,H,N).
     """
-    # Content addressing (cosine similarity)
-    k_norm = F.normalize(k, dim=-1, eps=eps)
-    M_norm = F.normalize(M, dim=-1, eps=eps)
-    # (B,H,N) = (B,H,W) x (B,N,W)
-    sim = torch.einsum("bhw,bnw->bhn", k_norm, M_norm)
-    wc = torch.softmax(beta.clamp(min=0.0) * sim, dim=-1)
+    # Content addressing (cosine similarity), implemented without normalizing the full memory tensor.
+    # This avoids allocating a (B,N,W) normalized copy of M every timestep (major VRAM/compute win).
+    # sim = (k · M) / (||k|| * ||M||)
+    dot = torch.einsum("bhw,bnw->bhn", k, M)  # (B,H,N)
+    inv_k = torch.rsqrt((k * k).sum(dim=-1, keepdim=True) + eps)  # (B,H,1)
+    inv_M = torch.rsqrt((M * M).sum(dim=-1, keepdim=True) + eps).squeeze(-1).unsqueeze(1)  # (B,1,N)
+    sim = dot * inv_k * inv_M
+    wc = torch.softmax(beta * sim, dim=-1)
 
     # Interpolation
     w = g * wc + (1.0 - g) * w_prev
@@ -268,6 +277,11 @@ class NTMBlock(nn.Module):
         self.n_write_heads = wh
         self.shift_range = sr
         self.shift_size = S
+        self.chunk_size = (int(cfg.chunk_size) if cfg.chunk_size is not None else None)
+        if self.chunk_size is not None and self.chunk_size <= 0:
+            raise ValueError(f"chunk_size must be > 0 when provided, got {self.chunk_size}")
+        self.grad_checkpoint_inner = bool(cfg.grad_checkpoint_inner)
+        self.tbptt_horizon_chunks = int(cfg.tbptt_horizon_chunks)
 
         # Controller: LSTMCell (classic NTM uses an LSTM controller)
         self.controller = nn.LSTMCell(input_size=d, hidden_size=h, bias=True)
@@ -383,6 +397,28 @@ class NTMBlock(nn.Module):
         y_t = self.out(torch.cat([h_t, r_t.reshape(b, -1)], dim=-1))
         return y_t, (h_t, c_t, M, w_r, w_w)
 
+    def _run_chunk(
+        self,
+        x: torch.Tensor,  # (B,C,D)
+        h_t: torch.Tensor,
+        c_t: torch.Tensor,
+        M: torch.Tensor,
+        w_r: torch.Tensor,
+        w_w: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        """
+        Run a time chunk and return (y, new_state...).
+        Designed to be checkpointed for VRAM savings.
+        """
+        b, c, d = x.shape
+        y = x.new_empty((b, c, d))
+        state = (h_t, c_t, M, w_r, w_w)
+        for t in range(c):
+            y_t, state = self._step(x[:, t], state)
+            y[:, t] = y_t
+        h_t, c_t, M, w_r, w_w = state
+        return y, h_t, c_t, M, w_r, w_w
+
     def forward_step(
         self,
         x_t: torch.Tensor,  # (B,D)
@@ -402,6 +438,42 @@ class NTMBlock(nn.Module):
 
         state = self.init_state(batch_size=b, device=x.device, dtype=x.dtype)
         y = x.new_empty((b, t, d))
+
+        # Optional VRAM-saving path: chunk + (optional) checkpoint + TBPTT.
+        if self.chunk_size is not None and t > 0:
+            from torch.utils.checkpoint import checkpoint
+
+            do_ckpt = self.grad_checkpoint_inner and self.training and torch.is_grad_enabled()
+            chunk_idx = 0
+            for start in range(0, t, self.chunk_size):
+                end = min(t, start + self.chunk_size)
+                x_c = x[:, start:end]
+
+                h_t, c_t, M, w_r, w_w = state
+                if do_ckpt:
+                    y_c, h_t, c_t, M, w_r, w_w = checkpoint(
+                        lambda _x, _h, _c, _M, _wr, _ww: self._run_chunk(_x, _h, _c, _M, _wr, _ww),
+                        x_c,
+                        h_t,
+                        c_t,
+                        M,
+                        w_r,
+                        w_w,
+                        use_reentrant=False,
+                    )
+                else:
+                    y_c, h_t, c_t, M, w_r, w_w = self._run_chunk(x_c, h_t, c_t, M, w_r, w_w)
+
+                y[:, start:end] = y_c
+                state = (h_t, c_t, M, w_r, w_w)
+
+                chunk_idx += 1
+                if self.tbptt_horizon_chunks > 0 and (chunk_idx % self.tbptt_horizon_chunks == 0) and end < t:
+                    h_t, c_t, M, w_r, w_w = state
+                    state = (h_t.detach(), c_t.detach(), M.detach(), w_r.detach(), w_w.detach())
+            return y
+
+        # Default path: simple time loop.
         for i in range(t):
             y_i, state = self._step(x[:, i], state)
             y[:, i] = y_i
@@ -419,6 +491,9 @@ def make_ntm_block(
     shift_range: int = 1,
     bias: bool = True,
     learned_init_memory: bool = True,
+    chunk_size: int | None = None,
+    grad_checkpoint_inner: bool = False,
+    tbptt_horizon_chunks: int = 0,
 ) -> NTMBlock:
     return NTMBlock(
         NTMConfig(
@@ -431,6 +506,9 @@ def make_ntm_block(
             shift_range=int(shift_range),
             bias=bool(bias),
             learned_init_memory=bool(learned_init_memory),
+            chunk_size=(int(chunk_size) if chunk_size is not None else None),
+            grad_checkpoint_inner=bool(grad_checkpoint_inner),
+            tbptt_horizon_chunks=int(tbptt_horizon_chunks),
         )
     )
 
