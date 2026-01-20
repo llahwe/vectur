@@ -1,0 +1,3946 @@
+{
+  "nodes": {
+    "dry_run_eval::arc_challenge_test::attention::attention_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902348,
+      "depends_on": [
+        "train::attention::fineweb::m"
+      ],
+      "id": "dry_run_eval::arc_challenge_test::attention::attention_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902348
+    },
+    "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902385,
+      "depends_on": [
+        "train::lstm::fineweb::m"
+      ],
+      "id": "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902385
+    },
+    "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902436,
+      "depends_on": [
+        "train::ntm::fineweb::m"
+      ],
+      "id": "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902436
+    },
+    "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902501,
+      "depends_on": [
+        "train::vecstur::fineweb::m"
+      ],
+      "id": "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902501
+    },
+    "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902467,
+      "depends_on": [
+        "train::vectur::fineweb::m"
+      ],
+      "id": "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902467
+    },
+    "dry_run_eval::clrs_text_test::attention::attention_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902357,
+      "depends_on": [
+        "train::attention::clrs::m"
+      ],
+      "id": "dry_run_eval::clrs_text_test::attention::attention_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902357
+    },
+    "dry_run_eval::clrs_text_test::lstm::lstm_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902393,
+      "depends_on": [
+        "train::lstm::clrs::m"
+      ],
+      "id": "dry_run_eval::clrs_text_test::lstm::lstm_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902393
+    },
+    "dry_run_eval::clrs_text_test::ntm::ntm_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902443,
+      "depends_on": [
+        "train::ntm::clrs::m"
+      ],
+      "id": "dry_run_eval::clrs_text_test::ntm::ntm_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902443
+    },
+    "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902507,
+      "depends_on": [
+        "train::vecstur::clrs::m"
+      ],
+      "id": "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902508
+    },
+    "dry_run_eval::clrs_text_test::vectur::vectur_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902476,
+      "depends_on": [
+        "train::vectur::clrs::m"
+      ],
+      "id": "dry_run_eval::clrs_text_test::vectur::vectur_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902476
+    },
+    "dry_run_eval::compgen_test::attention::attention_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9023612,
+      "depends_on": [
+        "train::attention::compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test::attention::attention_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_compgen_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023612
+    },
+    "dry_run_eval::compgen_test::lstm::lstm_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902397,
+      "depends_on": [
+        "train::lstm::compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test::lstm::lstm_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_compgen_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902397
+    },
+    "dry_run_eval::compgen_test::ntm::ntm_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902446,
+      "depends_on": [
+        "train::ntm::compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test::ntm::ntm_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_compgen_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902446
+    },
+    "dry_run_eval::compgen_test::vecstur::vecstur_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9025102,
+      "depends_on": [
+        "train::vecstur::compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test::vecstur::vecstur_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_compgen_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9025102
+    },
+    "dry_run_eval::compgen_test::vectur::vectur_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902478,
+      "depends_on": [
+        "train::vectur::compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test::vectur::vectur_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_compgen_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024792
+    },
+    "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902366,
+      "depends_on": [
+        "finetune::attention::clrs_to_compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902366
+    },
+    "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024022,
+      "depends_on": [
+        "finetune::lstm::clrs_to_compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024022
+    },
+    "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902451,
+      "depends_on": [
+        "finetune::ntm::clrs_to_compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902452
+    },
+    "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902515,
+      "depends_on": [
+        "finetune::vecstur::clrs_to_compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902515
+    },
+    "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902483,
+      "depends_on": [
+        "finetune::vectur::clrs_to_compgen::m"
+      ],
+      "id": "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902483
+    },
+    "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9023628,
+      "depends_on": [
+        "train::attention::clrs::m"
+      ],
+      "id": "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023628
+    },
+    "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902399,
+      "depends_on": [
+        "train::lstm::clrs::m"
+      ],
+      "id": "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024
+    },
+    "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902449,
+      "depends_on": [
+        "train::ntm::clrs::m"
+      ],
+      "id": "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902449
+    },
+    "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902512,
+      "depends_on": [
+        "train::vecstur::clrs::m"
+      ],
+      "id": "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902512
+    },
+    "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024808,
+      "depends_on": [
+        "train::vectur::clrs::m"
+      ],
+      "id": "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024808
+    },
+    "dry_run_eval::gsm8k_test::attention::attention_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902345,
+      "depends_on": [
+        "train::attention::fineweb::m"
+      ],
+      "id": "dry_run_eval::gsm8k_test::attention::attention_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902345
+    },
+    "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9023821,
+      "depends_on": [
+        "train::lstm::fineweb::m"
+      ],
+      "id": "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902383
+    },
+    "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902434,
+      "depends_on": [
+        "train::ntm::fineweb::m"
+      ],
+      "id": "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902434
+    },
+    "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902498,
+      "depends_on": [
+        "train::vecstur::fineweb::m"
+      ],
+      "id": "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902499
+    },
+    "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902465,
+      "depends_on": [
+        "train::vectur::fineweb::m"
+      ],
+      "id": "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902465
+    },
+    "dry_run_eval::hellaswag_val::attention::attention_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9023511,
+      "depends_on": [
+        "train::attention::fineweb::m"
+      ],
+      "id": "dry_run_eval::hellaswag_val::attention::attention_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023511
+    },
+    "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902387,
+      "depends_on": [
+        "train::lstm::fineweb::m"
+      ],
+      "id": "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902387
+    },
+    "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024389,
+      "depends_on": [
+        "train::ntm::fineweb::m"
+      ],
+      "id": "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024389
+    },
+    "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902503,
+      "depends_on": [
+        "train::vecstur::fineweb::m"
+      ],
+      "id": "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902503
+    },
+    "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024692,
+      "depends_on": [
+        "train::vectur::fineweb::m"
+      ],
+      "id": "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024692
+    },
+    "dry_run_eval::wikitext103_test::attention::attention_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902354,
+      "depends_on": [
+        "train::attention::fineweb::m"
+      ],
+      "id": "dry_run_eval::wikitext103_test::attention::attention_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902354
+    },
+    "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.90239,
+      "depends_on": [
+        "train::lstm::fineweb::m"
+      ],
+      "id": "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.90239
+    },
+    "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902441,
+      "depends_on": [
+        "train::ntm::fineweb::m"
+      ],
+      "id": "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902441
+    },
+    "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902505,
+      "depends_on": [
+        "train::vecstur::fineweb::m"
+      ],
+      "id": "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902505
+    },
+    "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902472,
+      "depends_on": [
+        "train::vectur::fineweb::m"
+      ],
+      "id": "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "eval": {
+            "batch_size": 2,
+            "max_batches": 2,
+            "seq_len": 256
+          },
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902472
+    },
+    "dry_run_finetune::attention::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.9023411,
+      "depends_on": [
+        "train::attention::clrs::m"
+      ],
+      "id": "dry_run_finetune::attention::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "attention",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "dry_run": true,
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "attention_clrs_to_compgenft_m__dryrun",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "attention_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023411
+    },
+    "dry_run_finetune::lstm::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.902379,
+      "depends_on": [
+        "train::lstm::clrs::m"
+      ],
+      "id": "dry_run_finetune::lstm::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "lstm",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "dry_run": true,
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "lstm_clrs_to_compgenft_m__dryrun",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "lstm_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902379
+    },
+    "dry_run_finetune::ntm::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.90243,
+      "depends_on": [
+        "train::ntm::clrs::m"
+      ],
+      "id": "dry_run_finetune::ntm::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "ntm",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "dry_run": true,
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "ntm_clrs_to_compgenft_m__dryrun",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "ntm_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902431
+    },
+    "dry_run_finetune::vecstur::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.902495,
+      "depends_on": [
+        "train::vecstur::clrs::m"
+      ],
+      "id": "dry_run_finetune::vecstur::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "vecstur",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "dry_run": true,
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "vecstur_clrs_to_compgenft_m__dryrun",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "vecstur_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902495
+    },
+    "dry_run_finetune::vectur::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.902462,
+      "depends_on": [
+        "train::vectur::clrs::m"
+      ],
+      "id": "dry_run_finetune::vectur::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "vectur",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "dry_run": true,
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "vectur_clrs_to_compgenft_m__dryrun",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "vectur_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902462
+    },
+    "dry_run_train::attention::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902335,
+      "depends_on": [],
+      "id": "dry_run_train::attention::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "attention",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "attention_clrs_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902335
+    },
+    "dry_run_train::attention::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902337,
+      "depends_on": [],
+      "id": "dry_run_train::attention::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "attention",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "attention_compgen_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902337
+    },
+    "dry_run_train::attention::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.9023292,
+      "depends_on": [],
+      "id": "dry_run_train::attention::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "attention",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "attention_fineweb_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023302
+    },
+    "dry_run_train::lstm::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.9023721,
+      "depends_on": [],
+      "id": "dry_run_train::lstm::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "lstm",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "lstm_clrs_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023721
+    },
+    "dry_run_train::lstm::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902375,
+      "depends_on": [],
+      "id": "dry_run_train::lstm::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "lstm",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "lstm_compgen_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902375
+    },
+    "dry_run_train::lstm::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902369,
+      "depends_on": [],
+      "id": "dry_run_train::lstm::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "lstm",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "lstm_fineweb_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902369
+    },
+    "dry_run_train::ntm::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902407,
+      "depends_on": [],
+      "id": "dry_run_train::ntm::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "ntm",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "ntm_clrs_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902407
+    },
+    "dry_run_train::ntm::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902426,
+      "depends_on": [],
+      "id": "dry_run_train::ntm::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "ntm",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "ntm_compgen_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902426
+    },
+    "dry_run_train::ntm::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902405,
+      "depends_on": [],
+      "id": "dry_run_train::ntm::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "ntm",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "ntm_fineweb_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902405
+    },
+    "dry_run_train::vecstur::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902488,
+      "depends_on": [],
+      "id": "dry_run_train::vecstur::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vecstur",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vecstur_clrs_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902488
+    },
+    "dry_run_train::vecstur::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.9024901,
+      "depends_on": [],
+      "id": "dry_run_train::vecstur::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vecstur",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vecstur_compgen_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024901
+    },
+    "dry_run_train::vecstur::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902486,
+      "depends_on": [],
+      "id": "dry_run_train::vecstur::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vecstur",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vecstur_fineweb_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902486
+    },
+    "dry_run_train::vectur::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902456,
+      "depends_on": [],
+      "id": "dry_run_train::vectur::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vectur",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vectur_clrs_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902456
+    },
+    "dry_run_train::vectur::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902459,
+      "depends_on": [],
+      "id": "dry_run_train::vectur::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vectur",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vectur_compgen_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902459
+    },
+    "dry_run_train::vectur::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902454,
+      "depends_on": [],
+      "id": "dry_run_train::vectur::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vectur",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "dry_run": true,
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vectur_fineweb_m__dryrun",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902454
+    },
+    "eval::arc_challenge_test::attention::attention_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902349,
+      "depends_on": [
+        "dry_run_eval::arc_challenge_test::attention::attention_fineweb_m"
+      ],
+      "id": "eval::arc_challenge_test::attention::attention_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902349
+    },
+    "eval::arc_challenge_test::lstm::lstm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902386,
+      "depends_on": [
+        "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_m"
+      ],
+      "id": "eval::arc_challenge_test::lstm::lstm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902386
+    },
+    "eval::arc_challenge_test::ntm::ntm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024372,
+      "depends_on": [
+        "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_m"
+      ],
+      "id": "eval::arc_challenge_test::ntm::ntm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024372
+    },
+    "eval::arc_challenge_test::vecstur::vecstur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9025018,
+      "depends_on": [
+        "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_m"
+      ],
+      "id": "eval::arc_challenge_test::vecstur::vecstur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9025018
+    },
+    "eval::arc_challenge_test::vectur::vectur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024682,
+      "depends_on": [
+        "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_m"
+      ],
+      "id": "eval::arc_challenge_test::vectur::vectur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "ARC-Challenge",
+              "dataset_name": "allenai/ai2_arc",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nChoices: {choices}\nA: {answerKey}\n",
+              "kind": "ppl",
+              "name": "arc_challenge_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024682
+    },
+    "eval::clrs_text_test::attention::attention_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902358,
+      "depends_on": [
+        "dry_run_eval::clrs_text_test::attention::attention_clrs_m"
+      ],
+      "id": "eval::clrs_text_test::attention::attention_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902358
+    },
+    "eval::clrs_text_test::lstm::lstm_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902394,
+      "depends_on": [
+        "dry_run_eval::clrs_text_test::lstm::lstm_clrs_m"
+      ],
+      "id": "eval::clrs_text_test::lstm::lstm_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902394
+    },
+    "eval::clrs_text_test::ntm::ntm_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024441,
+      "depends_on": [
+        "dry_run_eval::clrs_text_test::ntm::ntm_clrs_m"
+      ],
+      "id": "eval::clrs_text_test::ntm::ntm_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024441
+    },
+    "eval::clrs_text_test::vecstur::vecstur_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902508,
+      "depends_on": [
+        "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_m"
+      ],
+      "id": "eval::clrs_text_test::vecstur::vecstur_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902508
+    },
+    "eval::clrs_text_test::vectur::vectur_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902477,
+      "depends_on": [
+        "dry_run_eval::clrs_text_test::vectur::vectur_clrs_m"
+      ],
+      "id": "eval::clrs_text_test::vectur::vectur_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "tomg-group-umd/CLRS-Text-test",
+              "dataset_split": "test",
+              "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+              "kind": "ppl",
+              "name": "clrs_text_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902477
+    },
+    "eval::compgen_test::attention::attention_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902362,
+      "depends_on": [
+        "dry_run_eval::compgen_test::attention::attention_compgen_m"
+      ],
+      "id": "eval::compgen_test::attention::attention_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_compgen_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902362
+    },
+    "eval::compgen_test::lstm::lstm_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9023979,
+      "depends_on": [
+        "dry_run_eval::compgen_test::lstm::lstm_compgen_m"
+      ],
+      "id": "eval::compgen_test::lstm::lstm_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_compgen_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023979
+    },
+    "eval::compgen_test::ntm::ntm_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902446,
+      "depends_on": [
+        "dry_run_eval::compgen_test::ntm::ntm_compgen_m"
+      ],
+      "id": "eval::compgen_test::ntm::ntm_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_compgen_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024482
+    },
+    "eval::compgen_test::vecstur::vecstur_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9025111,
+      "depends_on": [
+        "dry_run_eval::compgen_test::vecstur::vecstur_compgen_m"
+      ],
+      "id": "eval::compgen_test::vecstur::vecstur_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_compgen_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9025111
+    },
+    "eval::compgen_test::vectur::vectur_compgen_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024792,
+      "depends_on": [
+        "dry_run_eval::compgen_test::vectur::vectur_compgen_m"
+      ],
+      "id": "eval::compgen_test::vectur::vectur_compgen_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_compgen_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024792
+    },
+    "eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9023669,
+      "depends_on": [
+        "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m"
+      ],
+      "id": "eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023669
+    },
+    "eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902403,
+      "depends_on": [
+        "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m"
+      ],
+      "id": "eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902403
+    },
+    "eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902452,
+      "depends_on": [
+        "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m"
+      ],
+      "id": "eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902452
+    },
+    "eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902515,
+      "depends_on": [
+        "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m"
+      ],
+      "id": "eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902515
+    },
+    "eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902484,
+      "depends_on": [
+        "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m"
+      ],
+      "id": "eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_finetuned",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902484
+    },
+    "eval::compgen_test_zero_shot::attention::attention_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902364,
+      "depends_on": [
+        "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_m"
+      ],
+      "id": "eval::compgen_test_zero_shot::attention::attention_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902364
+    },
+    "eval::compgen_test_zero_shot::lstm::lstm_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024,
+      "depends_on": [
+        "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_m"
+      ],
+      "id": "eval::compgen_test_zero_shot::lstm::lstm_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024
+    },
+    "eval::compgen_test_zero_shot::ntm::ntm_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024498,
+      "depends_on": [
+        "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_m"
+      ],
+      "id": "eval::compgen_test_zero_shot::ntm::ntm_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024498
+    },
+    "eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9025128,
+      "depends_on": [
+        "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m"
+      ],
+      "id": "eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9025128
+    },
+    "eval::compgen_test_zero_shot::vectur::vectur_clrs_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902482,
+      "depends_on": [
+        "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_m"
+      ],
+      "id": "eval::compgen_test_zero_shot::vectur::vectur_clrs_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_split": "test",
+              "dataset_text_template": "task={task}\n{x}\n{y}\n",
+              "kind": "ppl",
+              "name": "compgen_test_zero_shot",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902482
+    },
+    "eval::gsm8k_test::attention::attention_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902346,
+      "depends_on": [
+        "dry_run_eval::gsm8k_test::attention::attention_fineweb_m"
+      ],
+      "id": "eval::gsm8k_test::attention::attention_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902346
+    },
+    "eval::gsm8k_test::lstm::lstm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902383,
+      "depends_on": [
+        "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_m"
+      ],
+      "id": "eval::gsm8k_test::lstm::lstm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902383
+    },
+    "eval::gsm8k_test::ntm::ntm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902435,
+      "depends_on": [
+        "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_m"
+      ],
+      "id": "eval::gsm8k_test::ntm::ntm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902435
+    },
+    "eval::gsm8k_test::vecstur::vecstur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902499,
+      "depends_on": [
+        "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_m"
+      ],
+      "id": "eval::gsm8k_test::vecstur::vecstur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902499
+    },
+    "eval::gsm8k_test::vectur::vectur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902466,
+      "depends_on": [
+        "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_m"
+      ],
+      "id": "eval::gsm8k_test::vectur::vectur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "main",
+              "dataset_name": "openai/gsm8k",
+              "dataset_split": "test",
+              "dataset_text_field": "question",
+              "dataset_text_template": "Q: {question}\nA: {answer}\n",
+              "kind": "ppl",
+              "name": "gsm8k_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902466
+    },
+    "eval::hellaswag_val::attention::attention_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9023528,
+      "depends_on": [
+        "dry_run_eval::hellaswag_val::attention::attention_fineweb_m"
+      ],
+      "id": "eval::hellaswag_val::attention::attention_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023528
+    },
+    "eval::hellaswag_val::lstm::lstm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902389,
+      "depends_on": [
+        "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_m"
+      ],
+      "id": "eval::hellaswag_val::lstm::lstm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902389
+    },
+    "eval::hellaswag_val::ntm::ntm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024389,
+      "depends_on": [
+        "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_m"
+      ],
+      "id": "eval::hellaswag_val::ntm::ntm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024389
+    },
+    "eval::hellaswag_val::vecstur::vecstur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902504,
+      "depends_on": [
+        "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_m"
+      ],
+      "id": "eval::hellaswag_val::vecstur::vecstur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902504
+    },
+    "eval::hellaswag_val::vectur::vectur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9024699,
+      "depends_on": [
+        "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_m"
+      ],
+      "id": "eval::hellaswag_val::vectur::vectur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": null,
+              "dataset_name": "Rowan/hellaswag",
+              "dataset_split": "validation",
+              "dataset_text_field": "ctx",
+              "dataset_text_template": "{ctx}\n{endings}\nlabel={label}\n",
+              "kind": "ppl",
+              "name": "hellaswag_val",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024699
+    },
+    "eval::wikitext103_test::attention::attention_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902355,
+      "depends_on": [
+        "dry_run_eval::wikitext103_test::attention::attention_fineweb_m"
+      ],
+      "id": "eval::wikitext103_test::attention::attention_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902355
+    },
+    "eval::wikitext103_test::lstm::lstm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902391,
+      "depends_on": [
+        "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_m"
+      ],
+      "id": "eval::wikitext103_test::lstm::lstm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902391
+    },
+    "eval::wikitext103_test::ntm::ntm_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902441,
+      "depends_on": [
+        "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_m"
+      ],
+      "id": "eval::wikitext103_test::ntm::ntm_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902442
+    },
+    "eval::wikitext103_test::vecstur::vecstur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.9025059,
+      "depends_on": [
+        "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_m"
+      ],
+      "id": "eval::wikitext103_test::vecstur::vecstur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9025059
+    },
+    "eval::wikitext103_test::vectur::vectur_fineweb_m": {
+      "action": "eval",
+      "attempts": 0,
+      "created_utc": 1768948389.902473,
+      "depends_on": [
+        "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_m"
+      ],
+      "id": "eval::wikitext103_test::vectur::vectur_fineweb_m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "eval_config": {
+          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "tests": [
+            {
+              "data_source": "hf_buffer",
+              "dataset_config": "wikitext-103-v1",
+              "dataset_name": "Salesforce/wikitext",
+              "dataset_split": "test",
+              "dataset_text_field": "text",
+              "kind": "ppl",
+              "name": "wikitext103_test",
+              "tokenizer_name": "gpt2"
+            }
+          ]
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902473
+    },
+    "finetune::attention::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.9023418,
+      "depends_on": [
+        "dry_run_finetune::attention::clrs_to_compgen::m"
+      ],
+      "id": "finetune::attention::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "attention",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "attention_clrs_to_compgenft_m",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "attention_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023418
+    },
+    "finetune::lstm::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.902379,
+      "depends_on": [
+        "dry_run_finetune::lstm::clrs_to_compgen::m"
+      ],
+      "id": "finetune::lstm::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "lstm",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "lstm_clrs_to_compgenft_m",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "lstm_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902379
+    },
+    "finetune::ntm::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.902431,
+      "depends_on": [
+        "dry_run_finetune::ntm::clrs_to_compgen::m"
+      ],
+      "id": "finetune::ntm::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "ntm",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "ntm_clrs_to_compgenft_m",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "ntm_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902431
+    },
+    "finetune::vecstur::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.902496,
+      "depends_on": [
+        "dry_run_finetune::vecstur::clrs_to_compgen::m"
+      ],
+      "id": "finetune::vecstur::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "vecstur",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "vecstur_clrs_to_compgenft_m",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "vecstur_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902496
+    },
+    "finetune::vectur::clrs_to_compgen::m": {
+      "action": "finetune",
+      "attempts": 0,
+      "created_utc": 1768948389.902462,
+      "depends_on": [
+        "dry_run_finetune::vectur::clrs_to_compgen::m"
+      ],
+      "id": "finetune::vectur::clrs_to_compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "experiment_config": {
+          "finetune": "supervised",
+          "finetune_train": {
+            "block": "vectur",
+            "data_source": "hf_buffer",
+            "dataset_config": null,
+            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_split": "train",
+            "dataset_text_template": "task={task}\n{x}\n{y}\n",
+            "model_size": "m",
+            "n_layers": 0,
+            "run_name": "vectur_clrs_to_compgenft_m",
+            "runs_dir": "runs",
+            "tokenizer_name": "gpt2"
+          },
+          "resume_checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "train": {
+            "run_name": "vectur_clrs_m",
+            "runs_dir": "runs"
+          }
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902462
+    },
+    "train::attention::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902336,
+      "depends_on": [
+        "dry_run_train::attention::clrs::m"
+      ],
+      "id": "train::attention::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "attention",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "attention_clrs_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902336
+    },
+    "train::attention::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902338,
+      "depends_on": [
+        "dry_run_train::attention::compgen::m"
+      ],
+      "id": "train::attention::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "attention",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "attention_compgen_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902338
+    },
+    "train::attention::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.9023318,
+      "depends_on": [
+        "dry_run_train::attention::fineweb::m"
+      ],
+      "id": "train::attention::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "attention",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "attention_fineweb_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9023318
+    },
+    "train::lstm::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902373,
+      "depends_on": [
+        "dry_run_train::lstm::clrs::m"
+      ],
+      "id": "train::lstm::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "lstm",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "lstm_clrs_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902373
+    },
+    "train::lstm::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902376,
+      "depends_on": [
+        "dry_run_train::lstm::compgen::m"
+      ],
+      "id": "train::lstm::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "lstm",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "lstm_compgen_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902376
+    },
+    "train::lstm::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.90237,
+      "depends_on": [
+        "dry_run_train::lstm::fineweb::m"
+      ],
+      "id": "train::lstm::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "lstm",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "lstm_fineweb_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.90237
+    },
+    "train::ntm::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902408,
+      "depends_on": [
+        "dry_run_train::ntm::clrs::m"
+      ],
+      "id": "train::ntm::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "ntm",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "ntm_clrs_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902408
+    },
+    "train::ntm::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902427,
+      "depends_on": [
+        "dry_run_train::ntm::compgen::m"
+      ],
+      "id": "train::ntm::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "ntm",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "ntm_compgen_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902427
+    },
+    "train::ntm::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902405,
+      "depends_on": [
+        "dry_run_train::ntm::fineweb::m"
+      ],
+      "id": "train::ntm::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "ntm",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "ntm_fineweb_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902405
+    },
+    "train::vecstur::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.9024892,
+      "depends_on": [
+        "dry_run_train::vecstur::clrs::m"
+      ],
+      "id": "train::vecstur::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vecstur",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vecstur_clrs_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024892
+    },
+    "train::vecstur::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.9024909,
+      "depends_on": [
+        "dry_run_train::vecstur::compgen::m"
+      ],
+      "id": "train::vecstur::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vecstur",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vecstur_compgen_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.9024909
+    },
+    "train::vecstur::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902486,
+      "depends_on": [
+        "dry_run_train::vecstur::fineweb::m"
+      ],
+      "id": "train::vecstur::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vecstur",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vecstur_fineweb_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902486
+    },
+    "train::vectur::clrs::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902457,
+      "depends_on": [
+        "dry_run_train::vectur::clrs::m"
+      ],
+      "id": "train::vectur::clrs::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vectur",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "tomg-group-umd/CLRS-Text-train",
+          "dataset_split": "train",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vectur_clrs_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902457
+    },
+    "train::vectur::compgen::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902459,
+      "depends_on": [
+        "dry_run_train::vectur::compgen::m"
+      ],
+      "id": "train::vectur::compgen::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vectur",
+          "data_source": "hf_buffer",
+          "dataset_config": null,
+          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_split": "train",
+          "dataset_text_template": "task={task}\n{x}\n{y}\n",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vectur_compgen_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902459
+    },
+    "train::vectur::fineweb::m": {
+      "action": "train",
+      "attempts": 0,
+      "created_utc": 1768948389.902455,
+      "depends_on": [
+        "dry_run_train::vectur::fineweb::m"
+      ],
+      "id": "train::vectur::fineweb::m",
+      "last_error": null,
+      "last_exit_code": null,
+      "log_path": null,
+      "spec": {
+        "train_config": {
+          "block": "vectur",
+          "data_source": "hf_buffer",
+          "dataset_config": "sample-10BT",
+          "dataset_name": "HuggingFaceFW/fineweb-edu",
+          "dataset_split": "train",
+          "dataset_text_field": "text",
+          "model_size": "m",
+          "n_layers": 0,
+          "run_name": "vectur_fineweb_m",
+          "runs_dir": "runs",
+          "tokenizer_name": "gpt2"
+        }
+      },
+      "status": "not_started",
+      "updated_utc": 1768948389.902455
+    }
+  },
+  "updated_utc": 1768948389.902516,
+  "version": 2
+}

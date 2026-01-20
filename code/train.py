@@ -14,6 +14,7 @@ This script can train `ModularLlama` with any registered sequence block via `--b
 """
 
 import argparse
+import collections
 import dataclasses
 import datetime as dt
 import json
@@ -21,6 +22,7 @@ import os
 import random
 import re
 import subprocess
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -314,8 +316,10 @@ class TrainConfig:
     token_buffer_path: str = "token_buffer.pt"
     # hf_buffer: HuggingFace dataset tokenizer settings
     dataset_name: str = "HuggingFaceFW/fineweb-edu"
-    dataset_config: str = "sample-10BT"
+    dataset_config: str | None = "sample-10BT"
     dataset_split: str = "train"
+    dataset_text_field: str = "text"
+    dataset_text_template: str | None = None
     tokenizer_name: str = "gpt2"
     buffer_tokens: int = 2_000_000
 
@@ -376,14 +380,33 @@ def _build_or_load_token_buffer_hf(*, cfg: TrainConfig, run_dir: Path) -> tuple[
             )
         return flat, tokenizer
 
-    ds = load_dataset(cfg.dataset_name, cfg.dataset_config, split=cfg.dataset_split, streaming=True)
+    ds_name = str(cfg.dataset_name)
+    ds_config = cfg.dataset_config
+    if isinstance(ds_config, str) and ds_config.strip() == "":
+        ds_config = None
+    if ds_config is None:
+        ds = load_dataset(ds_name, split=cfg.dataset_split, streaming=True)
+    else:
+        ds = load_dataset(ds_name, str(ds_config), split=cfg.dataset_split, streaming=True)
     needed = int(cfg.buffer_tokens)
     pieces: list[torch.Tensor] = []
     total = 0
     started = time.time()
 
     for ex in ds:
-        text = ex.get("text")
+        if cfg.dataset_text_template:
+            # Best-effort formatting (missing fields become "").
+            try:
+                m: dict[str, Any] = collections.defaultdict(str)
+                # `ex` is a dict-like record from HF datasets streaming.
+                for k, v in ex.items():
+                    m[str(k)] = "" if v is None else v
+                text = str(cfg.dataset_text_template).format_map(m)
+            except Exception:
+                # Fall back to default text field if template fails.
+                text = ex.get(cfg.dataset_text_field)
+        else:
+            text = ex.get(cfg.dataset_text_field)
         if not text:
             continue
         ids = tokenizer(text, add_special_tokens=False, return_tensors="pt")["input_ids"][0]
@@ -405,6 +428,8 @@ def _build_or_load_token_buffer_hf(*, cfg: TrainConfig, run_dir: Path) -> tuple[
             "dataset_name": cfg.dataset_name,
             "dataset_config": cfg.dataset_config,
             "dataset_split": cfg.dataset_split,
+            "dataset_text_field": cfg.dataset_text_field,
+            "dataset_text_template": cfg.dataset_text_template,
             "tokenizer_name": cfg.tokenizer_name,
             "buffer_tokens": int(flat.numel()),
             "created_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -549,8 +574,74 @@ def _try_resume(
     return int(ckpt.get("step", 0))
 
 
+def _load_train_config_json(path: str) -> "TrainConfig":
+    """
+    Load a JSON config file into a TrainConfig.
+
+    JSON keys should match TrainConfig field names. Missing keys use defaults.
+    Optional metadata can be stored under "_meta" and is ignored.
+    """
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"--config not found: {p}")
+    raw = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        raise ValueError(f"--config must be a JSON object at top-level, got {type(raw)}")
+    raw.pop("_meta", None)
+
+    # Allow "experiment configs" that wrap the actual TrainConfig under {"train": {...}}.
+    if "train" in raw:
+        train_obj = raw["train"]
+        if not isinstance(train_obj, dict):
+            raise ValueError(f"--config['train'] must be a JSON object, got {type(train_obj)}")
+        raw = train_obj
+        raw.pop("_meta", None)
+
+    allowed = {f.name for f in dataclasses.fields(TrainConfig)}
+    unknown = sorted(k for k in raw.keys() if k not in allowed)
+    if unknown:
+        raise ValueError(f"--config has unknown keys: {unknown}. Allowed keys: {sorted(allowed)}")
+
+    # Convenience: allow block_kwargs to be either a dict or a JSON-encoded string.
+    if "block_kwargs" in raw and isinstance(raw["block_kwargs"], str):
+        raw["block_kwargs"] = json.loads(raw["block_kwargs"])
+
+    base = TrainConfig()
+    return dataclasses.replace(base, **raw)
+
+
 def _parse_args() -> argparse.Namespace:
+    # Mutual exclusivity:
+    # - Either use `--config <json>` OR use individual flags (but not both).
+    argv = list(sys.argv[1:])
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--config", type=str, default=None)
+    pre.add_argument("-h", "--help", action="store_true")
+    pre_ns, remaining = pre.parse_known_args(argv)
+
+    if pre_ns.help:
+        # Let the full parser print help.
+        pass
+    elif pre_ns.config is not None:
+        if len(remaining) != 0:
+            raise SystemExit(
+                "Error: `--config` cannot be combined with other flags.\n"
+                "Use either:\n"
+                "  - uv python3 train.py --config=path/to/config.json\n"
+                "or:\n"
+                "  - uv python3 train.py --block=... --model-size=... (etc)\n"
+            )
+        return argparse.Namespace(config=str(pre_ns.config))
+
     p = argparse.ArgumentParser(description="Train ModularLlama (macro architecture) with swappable blocks.")
+
+    # Config
+    p.add_argument(
+        "--config",
+        type=str,
+        default=None,
+        help="Path to a JSON config file. Cannot be combined with other flags (enforced before parsing).",
+    )
 
     # Run
     p.add_argument("--run-name", type=str, default=None)
@@ -586,6 +677,8 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--dataset-name", type=str, default="HuggingFaceFW/fineweb-edu")
     p.add_argument("--dataset-config", type=str, default="sample-10BT")
     p.add_argument("--dataset-split", type=str, default="train")
+    p.add_argument("--dataset-text-field", type=str, default="text")
+    p.add_argument("--dataset-text-template", type=str, default=None)
     p.add_argument("--tokenizer-name", type=str, default="gpt2")
     p.add_argument("--buffer-tokens", type=int, default=2_000_000)
 
@@ -620,64 +713,75 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--dry-run-microbatch-size", type=int, default=2)
     p.add_argument("--dry-run-vocab-size", type=int, default=50257)
 
-    return p.parse_args()
+    args = p.parse_args(argv)
+    args.config = None
+    return args
 
 
 def main() -> None:
     args = _parse_args()
 
-    base_dim = _preset_dim_from_size(args.model_size)
-    dim = int(args.dim) if args.dim is not None else int(base_dim)
-    # n_layers is finalized later (after we know vocab_size and have finalized block_kwargs).
-    n_layers = int(args.n_layers) if args.n_layers is not None else 1
+    if getattr(args, "config", None):
+        cfg = _load_train_config_json(str(args.config))
+    else:
+        base_dim = _preset_dim_from_size(args.model_size)
+        dim = int(args.dim) if args.dim is not None else int(base_dim)
+        # n_layers is finalized later (after we know vocab_size and have finalized block_kwargs).
+        n_layers = int(args.n_layers) if args.n_layers is not None else 0
 
-    cfg = TrainConfig(
-        run_name=args.run_name,
-        runs_dir=args.runs_dir,
-        seed=int(args.seed),
-        model_size=args.model_size,
-        dim=dim,
-        n_layers=n_layers,
-        hidden_dim=(int(args.hidden_dim) if args.hidden_dim is not None else None),
-        block=str(args.block),
-        block_kwargs=(json.loads(args.block_kwargs) if args.block_kwargs else None),
-        seq_len=int(args.seq_len),
-        max_seq_len=int(args.max_seq_len),
-        data_source=args.data_source,
-        token_buffer_path=args.token_buffer_path,
-        dataset_name=args.dataset_name,
-        dataset_config=args.dataset_config,
-        dataset_split=args.dataset_split,
-        tokenizer_name=args.tokenizer_name,
-        buffer_tokens=int(args.buffer_tokens),
-        microbatch_size=int(args.microbatch_size),
-        grad_accum_steps=int(args.grad_accum_steps),
-        global_batch_size=(int(args.global_batch_size) if args.global_batch_size is not None else None),
-        lr=float(args.lr),
-        weight_decay=float(args.weight_decay),
-        grad_clip_norm=float(args.grad_clip_norm),
-        device=args.device,
-        precision=args.precision,
-        compile=bool(args.compile),
-        grad_checkpoint=not bool(args.no_grad_checkpoint),
-        tf32=not bool(args.no_tf32),
-        max_steps=int(args.max_steps),
-        max_time_seconds=int(args.max_time_seconds),
-        log_every_steps=int(args.log_every_steps),
-        resume=args.resume,
-        ckpt_every_seconds=int(args.ckpt_every_seconds),
-        ckpt_keep_last=int(args.ckpt_keep_last),
-        ckpt_prune=not bool(args.no_ckpt_prune),
-        dry_run=bool(args.dry_run),
-        dry_run_steps=int(args.dry_run_steps),
-        dry_run_seq_len=int(args.dry_run_seq_len),
-        dry_run_microbatch_size=int(args.dry_run_microbatch_size),
-        dry_run_vocab_size=int(args.dry_run_vocab_size),
-    )
+        cfg = TrainConfig(
+            run_name=args.run_name,
+            runs_dir=args.runs_dir,
+            seed=int(args.seed),
+            model_size=args.model_size,
+            dim=dim,
+            n_layers=n_layers,
+            hidden_dim=(int(args.hidden_dim) if args.hidden_dim is not None else None),
+            block=str(args.block),
+            block_kwargs=(json.loads(args.block_kwargs) if args.block_kwargs else None),
+            seq_len=int(args.seq_len),
+            max_seq_len=int(args.max_seq_len),
+            data_source=args.data_source,
+            token_buffer_path=args.token_buffer_path,
+            dataset_name=args.dataset_name,
+            dataset_config=args.dataset_config,
+            dataset_split=args.dataset_split,
+        dataset_text_field=str(args.dataset_text_field),
+        dataset_text_template=(str(args.dataset_text_template) if args.dataset_text_template else None),
+            tokenizer_name=args.tokenizer_name,
+            buffer_tokens=int(args.buffer_tokens),
+            microbatch_size=int(args.microbatch_size),
+            grad_accum_steps=int(args.grad_accum_steps),
+            global_batch_size=(int(args.global_batch_size) if args.global_batch_size is not None else None),
+            lr=float(args.lr),
+            weight_decay=float(args.weight_decay),
+            grad_clip_norm=float(args.grad_clip_norm),
+            device=args.device,
+            precision=args.precision,
+            compile=bool(args.compile),
+            grad_checkpoint=not bool(args.no_grad_checkpoint),
+            tf32=not bool(args.no_tf32),
+            max_steps=int(args.max_steps),
+            max_time_seconds=int(args.max_time_seconds),
+            log_every_steps=int(args.log_every_steps),
+            resume=args.resume,
+            ckpt_every_seconds=int(args.ckpt_every_seconds),
+            ckpt_keep_last=int(args.ckpt_keep_last),
+            ckpt_prune=not bool(args.no_ckpt_prune),
+            dry_run=bool(args.dry_run),
+            dry_run_steps=int(args.dry_run_steps),
+            dry_run_seq_len=int(args.dry_run_seq_len),
+            dry_run_microbatch_size=int(args.dry_run_microbatch_size),
+            dry_run_vocab_size=int(args.dry_run_vocab_size),
+        )
 
     if cfg.max_seq_len < cfg.seq_len and not cfg.dry_run:
         raise ValueError(f"max_seq_len must be >= seq_len, got {cfg.max_seq_len} < {cfg.seq_len}")
 
+    main_with_cfg(cfg)
+
+
+def main_with_cfg(cfg: TrainConfig) -> None:
     device = _select_device(cfg.device)
     _seed_all(cfg.seed)
 
@@ -737,10 +841,10 @@ def main() -> None:
         merged_block_kwargs.update(cfg.block_kwargs)
     object.__setattr__(cfg, "block_kwargs", merged_block_kwargs)  # type: ignore[misc]
 
-    if args.hidden_dim is None:
+    if cfg.hidden_dim is None:
         object.__setattr__(cfg, "hidden_dim", int(4 * cfg.dim))  # type: ignore[misc]
 
-    if args.n_layers is None:
+    if int(cfg.n_layers) <= 0:
         target = int(_SIZE_TARGET_PARAMS[cfg.model_size])
         solved_layers = _solve_n_layers_for_target(
             target_params=target,

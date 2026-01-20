@@ -10,8 +10,11 @@ Features:
 """
 
 import argparse
+import collections
 import json
 import math
+import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, Optional
@@ -61,6 +64,99 @@ def _load_token_buffer_pt(path: str) -> torch.Tensor:
     return flat.to(dtype=torch.int32).contiguous()
 
 
+def _write_json(path: Path, obj: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _build_or_load_token_buffer_hf(
+    *,
+    dataset_name: str,
+    dataset_config: str | None,
+    dataset_split: str,
+    dataset_text_field: str = "text",
+    dataset_text_template: str | None = None,
+    tokenizer_name: str = "gpt2",
+    buffer_tokens: int = 500_000,
+    cache_dir: Path,
+) -> tuple[torch.Tensor, Any]:
+    """
+    Build a flat token buffer from an HF dataset (streaming) and cache it to disk.
+
+    Requires: `datasets`, `transformers`, and network access.
+    """
+    from datasets import load_dataset  # type: ignore
+    from transformers import AutoTokenizer  # type: ignore
+
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    buffer_path = cache_dir / "token_buffer.pt"
+    meta_path = cache_dir / "token_buffer_meta.json"
+
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+    tokenizer.model_max_length = 10**9
+    if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    if buffer_path.exists() and meta_path.exists():
+        flat = torch.load(buffer_path, map_location="cpu")
+        return flat, tokenizer
+
+    ds_cfg = dataset_config
+    if isinstance(ds_cfg, str) and ds_cfg.strip() == "":
+        ds_cfg = None
+    if ds_cfg is None:
+        ds = load_dataset(str(dataset_name), split=str(dataset_split), streaming=True)
+    else:
+        ds = load_dataset(str(dataset_name), str(ds_cfg), split=str(dataset_split), streaming=True)
+
+    needed = int(buffer_tokens)
+    pieces: list[torch.Tensor] = []
+    total = 0
+    started = time.time()
+
+    for ex in ds:
+        if dataset_text_template:
+            try:
+                m: dict[str, Any] = collections.defaultdict(str)
+                for k, v in ex.items():
+                    m[str(k)] = "" if v is None else v
+                text = str(dataset_text_template).format_map(m)
+            except Exception:
+                text = ex.get(dataset_text_field)
+        else:
+            text = ex.get(dataset_text_field)
+        if not text:
+            continue
+        ids = tokenizer(text, add_special_tokens=False, return_tensors="pt")["input_ids"][0]
+        if ids.numel() == 0:
+            continue
+        pieces.append(ids)
+        total += int(ids.numel())
+        if total >= needed:
+            break
+
+    if total <= 0:
+        raise RuntimeError("Could not collect any tokens from dataset.")
+
+    flat = torch.cat(pieces, dim=0)[:needed].to(dtype=torch.int32).contiguous()
+    torch.save(flat, buffer_path)
+    _write_json(
+        meta_path,
+        {
+            "dataset_name": dataset_name,
+            "dataset_config": dataset_config,
+            "dataset_split": dataset_split,
+            "dataset_text_field": dataset_text_field,
+            "dataset_text_template": dataset_text_template,
+            "tokenizer_name": tokenizer_name,
+            "buffer_tokens": int(flat.numel()),
+            "created_utc": time.time(),
+            "build_seconds": time.time() - started,
+        },
+    )
+    return flat, tokenizer
+
+
 def _iter_spans(flat: torch.Tensor, *, batch_size: int, seq_len: int, max_batches: int) -> torch.Tensor:
     """
     Deterministic slicing of spans from the beginning of the buffer.
@@ -84,7 +180,21 @@ def _load_checkpoint(path: str) -> dict[str, Any]:
 
 
 def _parse_args() -> argparse.Namespace:
+    argv = list(sys.argv[1:])
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--config", type=str, default=None)
+    pre.add_argument("-h", "--help", action="store_true")
+    pre_ns, remaining = pre.parse_known_args(argv)
+
+    if pre_ns.help:
+        pass
+    elif pre_ns.config is not None:
+        if len(remaining) != 0:
+            raise SystemExit("Error: `--config` cannot be combined with other flags.")
+        return argparse.Namespace(config=str(pre_ns.config))
+
     p = argparse.ArgumentParser(description="Evaluate ModularLlama on a token buffer.")
+    p.add_argument("--config", type=str, default=None, help="(Alternative) experiment config JSON. Cannot be combined with flags.")
     p.add_argument("--checkpoint", type=str, required=True, help="Path to a train.py checkpoint .pt")
     p.add_argument("--token-buffer-path", type=str, required=True, help="Path to a 1D token buffer tensor (.pt)")
     p.add_argument("--batch-size", type=int, default=4)
@@ -109,7 +219,18 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--generate", action="store_true", help="Run a small greedy generation sanity check.")
     p.add_argument("--gen-len", type=int, default=64)
     p.add_argument("--gen-start-token", type=int, default=1, help="Start token id for generation (placeholder).")
-    return p.parse_args()
+    args = p.parse_args(argv)
+    return args
+
+
+def _load_json(path: str) -> dict[str, Any]:
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(p)
+    obj = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(obj, dict):
+        raise ValueError("Config must be a JSON object.")
+    return obj
 
 
 @dataclass
@@ -177,6 +298,118 @@ def greedy_generate(
 
 def main() -> None:
     args = _parse_args()
+    if getattr(args, "config", None):
+        exp = _load_json(str(args.config))
+
+        # Determine checkpoint
+        ckpt_path = exp.get("checkpoint")
+        if ckpt_path is None:
+            # Default: evaluate the finetune run if finetune != none, else the pretrain run.
+            finetune = str(exp.get("finetune", "none"))
+            train_obj = exp.get("train") or {}
+            ft_obj = exp.get("finetune_train") or {}
+            if not isinstance(train_obj, dict) or not isinstance(ft_obj, dict):
+                raise ValueError("Config 'train' and 'finetune_train' must be objects when present.")
+            run_name = ft_obj.get("run_name") if finetune != "none" else train_obj.get("run_name")
+            runs_dir = ft_obj.get("runs_dir", train_obj.get("runs_dir", "runs"))
+            if not run_name:
+                raise ValueError("Config must specify train.run_name (and finetune_train.run_name if finetune != none) or checkpoint.")
+            ckpt_path = str(Path(str(runs_dir)) / str(run_name) / "checkpoints" / "latest.pt")
+
+        device = _select_device(str(exp.get("device", "auto")))
+        amp_dtype = _resolve_precision(device, str(exp.get("precision", "auto")))
+
+        ckpt = _load_checkpoint(str(ckpt_path))
+        cfg = ckpt.get("config", {})
+
+        # Build model from checkpoint config
+        dim = int(cfg.get("dim", 768))
+        n_layers = int(cfg.get("n_layers", 12))
+        max_seq_len = int(cfg.get("max_seq_len", 2048))
+        vocab_size = int(cfg.get("dry_run_vocab_size", 50257))
+        if "vocab_size" in cfg:
+            try:
+                vocab_size = int(cfg["vocab_size"])
+            except Exception:
+                pass
+        block_name = str(cfg.get("block", "identity"))
+        block_kwargs = cfg.get("block_kwargs") or {}
+
+        model = ModularLlama(
+            vocab_size=vocab_size,
+            n_layers=n_layers,
+            dim=dim,
+            max_seq_len=max_seq_len,
+            block_factory=get_block_factory(block_name, kwargs=block_kwargs),
+            grad_checkpoint=False,
+        )
+        model.load_state_dict(ckpt["model"])
+        model.to(device)
+
+        eval_cfg = exp.get("eval") or {}
+        if not isinstance(eval_cfg, dict):
+            raise ValueError("Config 'eval' must be an object.")
+        batch_size = int(eval_cfg.get("batch_size", 4))
+        seq_len = int(eval_cfg.get("seq_len", 1024))
+        max_batches = int(eval_cfg.get("max_batches", 100))
+
+        tests = exp.get("tests") or []
+        if not isinstance(tests, list) or len(tests) == 0:
+            raise ValueError("Config must include a non-empty 'tests' list.")
+
+        out: dict[str, Any] = {"checkpoint": str(ckpt_path), "results": []}
+        cache_root = Path("eval_cache") / Path(str(args.config)).stem
+
+        for t in tests:
+            if not isinstance(t, dict):
+                continue
+            name = str(t.get("name", "unnamed"))
+            kind = str(t.get("kind", "ppl"))
+            if kind in ("few_shot", "accuracy"):
+                out["results"].append({"name": name, "skipped": True, "reason": f"kind={kind} not supported by eval.py"})
+                continue
+
+            src = str(t.get("data_source", "hf_buffer"))
+            if src == "pt_buffer":
+                flat = _load_token_buffer_pt(str(t["token_buffer_path"]))
+            elif src == "hf_buffer":
+                flat, _tok = _build_or_load_token_buffer_hf(
+                    dataset_name=str(t["dataset_name"]),
+                    dataset_config=(t.get("dataset_config") if t.get("dataset_config", None) is not None else None),
+                    dataset_split=str(t.get("dataset_split", "test")),
+                    dataset_text_field=str(t.get("dataset_text_field", "text")),
+                    dataset_text_template=(str(t["dataset_text_template"]) if t.get("dataset_text_template") else None),
+                    tokenizer_name=str(t.get("tokenizer_name", "gpt2")),
+                    buffer_tokens=int(t.get("buffer_tokens", 500_000)),
+                    cache_dir=cache_root / name,
+                )
+            else:
+                raise ValueError(f"Unknown test data_source: {src}")
+
+            res = evaluate(
+                model=model,
+                flat=flat,
+                batch_size=batch_size,
+                seq_len=seq_len,
+                max_batches=max_batches,
+                device=device,
+                amp_dtype=amp_dtype,
+            )
+            out["results"].append(
+                {
+                    "name": name,
+                    "kind": kind,
+                    "data_source": src,
+                    "tokens": res.tokens,
+                    "mean_loss": res.mean_loss,
+                    "perplexity": res.perplexity,
+                }
+            )
+
+        print(json.dumps(out, indent=2))
+        return
+
+    # Flag mode (legacy)
     device = _select_device(args.device)
     amp_dtype = _resolve_precision(device, args.precision)
 

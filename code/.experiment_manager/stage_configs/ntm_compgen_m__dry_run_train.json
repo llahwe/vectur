@@ -1,0 +1,23 @@
+{
+  "train": {
+    "_meta": {
+      "block": "ntm",
+      "hf_dataset": "ethanhallphd/compgen-compgen_v1_m",
+      "note": "Protocol 2b: train on CompGen (HF streaming; held-out evaluation). (NTM stands in for NTM/DNC baseline.)",
+      "pretrain_set": "compgen",
+      "size": "m"
+    },
+    "block": "ntm",
+    "data_source": "hf_buffer",
+    "dataset_config": null,
+    "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+    "dataset_split": "train",
+    "dataset_text_template": "task={task}\\n{x}\\n{y}\\n",
+    "dry_run": true,
+    "max_steps": 0,
+    "max_time_seconds": 600,
+    "model_size": "m",
+    "n_layers": 0,
+    "run_name": "ntm_compgen_m_dryrun_train"
+  }
+}
