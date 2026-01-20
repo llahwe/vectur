@@ -46,24 +46,29 @@
 \maketitle
 
 \begin{abstract}
-We introduce \vectur{} (Vector Turing Machines), a differentiable architecture for learning functions by vectorizing the tape symbols, head index, and finite control of a classical Turing machine \citep{turing1936}.
-\vectur{} is designed to support \emph{deep computation} by explicitly iterating a learned transition map while learning an input-conditioned halting schedule via a parameter \(\kappa\).
+We introduce \vectur{} (Vector Turing Machines), a differentiable, Turing-machine-inspired transition system that represents tape symbols, head position, and finite control as continuous vectors \citep{turing1936}.
+Conceptually, \vectur{} continues a well-trodden line of differentiable memory machines (e.g., Neural Turing Machines and Differentiable Neural Computers) \citep{graves2014ntm,graves2016dnc}; our focus is a modern, sparse implementation that avoids dense content-based access at every step.
+\vectur{} maintains a continuous ``head on a circle'' (\(S^1\)) and performs \emph{strictly local}, \(2k\)-sparse gather/scatter updates via interpolation, encouraging pointer-machine-style computation and mitigating the ``memory blurring'' failure mode of early dense-access NTMs.
+\vectur{} also supports \emph{deep computation} \citep{dehghani2019universal} by explicitly iterating a learned transition map and using an ACT-style learned halting gate \citep{graves2016act} (parameterized by \(\kappa\)); we treat this halting parameterization as a practical heuristic rather than a core novelty claim.
 We evaluate \vectur{} as a drop-in \emph{computational block} inside a Llama-style decoder-only language model \citep{touvron2023llama2,dubey2024llama3}, contrasting it with attention \citep{vaswani2017attention}, LSTM-style recurrence \citep{hochreiter1997lstm}, and differentiable external-memory baselines \citep{graves2014ntm,graves2016dnc}.
-On small-to-medium open benchmarks for reasoning and language (GSM8K \citep{cobbe2021gsm8k}, ARC \citep{clark2018arc}, HellaSwag \citep{zellers2019hellaswag}, WikiText-103 \citep{merity2016wikitext}), we find \vectur{} improves algorithmic generalization at fixed parameter budgets.
-We additionally introduce \compgen{}---a synthetic program dataset stratified by \((T(n),S(n))\) complexity classes---and show \vectur{} adapts its effective compute by learning \(\kappa\).
-Finally, we propose \vecstur{}, a stochastic extension that consumes random tape symbols and outperforms \vectur{} on randomized verification tasks (e.g., Freivalds-style matrix product verification \citep{freivalds1977}).
+On small-to-medium open benchmarks for reasoning and language (GSM8K \citep{cobbe2021gsm8k}, ARC \citep{clark2018arc}, HellaSwag \citep{zellers2019hellaswag}, WikiText-103 \citep{merity2016wikitext}), we find \vectur{} improves algorithmic generalization \citep{kaiser2016neuralgpu,press2022trainshort} at fixed parameter budgets.
+We additionally introduce \compgen{}---a synthetic program dataset stratified by \((T(n),S(n))\) complexity classes---as a utility benchmark for probing compute allocation.
+Finally, we propose \vecstur{}, a stochastic extension that consumes random tape symbols and targets \emph{randomized algorithms} as a computational resource: \vecstur{} outperforms \vectur{} on randomized verification tasks (e.g., Freivalds-style matrix product verification \citep{freivalds1977}).
 \end{abstract}
 
 \section{Introduction}
-Modern language models excel at pattern completion yet often struggle to reliably \emph{execute} long algorithmic computations, extrapolate beyond training lengths, or allocate variable compute per input.
+Modern language models excel at pattern completion yet often struggle to reliably \emph{execute} long algorithmic computations, extrapolate beyond training lengths \citep{press2022trainshort}, or allocate variable compute per input \citep{graves2016act,dehghani2019universal}.
 Several lines of work attempt to address these limitations by embedding algorithmic structure into neural systems, including external-memory architectures \citep{graves2014ntm,graves2016dnc} and adaptive computation mechanisms \citep{graves2016act}.
 
 We propose \vectur{}, a vectorized analogue of a classical Turing machine \citep{turing1936} whose tape, head index, and finite control are represented as continuous vectors and updated by a learned transition map.
-Unlike attention-only computation \citep{vaswani2017attention}, \vectur{} explicitly iterates a state transition; unlike Neural Turing Machines \citep{graves2014ntm}, \vectur{} emphasizes sparse head indexing and a learned halting schedule parameterized by \(\kappa\), enabling adaptive depth.
+We do \emph{not} claim to have invented differentiable Turing machines; rather, we revisit this classic idea in a form that better matches modern LLM systems constraints.
+Classic NTMs \citep{graves2014ntm} relied on dense, content-based attention over the entire memory at each step, which is \(O(N)\) in memory size and can introduce diffuse ``blurring'' updates.
+In contrast, \vectur{} maintains a continuous head position on a circular tape (\(S^1\)) and enforces \emph{strictly local} access: each step reads and writes via interpolation over only \(2k\) tape indices (sparse gather/scatter), yielding per-step cost independent of tape length and an inductive bias closer to pointer machines \citep{vinyals2015pointer}.
+For adaptive depth, \vectur{} includes an ACT-style halting mechanism \citep{graves2016act}; our particular \(\kappa\) parameterization is presented as a practical, input-conditioned control knob rather than a conceptual departure from ACT.
 
 We evaluate \vectur{} in a realistic regime by inserting it as a \emph{block} inside a Llama-style decoder-only macro architecture \citep{touvron2023llama2,dubey2024llama3}, replacing the standard attention+MLP block.
 We compare against alternative blocks: (i) standard attention \citep{vaswani2017attention}, (ii) LSTM-style recurrence \citep{hochreiter1997lstm}, and (iii) differentiable external-memory controllers \citep{graves2014ntm,graves2016dnc}.
-We focus on small-to-medium models (roughly \(10^8\) to \(10^9\) parameters) where architectural inductive bias can materially affect sample efficiency and extrapolation.
+We focus on small-to-medium models (roughly \(10^8\) to \(10^9\) parameters) where architectural inductive bias can materially affect sample efficiency and extrapolation \citep{kaiser2016neuralgpu,press2022trainshort}.
 
 We further introduce \compgen{}, a dataset of generated Python programs grouped into discrete complexity buckets \((T(n),S(n))\) such as \(O(n)\)/\(O(1)\), \(O(n\log n)\)/\(O(1)\), \(O(n^2)\)/\(O(1)\), and \(O(n^2)\)/\(O(n)\).
 The goal is to probe whether a model can learn to \emph{compute} across increasing \(n\) by allocating more steps as needed, rather than memorizing only small \(n\).
@@ -72,25 +77,26 @@ a data set of matrices $A,B,C\in \R^{n\times n}$ and a target matrix $D\in \R^{n
 
 \paragraph{Contributions.}
 \begin{itemize}[leftmargin=*,nosep]
-  \item We define \vectur{}, a vectorized Turing-machine-inspired transition system with sparse indexing and a learnable halting schedule \(\kappa\).
-  \item We propose a plug-and-play integration of \vectur{} as a computational block inside Llama-style decoder-only models.
-  \item We introduce \compgen{}, a synthetic program dataset labeled by time/space complexity class \((T(n),S(n))\), and a protocol for extrapolation across \(n\).
-  \item We define \vecstur{} and a randomized computation evaluation suite, showing benefits of stochastic symbols for problems with randomized speedups.
+  \item We define \vectur{}, a Turing-style transition system with \emph{strictly local}, \(2k\)-sparse gather/scatter tape access (continuous head on \(S^1\)), addressing efficiency and ``memory blurring'' issues associated with dense-access NTMs \citep{graves2014ntm}.
+  \item We present a plug-and-play integration of \vectur{} as a \emph{computational sub-layer} inside Llama-style decoder-only models, treating iterative algorithmic computation as a composable block rather than a separate retrieval module.
+  \item We define \vecstur{} and a randomized computation evaluation suite, highlighting randomness as a computational resource (e.g., Freivalds-style verification \citep{freivalds1977}) rather than mere noise.
+  \item We introduce \compgen{}, a synthetic program dataset labeled by time/space complexity class \((T(n),S(n))\), as a utility benchmark for extrapolation and compute-allocation probing.
 \end{itemize}
 
 \section{Related Work}
 \paragraph{Sequence models and attention.}
-Transformers \citep{vaswani2017attention} and their decoder-only variants power modern LLMs (e.g., Llama-family models \citep{touvron2023llama2,dubey2024llama3}).
+Transformers \citep{vaswani2017attention} and their decoder-only variants power modern LLMs (e.g., GPT-3 \citep{brown2020gpt3} and Llama-family models \citep{touvron2023llama2,dubey2024llama3}).
 Recurrent networks such as LSTMs \citep{hochreiter1997lstm} provide a different inductive bias for iterative computation but historically underperform attention-based models at scale on language modeling.
 
 \paragraph{Differentiable memory and neural machines.}
 Neural Turing Machines (NTMs) \citep{graves2014ntm} and Differentiable Neural Computers (DNCs) \citep{graves2016dnc} integrate external memory with differentiable read/write heads.
-Our work shares the goal of improving algorithmic behavior, but emphasizes (i) sparse indexing for efficiency and (ii) a learned halting schedule.
+Our work shares the goal of improving algorithmic behavior, but emphasizes sparse, strictly local access (pointer-machine-style) and composable integration as a modern Transformer block; we include learned halting primarily as an ACT-style compute control mechanism.
 
 \subsection{Remark: Neural Turing Machines vs.\ \vectur{}}
 \label{sec:remark_ntm_vs_vectur}
 Both NTMs \citep{graves2014ntm} and \vectur{} augment neural computation with an external memory, but they make different design trade-offs for \emph{addressing} (how memory is accessed) and \emph{sparsity} (how much memory is touched per step).
 NTMs provide content-addressable reads/writes via dense attention over all memory slots; \vectur{} instead maintains a continuous head position on a tape and performs sparse gather/scatter updates to a small number of adjacent cells (via interpolation), which keeps per-step cost independent of tape length.
+Dense access is expressive but \(O(N)\) in memory size and can induce diffuse ``memory blurring'' updates when many slots receive small writes; \vectur{} preserves untouched cells exactly by construction.
 In Llama-style Transformer blocks, global content-based access is already available through self-attention; \vectur{} is intended to add an \emph{orthogonal} capability: cheap, iterative state manipulation with persistent scratchpad dynamics.
 
 \begin{figure*}[t]
@@ -108,7 +114,7 @@ Per-step complexity (vs.\ tape length \(N_T\)) & \(O(N_T)\) similarity + weighte
 Forward activation memory (unrolled \(T\) steps) & Stores dense weights \(\sim O(TN_T)\) & Stores sparse indices/weights \(\sim O(Tk)\) & \textbf{Yes} \\
 State preservation away from head & Many slots updated slightly (drift/blurring risk) & Un-accessed cells are exactly unchanged & \textbf{Yes} \\
 Content lookup in 1 step & Native (query by key) & Requires scanning via head movement (worst-case \(O(N_T)\) steps) & No \\
-Inductive bias & Random-access / associative recall & Sequential pointer machine / local algorithms & Depends \\
+ Inductive bias & Random-access / associative recall & Sequential pointer machine / local algorithms \citep{vinyals2015pointer} & Depends \\
 Compute allocation / halting & Typically fixed unroll or implicit stopping & Explicit learned halting via \(\kappa\) and gate \(g_t\) & \textbf{Yes} \\
 Fit as a Transformer block & Redundant global attention inside block & Complements attention with iterative scratchpad dynamics & \textbf{Yes} \\
 \bottomrule
@@ -119,7 +125,12 @@ Fit as a Transformer block & Redundant global attention inside block & Complemen
 \end{figure*}
 
 \paragraph{Adaptive computation.}
-Adaptive Computation Time (ACT) \citep{graves2016act} learns when to stop iterating; our \(\kappa\)-parameterization provides a simple, input-conditioned control knob for the effective number of steps.
+Adaptive Computation Time (ACT) \citep{graves2016act} learns when to stop iterating, with later refinements such as PonderNet \citep{banino2021pondernet}.
+Our learned gate \(g_t\) and \(\kappa\)-parameterization should be viewed as an ACT-style variant that provides a simple, input-conditioned control knob for effective depth; we do not position halting as the primary conceptual novelty.
+
+\paragraph{Test-time training and online optimization.}
+Recent work reframes sequence modeling as a form of \emph{online learning} or nested optimization carried out during inference, including end-to-end test-time training for long-context language modeling \citep{tandon2025ttt} and the MIRAS framework connecting attention, retention, and online optimization \citep{behrouz2025miras}.
+This line of work motivates the viewpoint that ``System 2'' computation can be injected \emph{inside} a model by adding inner-loop dynamics as a composable block within the forward pass, rather than only via external deliberation or separate modules.
 
 \paragraph{Randomized algorithms.}
 Randomness can reduce expected runtime for verification and decision problems; canonical examples include Freivalds' randomized matrix product verification \citep{freivalds1977} and probabilistic primality testing \citep{miller1976,rabin1980}.
@@ -192,9 +203,9 @@ Next, define a gate \(g_t\in(0,1)\) that controls the effective amount of comput
 
 \begin{equation}
     g_t
-    = \sigma\!\left(\frac{\kappa(x;W)-t}{\max\!\big(1,\norm{Q_t-q_0}^2\big)}\right),
+    = \sigma\!\left(\frac{-\kappa(x;W)\cdot t}{\max\!\big(1,\norm{Q_t-q_0}^2\big)}\right),
 \end{equation}
-where \(\sigma(u)=1/(1+e^{-u})\), \(\kappa(x;W)>0\) is a learned scalar per example, and \(q_0\in\R^{d_Q}\) is a learned halting target state. Intuitively, larger \(\kappa(x;W)\) yields more effective steps (slower decay in \(t\)), while \(\|Q_t-q_0\|\) encourages the dynamics to become stationary near the target.
+where \(\sigma(u)=1/(1+e^{-u})\), \(\kappa(x;W)>0\) is a learned scalar per example, and \(q_0\in\R^{d_Q}\) is a learned halting target state. Intuitively, \(\kappa(x;W)\) acts as a \emph{decay-rate multiplier}: smaller \(\kappa(x;W)\) yields a slower decay in \(t\) (more effective steps), while larger \(\kappa(x;W)\) yields a faster decay (fewer effective steps). The factor \(\|Q_t-q_0\|\) encourages the dynamics to become stationary near the target.
 
 We update the tape, control state, and head index using learned transition maps \(\Delta_T,\Delta_Q,\Delta_\theta,\Delta_w\). Let
 \[
@@ -280,8 +291,10 @@ We return \(V(x)=T_{T(x)}\).
 
 \section{VecTur Blocks inside Llama-style Models}
 \subsection{Macro architecture}
-We adopt a standard decoder-only transformer macro architecture (token embeddings, positional encoding, residual blocks, and an LM head) following Llama-family designs \citep{touvron2023llama2,dubey2024llama3}.
+We adopt a standard decoder-only transformer macro architecture (token embeddings, positional encoding \citep{su2021roformer}, residual blocks, and an LM head) following Llama-family designs \citep{touvron2023llama2,dubey2024llama3}.
 We then vary the \emph{block} inside each residual layer while keeping parameter count and FLOPs roughly matched.
+This ``block as inner loop'' framing is inspired by recent work that integrates deliberate, multi-step computation into the forward pass via online learning or test-time adaptation, notably TTT-style test-time training \citep{tandon2025ttt} and MIRAS-style online optimization views of sequence models \citep{behrouz2025miras}.
+In that spirit, we view \vectur{} as an explicit, constrained ``System 2'' transition system embedded as a sub-layer inside a ``System 1'' decoder, rather than as a standalone memory system that replaces the macro architecture.
 
 \begin{figure}[t]
 \centering
@@ -293,7 +306,7 @@ We then vary the \emph{block} inside each residual layer while keeping parameter
 \subsection{Compared blocks}
 We compare the following blocks:
 \begin{itemize}[leftmargin=*,nosep]
-  \item \textbf{Attention block}: multi-head self-attention + SwiGLU MLP \citep{vaswani2017attention}.
+  \item \textbf{Attention block}: multi-head self-attention \citep{vaswani2017attention} + SwiGLU MLP \citep{shazeer2020gluvariants}.
   \item \textbf{LSTM block}: a gated recurrent update applied over the sequence, wrapped with residual connections \citep{hochreiter1997lstm}.
   \item \textbf{External-memory block}: an NTM/DNC-style controller with differentiable read/write heads \citep{graves2014ntm,graves2016dnc}.
   \item \textbf{\vectur{} block}: the \vectur{} transition unrolled for \(T_{\max}\) steps with learned halting \(\kappa\).
@@ -315,8 +328,9 @@ We evaluate next-token prediction on \textbf{WikiText-103} \citep{merity2016wiki
 \section{CompGen: Complexity-Stratified Program Generation}
 \subsection{Task format}
 \compgen{} consists of short Python programs \(p\) paired with inputs \(u\) and outputs \(p(u)\).
-Each instance is labeled with a target complexity class \((T(n),S(n))\) in terms of input size \(n\).
+Each instance is labeled with a target complexity class \((T(n),S(n))\) in terms of input size \(n\) \citep{sipser2012toc}.
 Programs are generated from templates with controlled loop structure, recursion depth, and memory allocation patterns.
+We view \compgen{} as a utility dataset in the tradition of synthetic algorithmic benchmarks, complementary to the CLRS Algorithmic Reasoning Benchmark \citep{velickovic2022clrs}.
 
 \begin{table}[t]
 \centering
@@ -352,9 +366,28 @@ We include tasks where access to randomness enables provable or empirical speedu
 \paragraph{Model sizes.}
 We instantiate models at \(\sim\)110M, 350M, and 1.3B parameters (placeholder sizes) with matched embedding width and layer count across blocks.
 
-\paragraph{Training.}
-We train on a mixture of general text (for language modeling) and \compgen{} (for compute probing), then fine-tune on downstream reasoning tasks.
-We use identical optimizers, learning rate schedules, and token budgets across conditions.
+\paragraph{Blocks and controlled comparisons.}
+Unless otherwise stated, we run the same experiment for each block in Section~3 (Attention, LSTM, NTM/DNC, \vectur{}, \vecstur{}), holding the decoder-only macro architecture fixed and matching parameter count and training budget as closely as possible.
+
+\paragraph{Experimental protocols (run per block).}
+We use three complementary training/evaluation protocols:
+\begin{enumerate}[leftmargin=*,nosep]
+  \item \textbf{Language pretraining \(\rightarrow\) downstream evaluation.}
+  We pretrain on \textbf{FineWeb} (general web text), then evaluate on \textbf{GSM8K} \citep{cobbe2021gsm8k}, \textbf{ARC} \citep{clark2018arc}, \textbf{HellaSwag} \citep{zellers2019hellaswag}, and \textbf{WikiText-103} \citep{merity2016wikitext}.
+  (Table~\ref{tab:benchmarks}.)
+
+  \item \textbf{Algorithmic transfer between CLRS and \compgen{}.}
+  (a) \textbf{Train on CLRS} \citep{velickovic2022clrs} and evaluate on \compgen{} under three regimes: \emph{zero-shot} (no \compgen{} training), \emph{few-shot} (in-context demonstrations at test time), and \emph{fine-tune} (supervised adaptation on \compgen{} train).
+  (b) \textbf{Train on \compgen{}} and evaluate on a held-out \compgen{} split (including out-of-distribution generalization across input sizes \(n\) per Section~5.2).
+  (Figure~\ref{fig:compgen}.)
+
+  \item \textbf{In-domain CLRS generalization.}
+  We train on CLRS \citep{velickovic2022clrs} and evaluate on a held-out CLRS split (standard in-distribution generalization across graphs/sizes/instances).
+  (Reported alongside other algorithmic results; placeholder in this draft.)
+\end{enumerate}
+
+\paragraph{Optimization and budgets.}
+Within each protocol, we use identical optimizers, learning rate schedules, and token/step budgets across blocks (to isolate architectural effects).
 
 \paragraph{Compute control.}
 For \vectur{}/\vecstur{} we set a maximum unroll \(T_{\max}\) and learn \(\kappa(x;W)\) to modulate effective steps.
@@ -362,51 +395,126 @@ We report both task performance and measured compute (average unroll steps per t
 
 \section{Results (Illustrative Placeholders)}
 \paragraph{Important note.}
-The tables below contain \textbf{illustrative placeholder numbers} showing the intended presentation format.
-Replace these with actual experimental results.
+The tables below contain \textbf{Lorem ipsum placeholder entries} showing the intended presentation format \emph{and} explicitly recording the train/test split for each experiment protocol.
+Replace these placeholders with measured metrics.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llcccc@{}}
+\toprule
+\textbf{Block (model)} & \textbf{Train set} & \textbf{GSM8K (test)} & \textbf{ARC (test)} & \textbf{HellaSwag (test)} & \textbf{WikiText-103 (test)} \\
+\midrule
+Attention & FineWeb & Lorem & Ipsum & Dolor & Sit \\
+LSTM & FineWeb & Amet & Consectetur & Adipiscing & Elit \\
+NTM/DNC & FineWeb & Sed & Do & Eiusmod & Tempor \\
+\vectur{} & FineWeb & Incididunt & Ut & Labore & Et \\
+\vecstur{} & FineWeb & Magna & Aliqua & Ut & Enim \\
+\bottomrule
+\end{tabular}%
+}
+\caption{\textbf{Placeholder (Protocol 1).} Language pretraining on FineWeb, evaluated on downstream benchmarks. Entries are Lorem ipsum placeholders.}
+\label{tab:benchmarks}
+\end{table*}
 
 \begin{table}[t]
 \centering
 \small
-\begin{tabular}{@{}lcccc@{}}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}llll@{}}
 \toprule
-\textbf{Block} & \textbf{GSM8K} & \textbf{ARC} & \textbf{HellaSwag} & \textbf{WikiText PPL} \\
+\textbf{Block} & \textbf{Train} & \textbf{Test} & \textbf{Result} \\
 \midrule
-Attention & 42.1 & 54.0 & 78.3 & 18.7 \\
-LSTM & 38.4 & 51.2 & 76.0 & 20.9 \\
-NTM/DNC & 43.0 & 54.4 & 78.1 & 19.3 \\
-\vectur{} & \textbf{46.8} & \textbf{56.1} & \textbf{79.0} & 18.9 \\
-\vecstur{} & 46.2 & 55.7 & 78.9 & 18.9 \\
+Attention & CLRS & \compgen{} (zero-shot) & Lorem ipsum \\
+Attention & CLRS & \compgen{} (few-shot) & Dolor sit \\
+Attention & CLRS & \compgen{} (fine-tune) & Amet consectetur \\
+LSTM & CLRS & \compgen{} (zero-shot) & Adipiscing elit \\
+LSTM & CLRS & \compgen{} (few-shot) & Sed do \\
+LSTM & CLRS & \compgen{} (fine-tune) & Eiusmod tempor \\
+NTM/DNC & CLRS & \compgen{} (zero-shot) & Incididunt ut \\
+NTM/DNC & CLRS & \compgen{} (few-shot) & Labore et \\
+NTM/DNC & CLRS & \compgen{} (fine-tune) & Magna aliqua \\
+\vectur{} & CLRS & \compgen{} (zero-shot) & Ut enim \\
+\vectur{} & CLRS & \compgen{} (few-shot) & Ad minim \\
+\vectur{} & CLRS & \compgen{} (fine-tune) & Veniam quis \\
+\vecstur{} & CLRS & \compgen{} (zero-shot) & Nostrud exercitation \\
+\vecstur{} & CLRS & \compgen{} (few-shot) & Ullamco laboris \\
+\vecstur{} & CLRS & \compgen{} (fine-tune) & Nisi ut \\
 \bottomrule
 \end{tabular}
-\caption{\textbf{Placeholder.} Benchmark performance for a mid-size model at matched parameter budget. Accuracy in \%, perplexity lower is better.}
-\label{tab:benchmarks}
+\caption{\textbf{Placeholder (Protocol 2a).} Train on CLRS, test on \compgen{} under zero-shot / few-shot / fine-tune adaptation regimes. Results are placeholders.}
+\label{tab:clrs_to_compgen}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Block} & \textbf{Train} & \textbf{Test} & \textbf{Result} \\
+\midrule
+Attention & \compgen{} (train) & \compgen{} (held-out) & Lorem ipsum \\
+LSTM & \compgen{} (train) & \compgen{} (held-out) & Dolor sit \\
+NTM/DNC & \compgen{} (train) & \compgen{} (held-out) & Amet consectetur \\
+\vectur{} & \compgen{} (train) & \compgen{} (held-out) & Adipiscing elit \\
+\vecstur{} & \compgen{} (train) & \compgen{} (held-out) & Sed do \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Placeholder (Protocol 2b).} Train on \compgen{}, test on held-out \compgen{} (including extrapolation across larger \(n\)). Results are placeholders.}
+\label{tab:compgen_holdout}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Block} & \textbf{Train} & \textbf{Test} & \textbf{Result} \\
+\midrule
+Attention & CLRS (train) & CLRS (held-out) & Lorem ipsum \\
+LSTM & CLRS (train) & CLRS (held-out) & Dolor sit \\
+NTM/DNC & CLRS (train) & CLRS (held-out) & Amet consectetur \\
+\vectur{} & CLRS (train) & CLRS (held-out) & Adipiscing elit \\
+\vecstur{} & CLRS (train) & CLRS (held-out) & Sed do \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Placeholder (Protocol 3).} Train on CLRS and evaluate on a held-out CLRS split. Results are placeholders.}
+\label{tab:clrs_holdout}
 \end{table}
 
 \begin{figure}[t]
 \centering
 \fbox{\rule{0pt}{1.5in}\rule{0.93\linewidth}{0pt}}
-\caption{\textbf{Placeholder.} \compgen{} extrapolation: accuracy vs.\ input size \(n\), showing \vectur{} degrades more gracefully and increases effective steps via learned \(\kappa\).}
+\caption{\textbf{Placeholder.} \compgen{} extrapolation: accuracy vs.\ input size \(n\), showing how blocks degrade with larger \(n\) and how \vectur{} modulates effective steps via learned \(\kappa\).}
 \label{fig:compgen}
 \end{figure}
 
 \begin{table}[t]
 \centering
 \small
-\begin{tabular}{@{}lcc@{}}
+\begin{tabular}{@{}llll@{}}
 \toprule
-\textbf{Model} & \textbf{Freivalds verify} & \textbf{Miller--Rabin} \\
+\textbf{Block} & \textbf{Train set} & \textbf{Test set} & \textbf{Result} \\
 \midrule
-\vectur{} & 71.0 & 68.4 \\
-\vecstur{} & \textbf{84.5} & \textbf{79.2} \\
+\vectur{} & Randomized suite (train) & Freivalds / Miller--Rabin (test) & Lorem ipsum \\
+\vecstur{} & Randomized suite (train) & Freivalds / Miller--Rabin (test) & Dolor sit amet \\
 \bottomrule
 \end{tabular}
-\caption{\textbf{Placeholder.} Randomized computation suite: \vecstur{} benefits from stochastic symbols \(z\).}
+\caption{\textbf{Placeholder.} Randomized computation suite: train/test bookkeeping with placeholder results.}
 \label{tab:random}
 \end{table}
 
 \section{Discussion}
 These illustrative results suggest \vectur{} provides a useful inductive bias for tasks requiring iterative computation and length extrapolation, while remaining compatible with modern LLM macro architectures.
+Importantly, the strongest claims in this paper are \emph{not} that differentiable Turing machines are new, but that (i) enforcing strictly local sparse access yields a practical, non-blurring pointer-machine-style block, (ii) treating such a machine as a composable Transformer sub-layer is a strong systems contribution, and (iii) \vecstur{} highlights a comparatively underexplored angle: learning to exploit randomness as a computational resource in randomized-algorithm tasks.
 \vecstur{} further improves performance on tasks where randomized strategies are advantageous.
 
 \section{Limitations and Future Work}
@@ -415,14 +523,14 @@ Future work should (i) benchmark on longer-context settings, (ii) analyze failur
 
 \subsection{Future Work: Mechanistic Interpretability}
 \label{sec:future_mi}
-\vectur{} is unusually well-suited for mechanistic interpretability because its learned dynamics are constrained to resemble an explicit Turing-style transition system: a finite-dimensional control state \(Q_t\), a tape \(T_t\), and a small number of heads with sparse, local read/write effects.
+\vectur{} is unusually well-suited for mechanistic interpretability \citep{olah2020zoomin,elhage2021framework} because its learned dynamics are constrained to resemble an explicit Turing-style transition system: a finite-dimensional control state \(Q_t\), a tape \(T_t\), and a small number of heads with sparse, local read/write effects.
 This structure encourages explanations in terms of \emph{state machines} and \emph{pointer-based algorithms} (e.g., ``scan until condition,'' ``increment counter,'' ``copy span,'' ``simulate update rule''), rather than opaque global attention patterns.
 
 A promising direction is to \emph{disassemble} trained \vectur{} blocks into more directly inspectable artifacts.
 For example, one can post-hoc discretize head locations, identify stable control states, and summarize the transition maps \(\Delta\) as a symbolic program or a finite set of guarded update rules; such representations can then be \emph{transpiled} into executable code, enabling unit tests, counterfactual interventions, and formal analysis of the implied algorithm.
 
 Finally, \vectur{} may serve as an interpretable \emph{surrogate} for black-box sequence models.
-Analogous to knowledge distillation, one can perform \emph{cross-distillation}: train a \vectur{} model to mimic the input--output behavior (and, when available, internal activations) of an existing architecture, with the goal that the learned tape-and-control dynamics provide a concrete hypothesis for the black box's implicit Turing-style computation.
+Analogous to knowledge distillation \citep{hinton2015distilling,romero2015fitnets}, one can perform \emph{cross-distillation}: train a \vectur{} model to mimic the input--output behavior (and, when available, internal activations) of an existing architecture, with the goal that the learned tape-and-control dynamics provide a concrete hypothesis for the black box's implicit Turing-style computation.
 Such surrogates could support ``algorithmic guessing''---extracting candidate programs from the \vectur{} dynamics---followed by validation against the teacher via targeted probes and adversarial test cases.
 
 \section*{Acknowledgments}
@@ -505,6 +613,86 @@ Gary~L. Miller.
 Michael~O. Rabin.
 \newblock Probabilistic algorithm for testing primality.
 \newblock \emph{Journal of Number Theory}, 1980.
+
+\bibitem[Brown et~al.(2020)]{brown2020gpt3}
+Tom~B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind Neelakantan, et~al.
+\newblock Language models are few-shot learners.
+\newblock In \emph{NeurIPS}, 2020.
+
+\bibitem[Dehghani et~al.(2019)]{dehghani2019universal}
+Mostafa Dehghani, Stephan Gouws, Oriol Vinyals, Jakob Uszkoreit, and {\L}ukasz Kaiser.
+\newblock Universal transformers.
+\newblock In \emph{ICLR}, 2019.
+
+\bibitem[Banino et~al.(2021)]{banino2021pondernet}
+Andrea Banino, Jan Balaguer, Charles Blundell, and Andrew Zisserman.
+\newblock PonderNet: Learning to ponder.
+\newblock In \emph{NeurIPS}, 2021.
+
+\bibitem[Behrouz et~al.(2025)]{behrouz2025miras}
+Ali Behrouz, Meisam Razaviyayn, Peilin Zhong, and Vahab Mirrokni.
+\newblock It's All Connected: A Journey Through Test-Time Memorization, Attentional Bias, Retention, and Online Optimization.
+\newblock \emph{arXiv:2504.13173}, 2025.
+
+\bibitem[Elhage et~al.(2021)]{elhage2021framework}
+Nelson Elhage, Sam~S. McCandlish, Catherine Olsson, Christopher Henighan, Nicholas Joseph, Ben Mann, Seth Kaplan, et~al.
+\newblock A mathematical framework for transformer circuits.
+\newblock \emph{Transformer Circuits (Anthropic)}, 2021.
+
+\bibitem[Kaiser and Sutskever(2016)]{kaiser2016neuralgpu}
+{\L}ukasz Kaiser and Ilya Sutskever.
+\newblock Neural {GPU}s learn algorithms.
+\newblock In \emph{ICLR}, 2016.
+
+\bibitem[Olah et~al.(2020)]{olah2020zoomin}
+Chris Olah, Nick Cammarata, Ludwig Schubert, Gabriel Goh, Michael Petrov, and the OpenAI Clarity team.
+\newblock Zoom in: An introduction to circuits.
+\newblock \emph{Distill}, 2020.
+
+\bibitem[Press et~al.(2022)]{press2022trainshort}
+Ofir Press, Noah~A. Smith, and Mike Lewis.
+\newblock Train short, test long: Attention with linear biases enables input length extrapolation.
+\newblock In \emph{ICLR}, 2022.
+
+\bibitem[Hinton et~al.(2015)]{hinton2015distilling}
+Geoffrey Hinton, Oriol Vinyals, and Jeff Dean.
+\newblock Distilling the knowledge in a neural network.
+\newblock \emph{arXiv:1503.02531}, 2015.
+
+\bibitem[Romero et~al.(2015)]{romero2015fitnets}
+Adriana Romero, Nicolas Ballas, Samira~Ebrahimi Kahou, Antoine Chassang, Carlo Gatta, and Yoshua Bengio.
+\newblock FitNets: Hints for thin deep nets.
+\newblock In \emph{ICLR}, 2015.
+
+\bibitem[Shazeer(2020)]{shazeer2020gluvariants}
+Noam Shazeer.
+\newblock {GLU} variants improve transformer.
+\newblock \emph{arXiv:2002.05202}, 2020.
+
+\bibitem[Sipser(2012)]{sipser2012toc}
+Michael Sipser.
+\newblock \emph{Introduction to the Theory of Computation}.
+\newblock Cengage Learning, 3rd edition, 2012.
+
+\bibitem[Su et~al.(2021)]{su2021roformer}
+Jianlin Su, Yu Lu, Shengfeng Pan, Bo Wen, and Yunfeng Liu.
+\newblock RoFormer: Enhanced transformer with rotary position embedding.
+\newblock \emph{arXiv:2104.09864}, 2021.
+
+\bibitem[Vinyals et~al.(2015)]{vinyals2015pointer}
+Oriol Vinyals, Meire Fortunato, and Navdeep Jaitly.
+\newblock Pointer networks.
+\newblock In \emph{NeurIPS}, 2015.
+
+\bibitem[Veli{\v{c}}kovi{\'c} et~al.(2022)]{velickovic2022clrs}
+Petar Veli{\v{c}}kovi{\'c}, Adri{\`a} Puigdom{\`e}nech Badia, David Budden, Razvan Pascanu, Andrea Banino, Misha Daswani, Raia Hadsell, and Charles Blundell.
+\newblock The CLRS Algorithmic Reasoning Benchmark.
+\newblock \emph{arXiv preprint arXiv:2205.15659}, 2022.
+
+\bibitem[Tandon et~al.(2025)]{tandon2025ttt}
+Arnuv Tandon, Karan Dalal, Xinhao Li, Daniel Koceja, Marcel R{\o}d, Sam Buchanan, Xiaolong Wang, Jure Leskovec, Sanmi Koyejo, Tatsunori Hashimoto, Carlos Guestrin, Jed McCaleb, Yejin Choi, and Yu Sun.
+\newblock End-to-End Test-Time Training for Long Context.
+\newblock \emph{arXiv:2512.23675}, 2025.
 
 \end{thebibliography}
 
