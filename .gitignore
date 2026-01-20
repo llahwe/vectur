@@ -204,6 +204,8 @@ cython_debug/
 # Local training runs / checkpoints
 runs/
 
+datasets/compgen_runs/
+
 # Marimo
 marimo/_static/
 marimo/_lsp/

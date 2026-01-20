@@ -67,7 +67,8 @@ We focus on small-to-medium models (roughly \(10^8\) to \(10^9\) parameters) whe
 
 We further introduce \compgen{}, a dataset of generated Python programs grouped into discrete complexity buckets \((T(n),S(n))\) such as \(O(n)\)/\(O(1)\), \(O(n\log n)\)/\(O(1)\), \(O(n^2)\)/\(O(1)\), and \(O(n^2)\)/\(O(n)\).
 The goal is to probe whether a model can learn to \emph{compute} across increasing \(n\) by allocating more steps as needed, rather than memorizing only small \(n\).
-Finally, we define \vecstur{}, which augments the input with stochastic symbols \(z\) to emulate randomized computation, and we propose a randomized evaluation suite where randomness yields asymptotic speedups \citep{freivalds1977,miller1976,rabin1980}.
+Finally, we define \vecstur{}, which augments the input with stochastic symbols \(z\) to emulate randomized computation, and we propose a randomized evaluation suite where randomness yields asymptotic speedups \citep{freivalds1977,miller1976,rabin1980}. In particular, we form 
+a data set of matrices $A,B,C\in \R^{n\times n}$ and a target matrix $D\in \R^{n\times n}$ such that $D = AB$ and $D = AC$ with probability $1/2$. We evaluate $\vectur{}$ and $\vecstur{}$ on this task, and show $\vecstur{}$ can exploit stochastic symbols to achieve asymptotic speedups.
 
 \paragraph{Contributions.}
 \begin{itemize}[leftmargin=*,nosep]
@@ -85,6 +86,37 @@ Recurrent networks such as LSTMs \citep{hochreiter1997lstm} provide a different 
 \paragraph{Differentiable memory and neural machines.}
 Neural Turing Machines (NTMs) \citep{graves2014ntm} and Differentiable Neural Computers (DNCs) \citep{graves2016dnc} integrate external memory with differentiable read/write heads.
 Our work shares the goal of improving algorithmic behavior, but emphasizes (i) sparse indexing for efficiency and (ii) a learned halting schedule.
+
+\subsection{Remark: Neural Turing Machines vs.\ \vectur{}}
+\label{sec:remark_ntm_vs_vectur}
+Both NTMs \citep{graves2014ntm} and \vectur{} augment neural computation with an external memory, but they make different design trade-offs for \emph{addressing} (how memory is accessed) and \emph{sparsity} (how much memory is touched per step).
+NTMs provide content-addressable reads/writes via dense attention over all memory slots; \vectur{} instead maintains a continuous head position on a tape and performs sparse gather/scatter updates to a small number of adjacent cells (via interpolation), which keeps per-step cost independent of tape length.
+In Llama-style Transformer blocks, global content-based access is already available through self-attention; \vectur{} is intended to add an \emph{orthogonal} capability: cheap, iterative state manipulation with persistent scratchpad dynamics.
+
+\begin{figure*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}p{0.20\textwidth}p{0.28\textwidth}p{0.28\textwidth}p{0.12\textwidth}@{}}
+\toprule
+\textbf{Feature} & \textbf{NTM (Graves)} & \textbf{\vectur{}} & \textbf{\vectur{} advantage} \\
+\midrule
+Addressing & Dense content-based attention over all slots & Local/location-based head movement on tape & \textbf{Yes} \\
+Per-step complexity (vs.\ tape length \(N_T\)) & \(O(N_T)\) similarity + weighted sum & \(O(k)\) gather/scatter (independent of \(N_T\)) & \textbf{Yes} \\
+Forward activation memory (unrolled \(T\) steps) & Stores dense weights \(\sim O(TN_T)\) & Stores sparse indices/weights \(\sim O(Tk)\) & \textbf{Yes} \\
+State preservation away from head & Many slots updated slightly (drift/blurring risk) & Un-accessed cells are exactly unchanged & \textbf{Yes} \\
+Content lookup in 1 step & Native (query by key) & Requires scanning via head movement (worst-case \(O(N_T)\) steps) & No \\
+Inductive bias & Random-access / associative recall & Sequential pointer machine / local algorithms & Depends \\
+Compute allocation / halting & Typically fixed unroll or implicit stopping & Explicit learned halting via \(\kappa\) and gate \(g_t\) & \textbf{Yes} \\
+Fit as a Transformer block & Redundant global attention inside block & Complements attention with iterative scratchpad dynamics & \textbf{Yes} \\
+\bottomrule
+\end{tabular}%
+}
+\caption{\textbf{NTM vs.\ \vectur{}.} NTMs \citep{graves2014ntm} provide dense, content-addressable memory access, while \vectur{} enforces sparse, local tape access with adaptive depth. The rightmost column highlights regimes where \vectur{} is especially advantageous as a computational block inside attention-based macro-architectures.}
+\label{fig:ntm_vs_vectur}
+\end{figure*}
 
 \paragraph{Adaptive computation.}
 Adaptive Computation Time (ACT) \citep{graves2016act} learns when to stop iterating; our \(\kappa\)-parameterization provides a simple, input-conditioned control knob for the effective number of steps.
@@ -380,6 +412,18 @@ These illustrative results suggest \vectur{} provides a useful inductive bias fo
 \section{Limitations and Future Work}
 This draft omits implementation details (e.g., the exact \(\mathrm{Sparse}(\cdot)\) operator, stability constraints, and efficient kernels) and uses illustrative results.
 Future work should (i) benchmark on longer-context settings, (ii) analyze failure modes of learned halting \(\kappa\), and (iii) evaluate robustness across different data mixtures and training budgets.
+
+\subsection{Future Work: Mechanistic Interpretability}
+\label{sec:future_mi}
+\vectur{} is unusually well-suited for mechanistic interpretability because its learned dynamics are constrained to resemble an explicit Turing-style transition system: a finite-dimensional control state \(Q_t\), a tape \(T_t\), and a small number of heads with sparse, local read/write effects.
+This structure encourages explanations in terms of \emph{state machines} and \emph{pointer-based algorithms} (e.g., ``scan until condition,'' ``increment counter,'' ``copy span,'' ``simulate update rule''), rather than opaque global attention patterns.
+
+A promising direction is to \emph{disassemble} trained \vectur{} blocks into more directly inspectable artifacts.
+For example, one can post-hoc discretize head locations, identify stable control states, and summarize the transition maps \(\Delta\) as a symbolic program or a finite set of guarded update rules; such representations can then be \emph{transpiled} into executable code, enabling unit tests, counterfactual interventions, and formal analysis of the implied algorithm.
+
+Finally, \vectur{} may serve as an interpretable \emph{surrogate} for black-box sequence models.
+Analogous to knowledge distillation, one can perform \emph{cross-distillation}: train a \vectur{} model to mimic the input--output behavior (and, when available, internal activations) of an existing architecture, with the goal that the learned tape-and-control dynamics provide a concrete hypothesis for the black box's implicit Turing-style computation.
+Such surrogates could support ``algorithmic guessing''---extracting candidate programs from the \vectur{} dynamics---followed by validation against the teacher via targeted probes and adversarial test cases.
 
 \section*{Acknowledgments}
 \emph{Placeholder.}
