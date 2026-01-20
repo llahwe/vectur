@@ -28,6 +28,16 @@ Example (generate ~1M examples per task, then upload to HF datasets):
       --hf-user YOUR_HF_USERNAME \\
       --hf-repo YOUR_HF_USERNAME/compgen-compgen_v1 \\
       --hf-upload
+
+Example (upload as a specific split name, e.g. "test"):
+
+    python3 -m datasets.compgen generate \\
+      --out-dir datasets/compgen_runs \\
+      --run-name compgen_v1 \\
+      --dataset-size 1000000 \\
+      --fmt jsonl \\
+      --hf-repo YOUR_HF_USERNAME/compgen-compgen_v1 \\
+      --hf-upload --hf-as-dataset --hf-split test
 """
 
 from __future__ import annotations
@@ -117,6 +127,9 @@ class CompGenConfig:
 
     # Size
     dataset_size: int = 1_000_000
+    # If < 1.0, deterministically split into train/test during generation.
+    # Only used for jsonl generation (tsv has no meta/task fields).
+    split_frac: float = 1.0
 
     # Randomness
     seed: int = 1337
@@ -261,27 +274,57 @@ def generate_to_dir(cfg: CompGenConfig) -> Path:
 
     _write_json(run_dir / "meta.json", dataclasses.asdict(cfg) | {"created_utc": dt.datetime.now(dt.timezone.utc).isoformat()})
 
+    split_frac = float(cfg.split_frac)
+    if not (0.0 < split_frac <= 1.0):
+        raise ValueError(f"split_frac must be in (0, 1], got {split_frac}")
+
+    def _is_train(task: str, i: int) -> bool:
+        # Deterministic split independent of RNG usage for data generation.
+        # Uses a stable hash of (seed, task, i) to assign to train/test.
+        h = zlib.crc32(f"{int(cfg.seed)}:{task}:{int(i)}".encode("utf-8")) & 0xFFFFFFFF
+        thresh = int(split_frac * (2**32))
+        return h < thresh
+
     for task in cfg.tasks:
         # Ensure each task file is reproducible independent of task order.
         task_seed = int(cfg.seed) ^ int(zlib.adler32(task.encode("utf-8")))
         rng = random.Random(task_seed)
         gen = _TASK_GEN[task]
-        out_path = run_dir / f"{task}.{cfg.fmt}"
+        if split_frac < 1.0:
+            out_path_train = run_dir / "train" / f"{task}.{cfg.fmt}"
+            out_path_test = run_dir / "test" / f"{task}.{cfg.fmt}"
+        else:
+            out_path_train = run_dir / f"{task}.{cfg.fmt}"
+            out_path_test = None
 
         if cfg.fmt == "jsonl":
-            def _records() -> Iterator[dict[str, Any]]:
-                for i in range(int(cfg.dataset_size)):
-                    x, y, meta = gen(rng, cfg)
-                    yield {"task": task, "x": x, "y": y, "meta": meta | {"i": i}}
-
-            _jsonl_write(out_path, _records())
+            # Stream to disk without buffering in RAM.
+            out_path_train.parent.mkdir(parents=True, exist_ok=True)
+            if out_path_test is not None:
+                out_path_test.parent.mkdir(parents=True, exist_ok=True)
+            with out_path_train.open("w", encoding="utf-8") as f_train:
+                f_test = out_path_test.open("w", encoding="utf-8") if out_path_test is not None else None
+                try:
+                    for i in range(int(cfg.dataset_size)):
+                        x, y, meta = gen(rng, cfg)
+                        rec = {"task": task, "x": x, "y": y, "meta": meta | {"i": i}}
+                        line = json.dumps(rec, ensure_ascii=False) + "\n"
+                        if f_test is None or _is_train(task, i):
+                            f_train.write(line)
+                        else:
+                            f_test.write(line)
+                finally:
+                    if f_test is not None:
+                        f_test.close()
         else:
+            if split_frac < 1.0:
+                raise ValueError("split_frac < 1.0 is only supported for --fmt jsonl")
             def _rows() -> Iterator[tuple[str, str]]:
                 for _i in range(int(cfg.dataset_size)):
                     x, y, _meta = gen(rng, cfg)
                     yield x, y
 
-            _tsv_write(out_path, _rows())
+            _tsv_write(out_path_train, _rows())
 
     return run_dir
 
@@ -317,6 +360,46 @@ def hf_download_repo(*, repo_id: str, out_dir: Path) -> Path:
     return Path(local_path)
 
 
+def hf_push_run_as_dataset_split(*, run_dir: Path, repo_id: str, private: bool, split: str) -> None:
+    """
+    Push a generated run directory to the Hub as a *datasets* repo split (train/test/validation).
+
+    This differs from `hf_upload_folder`:
+    - `hf_upload_folder` uploads the raw .jsonl files
+    - `hf_push_run_as_dataset_split` creates parquet shards and registers a named split on the Hub
+    """
+    try:
+        from datasets import load_dataset  # type: ignore
+    except Exception as e:  # pragma: no cover
+        raise RuntimeError("`datasets` is required. Install with `pip install datasets`.") from e
+
+    try:
+        from huggingface_hub import HfApi, create_repo  # type: ignore
+    except Exception as e:  # pragma: no cover
+        raise RuntimeError("`huggingface_hub` is required. Install with `pip install huggingface_hub`.") from e
+
+    files = sorted(str(p) for p in run_dir.glob("*.jsonl"))
+    if len(files) == 0:
+        raise ValueError(f"No .jsonl task files found in {run_dir}. Re-run generation with --fmt jsonl.")
+
+    create_repo(repo_id=repo_id, repo_type="dataset", private=bool(private), exist_ok=True)
+
+    # Load and push this split. (We upload one split at a time so you can push train and test separately.)
+    ds = load_dataset("json", data_files={str(split): files})[str(split)]
+    ds.push_to_hub(repo_id, split=str(split))
+
+    # Also upload the run metadata if present.
+    meta = run_dir / "meta.json"
+    if meta.exists():
+        api = HfApi()
+        api.upload_file(
+            repo_id=repo_id,
+            repo_type="dataset",
+            path_or_fileobj=str(meta),
+            path_in_repo=f"runs/{run_dir.name}/meta.json",
+        )
+
+
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Generate CompGen synthetic datasets (and optionally upload/download via HF).")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -344,6 +427,14 @@ def _parse_args() -> argparse.Namespace:
     g.add_argument("--hf-repo", type=str, default=None, help="Full repo id like 'user/name'. Defaults to '{hf_user}/compgen-{run_name}'.")
     g.add_argument("--hf-private", action="store_true")
     g.add_argument("--hf-upload", action="store_true", help="After generation, upload the run folder to HF datasets.")
+    g.add_argument("--hf-as-dataset", action="store_true", help="If set, upload as a datasets split (parquet), not raw files.")
+    g.add_argument("--hf-split", type=str, default="train", choices=["train", "test", "validation"], help="Split name to push when using --hf-as-dataset.")
+    g.add_argument(
+        "--split-frac",
+        type=float,
+        default=0.98,
+        help="When used with --hf-as-dataset, deterministically split generated data into train/test with this train fraction.",
+    )
 
     d = sub.add_parser("download", help="Download a dataset repo from HF to a local directory.")
     d.add_argument("--repo-id", type=str, required=True, help="HF dataset repo id like 'ethanhallphd/compgen-...'.")
@@ -354,6 +445,8 @@ def _parse_args() -> argparse.Namespace:
     u.add_argument("--hf-user", type=str, default="ethanhallphd")
     u.add_argument("--hf-repo", type=str, default=None, help="Full repo id like 'user/name'. Defaults to '{hf_user}/{folder_name}'.")
     u.add_argument("--hf-private", action="store_true")
+    u.add_argument("--hf-as-dataset", action="store_true", help="If set, upload as a datasets split (parquet), not raw files.")
+    u.add_argument("--hf-split", type=str, default="train", choices=["train", "test", "validation"], help="Split name to push when using --hf-as-dataset.")
 
     return p.parse_args()
 
@@ -374,6 +467,7 @@ def main() -> None:
             fmt=str(args.fmt),  # type: ignore[arg-type]
             tasks=tasks,
             dataset_size=int(args.dataset_size),
+            split_frac=(float(args.split_frac) if bool(args.hf_as_dataset) else 1.0),
             seed=int(args.seed),
             min_n=int(args.min_n),
             max_n=int(args.max_n),
@@ -390,8 +484,25 @@ def main() -> None:
         print(f"Wrote: {run_dir}")
         if bool(args.hf_upload):
             repo_id = cfg.hf_repo or f"{cfg.hf_user}/compgen-{run_dir.name}"
-            hf_upload_folder(folder=run_dir, repo_id=repo_id, private=bool(cfg.hf_private))
-            print(f"Uploaded to HF: {repo_id}")
+            if bool(args.hf_as_dataset):
+                if cfg.fmt != "jsonl":
+                    raise ValueError("--hf-as-dataset requires --fmt jsonl")
+                if float(cfg.split_frac) < 1.0:
+                    hf_push_run_as_dataset_split(
+                        run_dir=run_dir / "train", repo_id=repo_id, private=bool(cfg.hf_private), split="train"
+                    )
+                    hf_push_run_as_dataset_split(
+                        run_dir=run_dir / "test", repo_id=repo_id, private=bool(cfg.hf_private), split="test"
+                    )
+                    print(f"Pushed splits train/test to HF datasets: {repo_id}")
+                else:
+                    hf_push_run_as_dataset_split(
+                        run_dir=run_dir, repo_id=repo_id, private=bool(cfg.hf_private), split=str(args.hf_split)
+                    )
+                    print(f"Pushed split '{args.hf_split}' to HF datasets: {repo_id}")
+            else:
+                hf_upload_folder(folder=run_dir, repo_id=repo_id, private=bool(cfg.hf_private))
+                print(f"Uploaded raw files to HF: {repo_id}")
 
     elif args.cmd == "download":
         out_dir = Path(str(args.out_dir))
@@ -403,8 +514,12 @@ def main() -> None:
         if not folder.exists():
             raise FileNotFoundError(folder)
         repo_id = str(args.hf_repo) if args.hf_repo else f"{str(args.hf_user)}/{folder.name}"
-        hf_upload_folder(folder=folder, repo_id=repo_id, private=bool(args.hf_private))
-        print(f"Uploaded to HF: {repo_id}")
+        if bool(args.hf_as_dataset):
+            hf_push_run_as_dataset_split(folder, repo_id=repo_id, private=bool(args.hf_private), split=str(args.hf_split))
+            print(f"Pushed split '{args.hf_split}' to HF datasets: {repo_id}")
+        else:
+            hf_upload_folder(folder=folder, repo_id=repo_id, private=bool(args.hf_private))
+            print(f"Uploaded raw files to HF: {repo_id}")
 
     else:
         raise ValueError(f"Unknown cmd: {args.cmd}")
