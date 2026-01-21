@@ -763,13 +763,16 @@ class ExperimentManager:
         return {"train": (train_override if train_override is not None else dict(base))}
 
     def _command_train(self, config_path: Path) -> list[str]:
-        return [self.python, str(Path(__file__).resolve().parent / "train.py"), "--config", str(config_path)]
+        python_parts = self.python.split() if " " in self.python else [self.python]
+        return [*python_parts, str(Path(__file__).resolve().parent / "train.py"), "--config", str(config_path)]
 
     def _command_finetune(self, config_path: Path) -> list[str]:
-        return [self.python, str(Path(__file__).resolve().parent / "fine_tune.py"), "--config", str(config_path)]
+        python_parts = self.python.split() if " " in self.python else [self.python]
+        return [*python_parts, str(Path(__file__).resolve().parent / "fine_tune.py"), "--config", str(config_path)]
 
     def _command_eval(self, config_path: Path) -> list[str]:
-        return [self.python, str(Path(__file__).resolve().parent / "eval.py"), "--config", str(config_path)]
+        python_parts = self.python.split() if " " in self.python else [self.python]
+        return [*python_parts, str(Path(__file__).resolve().parent / "eval.py"), "--config", str(config_path)]
 
     def build_or_update_graph(self) -> None:
         raise NotImplementedError("Graph building from configs is deprecated; edit or regenerate work_graph.json instead.")
@@ -892,6 +895,8 @@ class ExperimentManager:
             self._persist()
 
         # Build command from node spec (graph is the sole source of truth).
+        # Split python command if it contains spaces (e.g., "uv run python3" -> ["uv", "run", "python3"])
+        python_parts = self.python.split() if " " in self.python else [self.python]
         cmd: list[str]
         cwd = str(self.code_dir())
         if n.action == "train":
@@ -900,21 +905,21 @@ class ExperimentManager:
                 raise ValueError(f"{node_id}: spec.train_config must be an object")
             tmp = self._tmp_cfg_path(node_id)
             _write_json(tmp, train_cfg)
-            cmd = [self.python, str(self.code_dir() / "train.py"), "--config", str(tmp)]
+            cmd = [*python_parts, str(self.code_dir() / "train.py"), "--config", str(tmp)]
         elif n.action == "finetune":
             exp_cfg = n.spec.get("experiment_config")
             if not isinstance(exp_cfg, dict):
                 raise ValueError(f"{node_id}: spec.experiment_config must be an object")
             tmp = self._tmp_cfg_path(node_id)
             _write_json(tmp, exp_cfg)
-            cmd = [self.python, str(self.code_dir() / "fine_tune.py"), "--config", str(tmp)]
+            cmd = [*python_parts, str(self.code_dir() / "fine_tune.py"), "--config", str(tmp)]
         elif n.action == "eval":
             eval_cfg = n.spec.get("eval_config")
             if not isinstance(eval_cfg, dict):
                 raise ValueError(f"{node_id}: spec.eval_config must be an object")
             tmp = self._tmp_cfg_path(node_id)
             _write_json(tmp, eval_cfg)
-            cmd = [self.python, str(self.code_dir() / "eval.py"), "--config", str(tmp)]
+            cmd = [*python_parts, str(self.code_dir() / "eval.py"), "--config", str(tmp)]
         else:
             raise ValueError(f"{node_id}: unknown action={n.action}")
 
