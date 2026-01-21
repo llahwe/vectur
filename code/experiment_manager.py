@@ -258,6 +258,24 @@ class ExperimentManager:
         cp = self._rclone(["lsf", remote_path], capture=True, check=False)
         return cp.returncode == 0
 
+    def _checkpoint_exists(self, checkpoint_path: str) -> bool:
+        """
+        Check if a checkpoint exists locally or on remote.
+        Returns True if the checkpoint file exists (local takes precedence).
+        """
+        # Check local first (relative to repo root)
+        local_path = self.repo_root() / checkpoint_path
+        if local_path.exists():
+            return True
+        
+        # Check remote if enabled
+        if self.remote_enabled:
+            rel = str(checkpoint_path).lstrip("/")
+            remote_path = self._remote_path(rel)
+            return self._remote_exists(remote_path)
+        
+        return False
+
     def _lock_payload(self) -> dict[str, Any]:
         now = _utc_ts()
         return {
@@ -916,6 +934,19 @@ class ExperimentManager:
             train_cfg = n.spec.get("train_config")
             if not isinstance(train_cfg, dict):
                 raise ValueError(f"{node_id}: spec.train_config must be an object")
+            
+            # Auto-detect checkpoint if no resume is explicitly set
+            # This allows resuming from checkpoints when a node is manually reset to "not_started"
+            if not train_cfg.get("resume"):
+                run_name = train_cfg.get("run_name")
+                runs_dir = train_cfg.get("runs_dir", "runs")
+                if run_name:
+                    checkpoint_path = f"{runs_dir}/{run_name}/checkpoints/latest.pt"
+                    if self._checkpoint_exists(checkpoint_path):
+                        train_cfg = dict(train_cfg)  # Make a copy to avoid mutating the original
+                        train_cfg["resume"] = checkpoint_path
+                        print(f"[ExperimentManager] Auto-detected checkpoint: {checkpoint_path}")
+            
             tmp = self._tmp_cfg_path(node_id)
             _write_json(tmp, train_cfg)
             cmd = [*python_parts, str(self.code_dir() / "train.py"), "--config", str(tmp)]
