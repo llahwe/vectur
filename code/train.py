@@ -356,9 +356,9 @@ class TrainConfig:
     #
     # If remote_sync is None (default), we auto-enable when both RCLONE_REMOTE and RCLONE_ROOT
     # are set in the environment (these are also used by `ExperimentManager` for work_graph.json).
-    remote_sync: bool | None = None
-    rclone_remote: str | None = None  # e.g. "gdrive:"
-    rclone_root: str | None = None  # e.g. "research/papers/vectur/code"
+    remote_sync: bool = True
+    rclone_remote: str | None = "gdrive:"  # e.g. "gdrive:"
+    rclone_root: str | None = "research/papers/vectur"  # e.g. "research/papers/vectur/code"
 
     # Dry run
     dry_run: bool = False
@@ -865,8 +865,8 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Disable rclone sync even if RCLONE_REMOTE/RCLONE_ROOT are set.",
     )
-    p.add_argument("--rclone-remote", type=str, default=None, help="Override rclone remote name (e.g. 'gdrive:').")
-    p.add_argument("--rclone-root", type=str, default=None, help="Override remote root folder (e.g. 'research/papers/vectur/code').")
+    p.add_argument("--rclone-remote", type=str, default="gdrive:", help="Override rclone remote name (e.g. 'gdrive:').")
+    p.add_argument("--rclone-root", type=str, default="research/papers/vectur", help="Override remote root folder (e.g. 'research/papers/vectur').")
 
     # Dry-run
     p.add_argument("--dry-run", action="store_true", help="Short offline sanity run and exit.")
@@ -930,7 +930,7 @@ def main() -> None:
             ckpt_every_seconds=int(args.ckpt_every_seconds),
             ckpt_keep_last=int(args.ckpt_keep_last),
             ckpt_prune=not bool(args.no_ckpt_prune),
-            remote_sync=(False if bool(args.no_remote_sync) else (True if bool(args.remote_sync) else None)),
+            remote_sync=(False if bool(args.no_remote_sync) else (True if bool(args.remote_sync) else True)),
             rclone_remote=(str(args.rclone_remote) if args.rclone_remote else None),
             rclone_root=(str(args.rclone_root) if args.rclone_root else None),
             dry_run=bool(args.dry_run),

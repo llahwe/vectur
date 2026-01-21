@@ -30,8 +30,8 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--python", type=str, default=_default_python())
     p.add_argument("--refresh", action="store_true", help="Pull latest graph from remote and re-load it.")
     p.add_argument("--init", action="store_true", help="Generate a fresh initial work graph (overwrites).")
-    p.add_argument("--rclone-remote", type=str, default=None, help="rclone remote prefix, e.g. 'gdrive:'.")
-    p.add_argument("--rclone-root", type=str, default=None, help="Remote folder root, e.g. 'vectur/experiments'.")
+    p.add_argument("--rclone-remote", type=str, default="gdrive:", help="rclone remote prefix, e.g. 'gdrive:'.")
+    p.add_argument("--rclone-root", type=str, default="research/papers/vectur", help="Remote folder root, e.g. 'research/papers/vectur'.")
     p.add_argument("--owner-id", type=str, default=None, help="Override worker id used in remote lockfiles.")
     # IMPORTANT: stage locks are not refreshed while a stage is running, so TTL must be
     # longer than your longest expected stage runtime (e.g. multi-day training).
