@@ -88,21 +88,29 @@ def _build_or_load_token_buffer_hf(
 
     Requires: `datasets`, `transformers`, and network access.
     """
-    from datasets import load_dataset  # type: ignore
-    from transformers import AutoTokenizer  # type: ignore
-
     cache_dir.mkdir(parents=True, exist_ok=True)
     buffer_path = cache_dir / "token_buffer.pt"
     meta_path = cache_dir / "token_buffer_meta.json"
+
+    # Fast path: allow evaluation to run without HF deps if the buffer is already cached.
+    if buffer_path.exists() and meta_path.exists():
+        flat = torch.load(buffer_path, map_location="cpu")
+        return flat, None
+
+    try:
+        from datasets import load_dataset  # type: ignore
+        from transformers import AutoTokenizer  # type: ignore
+    except ModuleNotFoundError as e:
+        raise ModuleNotFoundError(
+            "Missing optional dependency for HF streaming buffer build. Install:\n"
+            "  python3 -m pip install datasets transformers\n"
+            "Then re-run. (If eval_cache token_buffer.pt already exists, this error should not occur.)"
+        ) from e
 
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
     tokenizer.model_max_length = 10**9
     if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
         tokenizer.pad_token = tokenizer.eos_token
-
-    if buffer_path.exists() and meta_path.exists():
-        flat = torch.load(buffer_path, map_location="cpu")
-        return flat, tokenizer
 
     ds_cfg = dataset_config
     if isinstance(ds_cfg, str) and ds_cfg.strip() == "":

@@ -1,0 +1,29 @@
+[project]
+name = "vectur"
+version = "0.1.0"
+description = "VecTur: Efficient Sequence Modeling with Vectorized Turing Machines"
+requires-python = ">=3.11"
+dependencies = [
+    "torch>=2.2",
+    "torchvision>=0.17",
+    "numpy",
+    "datasets",
+    "transformers",
+]
+
+# This is the "magic" section that allows GPU support in a .toml
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+
+[tool.setuptools]
+packages = []

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import sys
 from pathlib import Path
 
@@ -11,11 +12,22 @@ def _repo_code_dir() -> Path:
     return Path(__file__).resolve().parent
 
 
+def _default_python() -> str:
+    """
+    Smart default: use 'uv run python3' if uv is available and pyproject.toml exists.
+    Otherwise fall back to 'python3'.
+    """
+    repo_root = _repo_code_dir().parent
+    if shutil.which("uv") and (repo_root / "pyproject.toml").exists():
+        return "uv run python3"
+    return "python3"
+
+
 def _parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Run experiments via a persisted DAG work graph.")
     p.add_argument("--graph-path", type=str, default=str(_repo_code_dir() / "experiments" / "work_graph.json"))
     p.add_argument("--state-dir", type=str, default=str(_repo_code_dir() / ".experiment_manager"))
-    p.add_argument("--python", type=str, default="python3")
+    p.add_argument("--python", type=str, default=_default_python())
     p.add_argument("--refresh", action="store_true", help="Pull latest graph from remote and re-load it.")
     p.add_argument("--init", action="store_true", help="Generate a fresh initial work graph (overwrites).")
     p.add_argument("--rclone-remote", type=str, default=None, help="rclone remote prefix, e.g. 'gdrive:'.")

@@ -3,13 +3,16 @@ from __future__ import annotations
 import dataclasses
 import json
 import os
+import shlex
 import subprocess
+import sys
 import time
 import traceback
 import uuid
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
+import threading
 from typing import Any, Iterable, Literal
 
 import socket
@@ -938,9 +941,17 @@ class ExperimentManager:
                     env["RCLONE_ROOT"] = str(self.rclone_root)
                     env["OWNER_ID"] = str(self.owner_id)
 
-                proc = subprocess.run(cmd, cwd=cwd, stdout=lf, stderr=subprocess.STDOUT, env=env)
+                # Handle "uv run python3" style commands: if python command contains spaces,
+                # it's likely a compound command that needs shell execution.
+                use_shell = " " in str(cmd[0]) if cmd else False
+                if use_shell:
+                    # Convert cmd list to shell string for compound commands like "uv run python3"
+                    shell_cmd = " ".join(shlex.quote(str(arg)) for arg in cmd)
+                    proc = self._run_with_tee_shell(cmd=shell_cmd, cwd=cwd, env=env, log_file=lf)
+                else:
+                    proc = self._run_with_tee(cmd=cmd, cwd=cwd, env=env, log_file=lf)
                 exit_code = int(proc.returncode)
-                ok = proc.returncode == 0
+                ok = int(proc.returncode) == 0
                 msg = "Success" if ok else f"Failed (exit {proc.returncode})"
                 err_text = None if ok else f"exit_code={proc.returncode}"
         except KeyboardInterrupt:
@@ -951,6 +962,14 @@ class ExperimentManager:
             ok = False
             msg = "Exception"
             err_text = traceback.format_exc()
+        finally:
+            # Best-effort: upload the per-node log to remote storage (e.g. Google Drive).
+            # This makes failures debuggable even when workers are ephemeral/preempted.
+            try:
+                self._maybe_upload_node_log(node_id=node_id, log_path=log_path)
+            except Exception:
+                # Never fail the stage just because log upload failed.
+                pass
 
         # Finalize status under global mutex, then release stage lock.
         try:
@@ -972,4 +991,148 @@ class ExperimentManager:
             self._release_remote_lock(lock_rel=stage_lock_rel)
 
         return ok, msg
+
+    def _run_with_tee(
+        self,
+        *,
+        cmd: list[str],
+        cwd: str,
+        env: dict[str, str],
+        log_file,
+    ) -> subprocess.CompletedProcess[str]:
+        """
+        Run a subprocess while:
+        - streaming child's stdout -> parent stdout
+        - streaming child's stderr -> parent stderr
+        - appending both streams to `log_file` (stderr lines are prefixed for clarity)
+
+        This is crucial for debugging failing work items: you see live output in the console,
+        and you also have a durable per-node logfile.
+        """
+        proc = subprocess.Popen(
+            cmd,
+            cwd=cwd,
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+        )
+        assert proc.stdout is not None
+        assert proc.stderr is not None
+
+        lock = threading.Lock()
+
+        def pump(pipe, out_stream, *, is_stderr: bool) -> None:
+            try:
+                for line in iter(pipe.readline, ""):
+                    # Console
+                    try:
+                        out_stream.write(line)
+                        out_stream.flush()
+                    except Exception:
+                        pass
+
+                    # File (serialize writes across both threads)
+                    try:
+                        with lock:
+                            if is_stderr:
+                                log_file.write("[stderr] " + line)
+                            else:
+                                log_file.write(line)
+                            log_file.flush()
+                    except Exception:
+                        pass
+            finally:
+                try:
+                    pipe.close()
+                except Exception:
+                    pass
+
+        t_out = threading.Thread(target=pump, args=(proc.stdout, sys.stdout), kwargs={"is_stderr": False}, daemon=True)
+        t_err = threading.Thread(target=pump, args=(proc.stderr, sys.stderr), kwargs={"is_stderr": True}, daemon=True)
+        t_out.start()
+        t_err.start()
+
+        rc = proc.wait()
+        t_out.join(timeout=5.0)
+        t_err.join(timeout=5.0)
+        return subprocess.CompletedProcess(args=cmd, returncode=rc, stdout="", stderr="")
+
+    def _run_with_tee_shell(
+        self,
+        *,
+        cmd: str,
+        cwd: str,
+        env: dict[str, str],
+        log_file,
+    ) -> subprocess.CompletedProcess[str]:
+        """
+        Run a shell command (e.g., "uv run python3 script.py") while:
+        - streaming child's stdout -> parent stdout
+        - streaming child's stderr -> parent stderr
+        - appending both streams to `log_file` (stderr lines are prefixed for clarity)
+        """
+        proc = subprocess.Popen(
+            cmd,
+            cwd=cwd,
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            shell=True,
+        )
+        assert proc.stdout is not None
+        assert proc.stderr is not None
+
+        lock = threading.Lock()
+
+        def pump(pipe, out_stream, *, is_stderr: bool) -> None:
+            try:
+                for line in iter(pipe.readline, ""):
+                    # Console
+                    try:
+                        out_stream.write(line)
+                        out_stream.flush()
+                    except Exception:
+                        pass
+
+                    # File (serialize writes across both threads)
+                    try:
+                        with lock:
+                            if is_stderr:
+                                log_file.write("[stderr] " + line)
+                            else:
+                                log_file.write(line)
+                            log_file.flush()
+                    except Exception:
+                        pass
+            finally:
+                try:
+                    pipe.close()
+                except Exception:
+                    pass
+
+        t_out = threading.Thread(target=pump, args=(proc.stdout, sys.stdout), kwargs={"is_stderr": False}, daemon=True)
+        t_err = threading.Thread(target=pump, args=(proc.stderr, sys.stderr), kwargs={"is_stderr": True}, daemon=True)
+        t_out.start()
+        t_err.start()
+
+        rc = proc.wait()
+        t_out.join(timeout=5.0)
+        t_err.join(timeout=5.0)
+        return subprocess.CompletedProcess(args=cmd, returncode=rc, stdout="", stderr="")
+
+    def _maybe_upload_node_log(self, *, node_id: str, log_path: Path) -> None:
+        if not self.remote_enabled:
+            return
+        if not log_path.exists():
+            return
+        # Store under <remote_root>/logs/<safe_node_id>.log
+        safe = self._safe_name(node_id)
+        rel = f"logs/{safe}.log"
+        # Ensure remote directory exists.
+        self._rclone(["mkdir", self._remote_path("logs")], check=False)
+        self._rclone(["copyto", str(log_path), self._remote_path(rel)], check=False)
 

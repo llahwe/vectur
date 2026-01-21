@@ -97,8 +97,12 @@ def _apply_rope(x: torch.Tensor, freqs_cis: torch.Tensor) -> torch.Tensor:
     # Use only the dims we need (head_dim/2).
     freqs = freqs_cis[:, : hd // 2]  # (T or 1, hd/2) complex64
     # Broadcast cos/sin over (B,H) and cast to x dtype for efficient mixed-precision compute.
-    cos = freqs.real.to(dtype=x.dtype).view(freqs.shape[0], 1, 1, freqs.shape[1])
-    sin = freqs.imag.to(dtype=x.dtype).view(freqs.shape[0], 1, 1, freqs.shape[1])
+    #
+    # x0/x1 have shape (B,T,H,HD/2). We want cos/sin to broadcast across B and H, and align on T:
+    #   cos/sin: (1,T(or 1),1,HD/2)
+    # (Previously this was shaped as (T,1,1,HD/2) which incorrectly aligned T with batch.)
+    cos = freqs.real.to(dtype=x.dtype)[None, :, None, :]  # (1, T|1, 1, hd/2)
+    sin = freqs.imag.to(dtype=x.dtype)[None, :, None, :]  # (1, T|1, 1, hd/2)
 
     x_ = x.view(b, t, h, hd // 2, 2)
     x0 = x_[..., 0]

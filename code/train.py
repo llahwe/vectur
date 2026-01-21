@@ -17,6 +17,7 @@ import argparse
 import collections
 import dataclasses
 import datetime as dt
+import io
 import json
 import os
 import random
@@ -372,25 +373,32 @@ def _build_or_load_token_buffer_hf(*, cfg: TrainConfig, run_dir: Path) -> tuple[
     Builds a flat token buffer ONCE from a streaming HF dataset, saves it, and returns it.
     Requires: `datasets`, `transformers`, and network access.
     """
-    from datasets import load_dataset  # type: ignore
-    from transformers import AutoTokenizer  # type: ignore
-
     buffer_path = run_dir / "token_buffer.pt"
     meta_path = run_dir / "token_buffer_meta.json"
+
+    # Fast path: if the buffer already exists, we can load it without requiring HF deps installed.
+    if buffer_path.exists() and meta_path.exists():
+        flat = torch.load(buffer_path, map_location="cpu")
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        if int(meta.get("buffer_tokens", -1)) != int(flat.numel()):
+            raise RuntimeError(f"Token buffer mismatch: meta says {meta.get('buffer_tokens')} but tensor has {flat.numel()} tokens")
+        # Tokenizer is only used for vocab_size inference/logging; returning None is OK for call sites.
+        return flat, None
+
+    try:
+        from datasets import load_dataset  # type: ignore
+        from transformers import AutoTokenizer  # type: ignore
+    except ModuleNotFoundError as e:
+        raise ModuleNotFoundError(
+            "Missing optional dependency for HF streaming buffer build. Install:\n"
+            "  python3 -m pip install datasets transformers\n"
+            "Then re-run. (If token_buffer.pt already exists, this error should not occur.)"
+        ) from e
 
     tokenizer = AutoTokenizer.from_pretrained(cfg.tokenizer_name)
     tokenizer.model_max_length = 10**9
     if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
         tokenizer.pad_token = tokenizer.eos_token
-
-    if buffer_path.exists() and meta_path.exists():
-        flat = torch.load(buffer_path, map_location="cpu")
-        meta = json.loads(meta_path.read_text(encoding="utf-8"))
-        if int(meta.get("buffer_tokens", -1)) != int(flat.numel()):
-            raise RuntimeError(
-                f"Token buffer mismatch: meta says {meta.get('buffer_tokens')} but tensor has {flat.numel()} tokens"
-            )
-        return flat, tokenizer
 
     ds_name = str(cfg.dataset_name)
     ds_config = cfg.dataset_config
@@ -652,8 +660,9 @@ def _maybe_remote_sync_run(
     # Small metadata files.
     config_path = run_dir / "config.json"
     metrics_path = run_dir / "metrics.jsonl"
+    console_log_path = run_dir / "console.log"
 
-    for p in (config_path, metrics_path):
+    for p in (config_path, metrics_path, console_log_path):
         if p.exists():
             rel = _rel_to_cwd(p)
             dst = _remote_path(remote, root, rel)
@@ -971,6 +980,50 @@ def main_with_cfg(cfg: TrainConfig) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
     ckpt_dir = run_dir / "checkpoints"
 
+    # Tee all stdout/stderr to a persistent logfile inside the run directory.
+    # This complements metrics.jsonl and makes debugging failures much easier.
+    console_log_path = run_dir / "console.log"
+
+    class _Tee(io.TextIOBase):
+        def __init__(self, stream, log_f, *, prefix: str = "") -> None:
+            self._stream = stream
+            self._log_f = log_f
+            self._prefix = prefix
+
+        def write(self, s: str) -> int:  # type: ignore[override]
+            n = 0
+            try:
+                n = self._stream.write(s)
+                self._stream.flush()
+            except Exception:
+                n = len(s)
+            try:
+                if self._prefix and s:
+                    # Prefix each write; good enough for line-oriented logs.
+                    self._log_f.write(self._prefix + s)
+                else:
+                    self._log_f.write(s)
+                self._log_f.flush()
+            except Exception:
+                pass
+            return n
+
+        def flush(self) -> None:  # type: ignore[override]
+            try:
+                self._stream.flush()
+            except Exception:
+                pass
+            try:
+                self._log_f.flush()
+            except Exception:
+                pass
+
+    orig_out, orig_err = sys.stdout, sys.stderr
+    log_f = console_log_path.open("a", encoding="utf-8", buffering=1)
+    sys.stdout = _Tee(orig_out, log_f)
+    sys.stderr = _Tee(orig_err, log_f, prefix="[stderr] ")
+    try:
+
     # Data
     tokenizer = None
     flat = None
@@ -1198,6 +1251,17 @@ def main_with_cfg(cfg: TrainConfig) -> None:
         print(f"Finished. Final checkpoint: {path}")
     else:
         print("Dry run finished successfully.")
+
+    finally:
+        try:
+            sys.stdout = orig_out
+            sys.stderr = orig_err
+        except Exception:
+            pass
+        try:
+            log_f.close()
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
