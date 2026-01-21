@@ -2,7 +2,7 @@
   "train": {
     "_meta": {
       "block": "vectur",
-      "hf_dataset": "ethanhallphd/compgen-compgen_v1_m",
+      "hf_dataset": "ethanhallphd/compgen-compgen_v1",
       "note": "Protocol 2b: train on CompGen (HF streaming; held-out evaluation).",
       "pretrain_set": "compgen",
       "size": "m"
@@ -10,7 +10,7 @@
     "block": "vectur",
     "data_source": "hf_buffer",
     "dataset_config": null,
-    "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+    "dataset_name": "ethanhallphd/compgen-compgen_v1",
     "dataset_split": "train",
     "dataset_text_template": "task={task}\\n{x}\\n{y}\\n",
     "dry_run": true,

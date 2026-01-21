@@ -369,7 +369,7 @@ def hf_push_run_as_dataset_split(*, run_dir: Path, repo_id: str, private: bool, 
     - `hf_push_run_as_dataset_split` creates parquet shards and registers a named split on the Hub
     """
     try:
-        from datasets import load_dataset  # type: ignore
+        from datasets import Features, Value, load_dataset  # type: ignore
     except Exception as e:  # pragma: no cover
         raise RuntimeError("`datasets` is required. Install with `pip install datasets`.") from e
 
@@ -385,7 +385,31 @@ def hf_push_run_as_dataset_split(*, run_dir: Path, repo_id: str, private: bool, 
     create_repo(repo_id=repo_id, repo_type="dataset", private=bool(private), exist_ok=True)
 
     # Load and push this split. (We upload one split at a time so you can push train and test separately.)
-    ds = load_dataset("json", data_files={str(split): files})[str(split)]
+    # IMPORTANT: Different tasks have different meta keys. If we let `datasets` infer schemas
+    # per-file, it can fail to cast between incompatible inferred Arrow structs.
+    # Provide a unified schema so all task files load into one Dataset cleanly.
+    features = Features(
+        {
+            "task": Value("string"),
+            "x": Value("string"),
+            "y": Value("string"),
+            "meta": Features(
+                {
+                    # Common / sometimes-present fields across tasks
+                    "i": Value("int64"),
+                    "n": Value("int64"),
+                    # scan_reduce
+                    "op": Value("string"),
+                    # nested_loop_count
+                    "target": Value("int64"),
+                    # dp_table_stripe
+                    "len_s": Value("int64"),
+                    "len_t": Value("int64"),
+                }
+            ),
+        }
+    )
+    ds = load_dataset("json", data_files={str(split): files}, features=features)[str(split)]
     ds.push_to_hub(repo_id, split=str(split))
 
     # Also upload the run metadata if present.
@@ -515,7 +539,7 @@ def main() -> None:
             raise FileNotFoundError(folder)
         repo_id = str(args.hf_repo) if args.hf_repo else f"{str(args.hf_user)}/{folder.name}"
         if bool(args.hf_as_dataset):
-            hf_push_run_as_dataset_split(folder, repo_id=repo_id, private=bool(args.hf_private), split=str(args.hf_split))
+            hf_push_run_as_dataset_split(run_dir=folder, repo_id=repo_id, private=bool(args.hf_private), split=str(args.hf_split))
             print(f"Pushed split '{args.hf_split}' to HF datasets: {repo_id}")
         else:
             hf_upload_folder(folder=folder, repo_id=repo_id, private=bool(args.hf_private))

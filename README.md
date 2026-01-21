@@ -118,9 +118,9 @@ Use `vectur/vast_setup.sh --rclone` to run `rclone config` on the Vast instance 
 On each Vast instance, set **placeholders** (do not paste secrets into this repo):
 
 ```bash
-export VECTUR_RCLONE_REMOTE="<YOUR_RCLONE_REMOTE_PREFIX>"   # e.g. "gdrive:"
-export VECTUR_RCLONE_ROOT="<REMOTE_FOLDER_PATH>"            # e.g. "vectur/experiment_manager"
-export VECTUR_OWNER_ID="$(hostname):$$"
+export RCLONE_REMOTE="<YOUR_RCLONE_REMOTE_PREFIX>"   # e.g. "gdrive:"
+export RCLONE_ROOT="<REMOTE_FOLDER_PATH>"            # e.g. "research/papers/vectur/code"
+export OWNER_ID="$(hostname):$$"
 ```
 
 Then run:
@@ -151,4 +151,4 @@ Or (advanced) edit the remote `work_graph.json` / lockfiles directly via Google 
 
 - **Do not commit** credentials, access tokens, SSH keys, or `rclone.conf`.
 - Treat `rclone config` and any cloud credentials as sensitive.
-- Prefer passing remotes/paths via environment variables (`VECTUR_RCLONE_REMOTE`, `VECTUR_RCLONE_ROOT`) rather than hardcoding them into configs or docs.
+- Prefer passing remotes/paths via environment variables (`RCLONE_REMOTE`, `RCLONE_ROOT`) rather than hardcoding them into configs or docs.

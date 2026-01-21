@@ -21,7 +21,9 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--rclone-remote", type=str, default=None, help="rclone remote prefix, e.g. 'gdrive:'.")
     p.add_argument("--rclone-root", type=str, default=None, help="Remote folder root, e.g. 'vectur/experiments'.")
     p.add_argument("--owner-id", type=str, default=None, help="Override worker id used in remote lockfiles.")
-    p.add_argument("--lock-ttl-seconds", type=int, default=6 * 3600, help="Lock expiry time to avoid deadlocks.")
+    # IMPORTANT: stage locks are not refreshed while a stage is running, so TTL must be
+    # longer than your longest expected stage runtime (e.g. multi-day training).
+    p.add_argument("--lock-ttl-seconds", type=int, default=4 * 24 * 3600, help="Lock expiry time to avoid deadlocks.")
     p.add_argument("--no-remote", action="store_true", help="Disable remote state/locks even if env vars set.")
 
     p.add_argument("--max-stages", type=int, default=1, help="How many runnable stages to execute this run.")

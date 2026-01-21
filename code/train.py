@@ -339,11 +339,14 @@ class TrainConfig:
     grad_checkpoint: bool = True
     tf32: bool = True
     max_steps: int = 0  # 0 => no limit
-    max_time_seconds: int = 3600
+    # Default wall-clock timeout for training runs (non-dry-run).
+    # 3 days = 72 hours = 259200 seconds.
+    max_time_seconds: int = 3 * 24 * 3600
     log_every_steps: int = 20
 
     # Checkpointing
-    ckpt_every_seconds: int = 300
+    # Default checkpoint cadence: 2 per hour => every 30 minutes => 1800 seconds.
+    ckpt_every_seconds: int = 30 * 60
     ckpt_keep_last: int = 8
     ckpt_prune: bool = True
     resume: str | None = None
@@ -892,8 +895,8 @@ def main() -> None:
             dataset_name=args.dataset_name,
             dataset_config=args.dataset_config,
             dataset_split=args.dataset_split,
-        dataset_text_field=str(args.dataset_text_field),
-        dataset_text_template=(str(args.dataset_text_template) if args.dataset_text_template else None),
+            dataset_text_field=str(args.dataset_text_field),
+            dataset_text_template=(str(args.dataset_text_template) if args.dataset_text_template else None),
             tokenizer_name=args.tokenizer_name,
             buffer_tokens=int(args.buffer_tokens),
             microbatch_size=int(args.microbatch_size),

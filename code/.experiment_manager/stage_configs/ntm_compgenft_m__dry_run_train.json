@@ -2,7 +2,7 @@
   "train": {
     "_meta": {
       "block": "ntm",
-      "hf_dataset": "ethanhallphd/compgen-compgen_v1_m",
+      "hf_dataset": "ethanhallphd/compgen-compgen_v1",
       "note": "Protocol 2a (fine-tune): start from CLRS-pretrained checkpoint and fine-tune on CompGen. (NTM stands in for NTM/DNC baseline.)",
       "pretrain_set": "compgenft",
       "resume_expected_at": "runs/ntm_clrs_m/checkpoints/latest.pt",
@@ -11,7 +11,7 @@
     "block": "ntm",
     "data_source": "hf_buffer",
     "dataset_config": null,
-    "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+    "dataset_name": "ethanhallphd/compgen-compgen_v1",
     "dataset_split": "train",
     "dataset_text_template": "task={task}\\n{x}\\n{y}\\n",
     "dry_run": true,

@@ -22,6 +22,9 @@ import json
 import sys
 from pathlib import Path
 from typing import Any
+import os
+import time
+import uuid
 
 
 def _load_json(path: str) -> dict[str, Any]:
@@ -99,9 +102,7 @@ def main() -> None:
             # Default finetune run name to the config stem if available.
             finetune_train["run_name"] = Path(str(args.config)).stem
 
-        # Reuse train.py's JSON loader by writing an in-memory object:
-        cfg = train_mod._load_train_config_json(str(args.config))  # type: ignore[attr-defined]
-        # The above would load exp['train'], not finetune; so instead load directly:
+        # Load directly from the derived finetune TrainConfig object.
         cfg = train_mod._load_train_config_json(str(_write_tmp_train_config(finetune_train)))  # type: ignore[attr-defined]
         train_mod.main_with_cfg(cfg)  # type: ignore[attr-defined]
 
@@ -124,7 +125,9 @@ def _write_tmp_train_config(obj: dict[str, Any]) -> Path:
     """
     out_dir = Path(__file__).resolve().parent / ".tmp_configs"
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / "finetune_tmp.json"
+    # Avoid collisions when multiple fine-tunes run concurrently.
+    stamp = f"{int(time.time())}_{os.getpid()}_{uuid.uuid4().hex[:8]}"
+    path = out_dir / f"finetune_tmp_{stamp}.json"
     path.write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return path
 

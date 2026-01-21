@@ -23,6 +23,10 @@ Status = Literal[
     "interrupted",
 ]
 
+# CompGen HF datasets repo id (see `vectur/datasets/compgen.py`).
+# Note: this dataset is independent of model size, so do not suffix with _s/_m/_l.
+COMPGEN_DATASET_ID = "ethanhallphd/compgen-compgen_v1"
+
 
 def _utc_ts() -> float:
     return float(time.time())
@@ -129,7 +133,9 @@ class ExperimentManager:
         rclone_remote: str | None = None,
         rclone_root: str | None = None,
         owner_id: str | None = None,
-        lock_ttl_seconds: int = 6 * 3600,
+        # IMPORTANT: stage locks are not refreshed while a stage is running, so TTL must be
+        # longer than your longest expected stage runtime (e.g. multi-day training).
+        lock_ttl_seconds: int = 4 * 24 * 3600,
     ) -> None:
         self.graph_path = Path(graph_path)
         self.state_dir = Path(state_dir)
@@ -354,7 +360,9 @@ class ExperimentManager:
         nodes: dict[str, WorkNode] = {}
 
         blocks = ["attention", "lstm", "ntm", "vectur", "vecstur"]
-        size = "m"
+        # Default to small models for sanity / cost control.
+        # TrainConfig.model_size expects one of {"s","m","l"}.
+        size = "s"
 
         def train_node_id(block: str, trainset: str) -> str:
             return f"train::{block}::{trainset}::{size}"
@@ -451,7 +459,7 @@ class ExperimentManager:
                 "block": block,
                 "n_layers": 0,
                 "data_source": "hf_buffer",
-                "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+                "dataset_name": COMPGEN_DATASET_ID,
                 "dataset_config": None,
                 "dataset_split": "train",
                 "dataset_text_template": "task={task}\n{x}\n{y}\n",
@@ -634,7 +642,7 @@ class ExperimentManager:
                 "name": "compgen_test",
                 "kind": "ppl",
                 "data_source": "hf_buffer",
-                "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+                "dataset_name": COMPGEN_DATASET_ID,
                 "dataset_config": None,
                 "dataset_split": "test",
                 "dataset_text_template": "task={task}\n{x}\n{y}\n",
@@ -785,11 +793,35 @@ class ExperimentManager:
         self.nodes = {k: WorkNode.from_dict(v) for k, v in nodes_raw.items()}
         return self
 
+    def _validate_graph(self) -> None:
+        """
+        Defensive validation to avoid accidentally running the wrong thing.
+        - Require node.id to match its key (when provided).
+        - Require all dependencies to exist.
+        - Require action-specific spec payloads for runnable actions.
+        """
+        for k, n in self.nodes.items():
+            if n.id and str(n.id) != str(k):
+                raise ValueError(f"Graph node key/id mismatch: key={k!r} node.id={n.id!r}")
+            for dep in n.depends_on:
+                if dep not in self.nodes:
+                    raise KeyError(f"Node {k!r} depends on missing node {dep!r}")
+            if n.action == "train":
+                if not isinstance(n.spec.get("train_config"), dict):
+                    raise ValueError(f"{k!r}: train node missing spec.train_config object")
+            elif n.action == "finetune":
+                if not isinstance(n.spec.get("experiment_config"), dict):
+                    raise ValueError(f"{k!r}: finetune node missing spec.experiment_config object")
+            elif n.action == "eval":
+                if not isinstance(n.spec.get("eval_config"), dict):
+                    raise ValueError(f"{k!r}: eval node missing spec.eval_config object")
+
     def load_graph(self) -> None:
         # Best-effort: prefer remote as source of truth when enabled.
         self.remote_pull_graph()
         if self.graph_path.exists():
             self._load_graph_file()
+            self._validate_graph()
 
     def refresh(self) -> None:
         # No-op: graph is authoritative and edited manually or via generate_initial_work_items().
@@ -821,7 +853,10 @@ class ExperimentManager:
             # Do not auto-run non-executable nodes.
             if n.action in ("paper", "noop"):
                 continue
-            deps = [self.nodes[d] for d in n.depends_on if d in self.nodes]
+            # Dependencies are validated on load; if something is missing anyway, do not run.
+            if any(d not in self.nodes for d in n.depends_on):
+                continue
+            deps = [self.nodes[d] for d in n.depends_on]
             if any(_is_blocking(d.status) for d in deps):
                 continue
             if all(_is_done(d.status) for d in deps):

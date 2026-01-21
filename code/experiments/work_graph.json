@@ -1,19 +1,19 @@
 {
   "nodes": {
-    "dry_run_eval::arc_challenge_test::attention::attention_fineweb_m": {
+    "dry_run_eval::arc_challenge_test::attention::attention_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902348,
+      "created_utc": 1769003364.819767,
       "depends_on": [
-        "train::attention::fineweb::m"
+        "train::attention::fineweb::s"
       ],
-      "id": "dry_run_eval::arc_challenge_test::attention::attention_fineweb_m",
+      "id": "dry_run_eval::arc_challenge_test::attention::attention_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -35,22 +35,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902348
+      "updated_utc": 1769003364.819767
     },
-    "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_m": {
+    "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902385,
+      "created_utc": 1769003364.8198102,
       "depends_on": [
-        "train::lstm::fineweb::m"
+        "train::lstm::fineweb::s"
       ],
-      "id": "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_m",
+      "id": "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -72,22 +72,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902385
+      "updated_utc": 1769003364.8198102
     },
-    "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_m": {
+    "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902436,
+      "created_utc": 1769003364.82009,
       "depends_on": [
-        "train::ntm::fineweb::m"
+        "train::ntm::fineweb::s"
       ],
-      "id": "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_m",
+      "id": "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -109,22 +109,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902436
+      "updated_utc": 1769003364.82009
     },
-    "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_m": {
+    "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902501,
+      "created_utc": 1769003364.8201568,
       "depends_on": [
-        "train::vecstur::fineweb::m"
+        "train::vecstur::fineweb::s"
       ],
-      "id": "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_m",
+      "id": "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -146,22 +146,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902501
+      "updated_utc": 1769003364.8201568
     },
-    "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_m": {
+    "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902467,
+      "created_utc": 1769003364.820121,
       "depends_on": [
-        "train::vectur::fineweb::m"
+        "train::vectur::fineweb::s"
       ],
-      "id": "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_m",
+      "id": "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -183,22 +183,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902467
+      "updated_utc": 1769003364.820121
     },
-    "dry_run_eval::clrs_text_test::attention::attention_clrs_m": {
+    "dry_run_eval::clrs_text_test::attention::attention_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902357,
+      "created_utc": 1769003364.819777,
       "depends_on": [
-        "train::attention::clrs::m"
+        "train::attention::clrs::s"
       ],
-      "id": "dry_run_eval::clrs_text_test::attention::attention_clrs_m",
+      "id": "dry_run_eval::clrs_text_test::attention::attention_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -219,22 +219,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902357
+      "updated_utc": 1769003364.819777
     },
-    "dry_run_eval::clrs_text_test::lstm::lstm_clrs_m": {
+    "dry_run_eval::clrs_text_test::lstm::lstm_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902393,
+      "created_utc": 1769003364.819819,
       "depends_on": [
-        "train::lstm::clrs::m"
+        "train::lstm::clrs::s"
       ],
-      "id": "dry_run_eval::clrs_text_test::lstm::lstm_clrs_m",
+      "id": "dry_run_eval::clrs_text_test::lstm::lstm_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -255,22 +255,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902393
+      "updated_utc": 1769003364.819819
     },
-    "dry_run_eval::clrs_text_test::ntm::ntm_clrs_m": {
+    "dry_run_eval::clrs_text_test::ntm::ntm_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902443,
+      "created_utc": 1769003364.820097,
       "depends_on": [
-        "train::ntm::clrs::m"
+        "train::ntm::clrs::s"
       ],
-      "id": "dry_run_eval::clrs_text_test::ntm::ntm_clrs_m",
+      "id": "dry_run_eval::clrs_text_test::ntm::ntm_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -291,22 +291,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902443
+      "updated_utc": 1769003364.820097
     },
-    "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_m": {
+    "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902507,
+      "created_utc": 1769003364.8201642,
       "depends_on": [
-        "train::vecstur::clrs::m"
+        "train::vecstur::clrs::s"
       ],
-      "id": "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_m",
+      "id": "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -327,22 +327,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902508
+      "updated_utc": 1769003364.8201642
     },
-    "dry_run_eval::clrs_text_test::vectur::vectur_clrs_m": {
+    "dry_run_eval::clrs_text_test::vectur::vectur_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902476,
+      "created_utc": 1769003364.82013,
       "depends_on": [
-        "train::vectur::clrs::m"
+        "train::vectur::clrs::s"
       ],
-      "id": "dry_run_eval::clrs_text_test::vectur::vectur_clrs_m",
+      "id": "dry_run_eval::clrs_text_test::vectur::vectur_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -363,22 +363,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902476
+      "updated_utc": 1769003364.820131
     },
-    "dry_run_eval::compgen_test::attention::attention_compgen_m": {
+    "dry_run_eval::compgen_test::attention::attention_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9023612,
+      "created_utc": 1769003364.81978,
       "depends_on": [
-        "train::attention::compgen::m"
+        "train::attention::compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test::attention::attention_compgen_m",
+      "id": "dry_run_eval::compgen_test::attention::attention_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_compgen_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -388,7 +388,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -399,22 +399,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023612
+      "updated_utc": 1769003364.81978
     },
-    "dry_run_eval::compgen_test::lstm::lstm_compgen_m": {
+    "dry_run_eval::compgen_test::lstm::lstm_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902397,
+      "created_utc": 1769003364.819822,
       "depends_on": [
-        "train::lstm::compgen::m"
+        "train::lstm::compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test::lstm::lstm_compgen_m",
+      "id": "dry_run_eval::compgen_test::lstm::lstm_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_compgen_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -424,7 +424,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -435,22 +435,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902397
+      "updated_utc": 1769003364.819822
     },
-    "dry_run_eval::compgen_test::ntm::ntm_compgen_m": {
+    "dry_run_eval::compgen_test::ntm::ntm_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902446,
+      "created_utc": 1769003364.8201,
       "depends_on": [
-        "train::ntm::compgen::m"
+        "train::ntm::compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test::ntm::ntm_compgen_m",
+      "id": "dry_run_eval::compgen_test::ntm::ntm_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_compgen_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -460,7 +460,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -471,22 +471,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902446
+      "updated_utc": 1769003364.8201
     },
-    "dry_run_eval::compgen_test::vecstur::vecstur_compgen_m": {
+    "dry_run_eval::compgen_test::vecstur::vecstur_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9025102,
+      "created_utc": 1769003364.8201659,
       "depends_on": [
-        "train::vecstur::compgen::m"
+        "train::vecstur::compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test::vecstur::vecstur_compgen_m",
+      "id": "dry_run_eval::compgen_test::vecstur::vecstur_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_compgen_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -496,7 +496,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -507,22 +507,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9025102
+      "updated_utc": 1769003364.8201659
     },
-    "dry_run_eval::compgen_test::vectur::vectur_compgen_m": {
+    "dry_run_eval::compgen_test::vectur::vectur_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902478,
+      "created_utc": 1769003364.820134,
       "depends_on": [
-        "train::vectur::compgen::m"
+        "train::vectur::compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test::vectur::vectur_compgen_m",
+      "id": "dry_run_eval::compgen_test::vectur::vectur_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_compgen_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -532,7 +532,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -543,22 +543,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024792
+      "updated_utc": 1769003364.820134
     },
-    "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m": {
+    "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902366,
+      "created_utc": 1769003364.819787,
       "depends_on": [
-        "finetune::attention::clrs_to_compgen::m"
+        "finetune::attention::clrs_to_compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m",
+      "id": "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_clrs_to_compgenft_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -568,7 +568,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -579,22 +579,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902366
+      "updated_utc": 1769003364.819787
     },
-    "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m": {
+    "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024022,
+      "created_utc": 1769003364.8198311,
       "depends_on": [
-        "finetune::lstm::clrs_to_compgen::m"
+        "finetune::lstm::clrs_to_compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m",
+      "id": "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_clrs_to_compgenft_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -604,7 +604,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -615,22 +615,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024022
+      "updated_utc": 1769003364.8198311
     },
-    "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m": {
+    "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902451,
+      "created_utc": 1769003364.820104,
       "depends_on": [
-        "finetune::ntm::clrs_to_compgen::m"
+        "finetune::ntm::clrs_to_compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m",
+      "id": "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_clrs_to_compgenft_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -640,7 +640,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -651,22 +651,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902452
+      "updated_utc": 1769003364.820104
     },
-    "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m": {
+    "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902515,
+      "created_utc": 1769003364.820171,
       "depends_on": [
-        "finetune::vecstur::clrs_to_compgen::m"
+        "finetune::vecstur::clrs_to_compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m",
+      "id": "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_clrs_to_compgenft_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -676,7 +676,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -687,22 +687,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902515
+      "updated_utc": 1769003364.820171
     },
-    "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m": {
+    "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902483,
+      "created_utc": 1769003364.820139,
       "depends_on": [
-        "finetune::vectur::clrs_to_compgen::m"
+        "finetune::vectur::clrs_to_compgen::s"
       ],
-      "id": "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m",
+      "id": "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_clrs_to_compgenft_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -712,7 +712,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -723,22 +723,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902483
+      "updated_utc": 1769003364.820139
     },
-    "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_m": {
+    "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9023628,
+      "created_utc": 1769003364.819783,
       "depends_on": [
-        "train::attention::clrs::m"
+        "train::attention::clrs::s"
       ],
-      "id": "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_m",
+      "id": "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -748,7 +748,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -759,22 +759,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023628
+      "updated_utc": 1769003364.819783
     },
-    "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_m": {
+    "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902399,
+      "created_utc": 1769003364.819828,
       "depends_on": [
-        "train::lstm::clrs::m"
+        "train::lstm::clrs::s"
       ],
-      "id": "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_m",
+      "id": "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -784,7 +784,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -795,22 +795,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024
+      "updated_utc": 1769003364.819828
     },
-    "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_m": {
+    "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902449,
+      "created_utc": 1769003364.820102,
       "depends_on": [
-        "train::ntm::clrs::m"
+        "train::ntm::clrs::s"
       ],
-      "id": "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_m",
+      "id": "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -820,7 +820,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -831,22 +831,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902449
+      "updated_utc": 1769003364.820102
     },
-    "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m": {
+    "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902512,
+      "created_utc": 1769003364.820169,
       "depends_on": [
-        "train::vecstur::clrs::m"
+        "train::vecstur::clrs::s"
       ],
-      "id": "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m",
+      "id": "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -856,7 +856,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -867,22 +867,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902512
+      "updated_utc": 1769003364.820169
     },
-    "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_m": {
+    "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024808,
+      "created_utc": 1769003364.820137,
       "depends_on": [
-        "train::vectur::clrs::m"
+        "train::vectur::clrs::s"
       ],
-      "id": "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_m",
+      "id": "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_clrs_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -892,7 +892,7 @@
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -903,22 +903,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024808
+      "updated_utc": 1769003364.820137
     },
-    "dry_run_eval::gsm8k_test::attention::attention_fineweb_m": {
+    "dry_run_eval::gsm8k_test::attention::attention_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902345,
+      "created_utc": 1769003364.819764,
       "depends_on": [
-        "train::attention::fineweb::m"
+        "train::attention::fineweb::s"
       ],
-      "id": "dry_run_eval::gsm8k_test::attention::attention_fineweb_m",
+      "id": "dry_run_eval::gsm8k_test::attention::attention_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -940,22 +940,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902345
+      "updated_utc": 1769003364.819764
     },
-    "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_m": {
+    "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9023821,
+      "created_utc": 1769003364.819808,
       "depends_on": [
-        "train::lstm::fineweb::m"
+        "train::lstm::fineweb::s"
       ],
-      "id": "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_m",
+      "id": "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -977,22 +977,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902383
+      "updated_utc": 1769003364.819808
     },
-    "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_m": {
+    "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902434,
+      "created_utc": 1769003364.820087,
       "depends_on": [
-        "train::ntm::fineweb::m"
+        "train::ntm::fineweb::s"
       ],
-      "id": "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_m",
+      "id": "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1014,22 +1014,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902434
+      "updated_utc": 1769003364.820087
     },
-    "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_m": {
+    "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902498,
+      "created_utc": 1769003364.8201542,
       "depends_on": [
-        "train::vecstur::fineweb::m"
+        "train::vecstur::fineweb::s"
       ],
-      "id": "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_m",
+      "id": "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1051,22 +1051,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902499
+      "updated_utc": 1769003364.820155
     },
-    "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_m": {
+    "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902465,
+      "created_utc": 1769003364.8201191,
       "depends_on": [
-        "train::vectur::fineweb::m"
+        "train::vectur::fineweb::s"
       ],
-      "id": "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_m",
+      "id": "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1088,22 +1088,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902465
+      "updated_utc": 1769003364.8201191
     },
-    "dry_run_eval::hellaswag_val::attention::attention_fineweb_m": {
+    "dry_run_eval::hellaswag_val::attention::attention_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9023511,
+      "created_utc": 1769003364.81977,
       "depends_on": [
-        "train::attention::fineweb::m"
+        "train::attention::fineweb::s"
       ],
-      "id": "dry_run_eval::hellaswag_val::attention::attention_fineweb_m",
+      "id": "dry_run_eval::hellaswag_val::attention::attention_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1125,22 +1125,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023511
+      "updated_utc": 1769003364.81977
     },
-    "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_m": {
+    "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902387,
+      "created_utc": 1769003364.819813,
       "depends_on": [
-        "train::lstm::fineweb::m"
+        "train::lstm::fineweb::s"
       ],
-      "id": "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_m",
+      "id": "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1162,22 +1162,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902387
+      "updated_utc": 1769003364.819813
     },
-    "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_m": {
+    "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024389,
+      "created_utc": 1769003364.820092,
       "depends_on": [
-        "train::ntm::fineweb::m"
+        "train::ntm::fineweb::s"
       ],
-      "id": "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_m",
+      "id": "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1199,22 +1199,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024389
+      "updated_utc": 1769003364.820092
     },
-    "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_m": {
+    "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902503,
+      "created_utc": 1769003364.820159,
       "depends_on": [
-        "train::vecstur::fineweb::m"
+        "train::vecstur::fineweb::s"
       ],
-      "id": "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_m",
+      "id": "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1236,22 +1236,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902503
+      "updated_utc": 1769003364.820159
     },
-    "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_m": {
+    "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024692,
+      "created_utc": 1769003364.820123,
       "depends_on": [
-        "train::vectur::fineweb::m"
+        "train::vectur::fineweb::s"
       ],
-      "id": "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_m",
+      "id": "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1273,22 +1273,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024692
+      "updated_utc": 1769003364.820124
     },
-    "dry_run_eval::wikitext103_test::attention::attention_fineweb_m": {
+    "dry_run_eval::wikitext103_test::attention::attention_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902354,
+      "created_utc": 1769003364.819774,
       "depends_on": [
-        "train::attention::fineweb::m"
+        "train::attention::fineweb::s"
       ],
-      "id": "dry_run_eval::wikitext103_test::attention::attention_fineweb_m",
+      "id": "dry_run_eval::wikitext103_test::attention::attention_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1309,22 +1309,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902354
+      "updated_utc": 1769003364.819774
     },
-    "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_m": {
+    "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.90239,
+      "created_utc": 1769003364.819815,
       "depends_on": [
-        "train::lstm::fineweb::m"
+        "train::lstm::fineweb::s"
       ],
-      "id": "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_m",
+      "id": "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1345,22 +1345,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.90239
+      "updated_utc": 1769003364.819815
     },
-    "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_m": {
+    "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902441,
+      "created_utc": 1769003364.8200939,
       "depends_on": [
-        "train::ntm::fineweb::m"
+        "train::ntm::fineweb::s"
       ],
-      "id": "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_m",
+      "id": "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1381,22 +1381,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902441
+      "updated_utc": 1769003364.8200939
     },
-    "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_m": {
+    "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902505,
+      "created_utc": 1769003364.820161,
       "depends_on": [
-        "train::vecstur::fineweb::m"
+        "train::vecstur::fineweb::s"
       ],
-      "id": "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_m",
+      "id": "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1417,22 +1417,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902505
+      "updated_utc": 1769003364.820161
     },
-    "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_m": {
+    "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902472,
+      "created_utc": 1769003364.820126,
       "depends_on": [
-        "train::vectur::fineweb::m"
+        "train::vectur::fineweb::s"
       ],
-      "id": "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_m",
+      "id": "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_fineweb_s/checkpoints/latest.pt",
           "eval": {
             "batch_size": 2,
             "max_batches": 2,
@@ -1453,16 +1453,16 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902472
+      "updated_utc": 1769003364.820127
     },
-    "dry_run_finetune::attention::clrs_to_compgen::m": {
+    "dry_run_finetune::attention::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.9023411,
+      "created_utc": 1769003364.8197591,
       "depends_on": [
-        "train::attention::clrs::m"
+        "train::attention::clrs::s"
       ],
-      "id": "dry_run_finetune::attention::clrs_to_compgen::m",
+      "id": "dry_run_finetune::attention::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1473,34 +1473,34 @@
             "block": "attention",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
             "dry_run": true,
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "attention_clrs_to_compgenft_m__dryrun",
+            "run_name": "attention_clrs_to_compgenft_s__dryrun",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/attention_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "attention_clrs_m",
+            "run_name": "attention_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023411
+      "updated_utc": 1769003364.8197591
     },
-    "dry_run_finetune::lstm::clrs_to_compgen::m": {
+    "dry_run_finetune::lstm::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.902379,
+      "created_utc": 1769003364.819804,
       "depends_on": [
-        "train::lstm::clrs::m"
+        "train::lstm::clrs::s"
       ],
-      "id": "dry_run_finetune::lstm::clrs_to_compgen::m",
+      "id": "dry_run_finetune::lstm::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1511,34 +1511,34 @@
             "block": "lstm",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
             "dry_run": true,
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "lstm_clrs_to_compgenft_m__dryrun",
+            "run_name": "lstm_clrs_to_compgenft_s__dryrun",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/lstm_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "lstm_clrs_m",
+            "run_name": "lstm_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902379
+      "updated_utc": 1769003364.819804
     },
-    "dry_run_finetune::ntm::clrs_to_compgen::m": {
+    "dry_run_finetune::ntm::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.90243,
+      "created_utc": 1769003364.820083,
       "depends_on": [
-        "train::ntm::clrs::m"
+        "train::ntm::clrs::s"
       ],
-      "id": "dry_run_finetune::ntm::clrs_to_compgen::m",
+      "id": "dry_run_finetune::ntm::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1549,34 +1549,34 @@
             "block": "ntm",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
             "dry_run": true,
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "ntm_clrs_to_compgenft_m__dryrun",
+            "run_name": "ntm_clrs_to_compgenft_s__dryrun",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/ntm_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "ntm_clrs_m",
+            "run_name": "ntm_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902431
+      "updated_utc": 1769003364.820083
     },
-    "dry_run_finetune::vecstur::clrs_to_compgen::m": {
+    "dry_run_finetune::vecstur::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.902495,
+      "created_utc": 1769003364.820151,
       "depends_on": [
-        "train::vecstur::clrs::m"
+        "train::vecstur::clrs::s"
       ],
-      "id": "dry_run_finetune::vecstur::clrs_to_compgen::m",
+      "id": "dry_run_finetune::vecstur::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1587,34 +1587,34 @@
             "block": "vecstur",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
             "dry_run": true,
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "vecstur_clrs_to_compgenft_m__dryrun",
+            "run_name": "vecstur_clrs_to_compgenft_s__dryrun",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/vecstur_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "vecstur_clrs_m",
+            "run_name": "vecstur_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902495
+      "updated_utc": 1769003364.820151
     },
-    "dry_run_finetune::vectur::clrs_to_compgen::m": {
+    "dry_run_finetune::vectur::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.902462,
+      "created_utc": 1769003364.8201149,
       "depends_on": [
-        "train::vectur::clrs::m"
+        "train::vectur::clrs::s"
       ],
-      "id": "dry_run_finetune::vectur::clrs_to_compgen::m",
+      "id": "dry_run_finetune::vectur::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1625,32 +1625,32 @@
             "block": "vectur",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
             "dry_run": true,
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "vectur_clrs_to_compgenft_m__dryrun",
+            "run_name": "vectur_clrs_to_compgenft_s__dryrun",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/vectur_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "vectur_clrs_m",
+            "run_name": "vectur_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902462
+      "updated_utc": 1769003364.8201149
     },
-    "dry_run_train::attention::clrs::m": {
+    "dry_run_train::attention::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902335,
+      "created_utc": 1769003364.819751,
       "depends_on": [],
-      "id": "dry_run_train::attention::clrs::m",
+      "id": "dry_run_train::attention::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1663,22 +1663,22 @@
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "attention_clrs_m__dryrun",
+          "run_name": "attention_clrs_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902335
+      "updated_utc": 1769003364.819751
     },
-    "dry_run_train::attention::compgen::m": {
+    "dry_run_train::attention::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902337,
+      "created_utc": 1769003364.819754,
       "depends_on": [],
-      "id": "dry_run_train::attention::compgen::m",
+      "id": "dry_run_train::attention::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1687,26 +1687,26 @@
           "block": "attention",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "attention_compgen_m__dryrun",
+          "run_name": "attention_compgen_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902337
+      "updated_utc": 1769003364.819754
     },
-    "dry_run_train::attention::fineweb::m": {
+    "dry_run_train::attention::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.9023292,
+      "created_utc": 1769003364.819745,
       "depends_on": [],
-      "id": "dry_run_train::attention::fineweb::m",
+      "id": "dry_run_train::attention::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1719,22 +1719,22 @@
           "dataset_split": "train",
           "dataset_text_field": "text",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "attention_fineweb_m__dryrun",
+          "run_name": "attention_fineweb_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023302
+      "updated_utc": 1769003364.819746
     },
-    "dry_run_train::lstm::clrs::m": {
+    "dry_run_train::lstm::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.9023721,
+      "created_utc": 1769003364.819797,
       "depends_on": [],
-      "id": "dry_run_train::lstm::clrs::m",
+      "id": "dry_run_train::lstm::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1747,22 +1747,22 @@
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "lstm_clrs_m__dryrun",
+          "run_name": "lstm_clrs_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023721
+      "updated_utc": 1769003364.819797
     },
-    "dry_run_train::lstm::compgen::m": {
+    "dry_run_train::lstm::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902375,
+      "created_utc": 1769003364.8198001,
       "depends_on": [],
-      "id": "dry_run_train::lstm::compgen::m",
+      "id": "dry_run_train::lstm::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1771,26 +1771,26 @@
           "block": "lstm",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "lstm_compgen_m__dryrun",
+          "run_name": "lstm_compgen_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902375
+      "updated_utc": 1769003364.8198001
     },
-    "dry_run_train::lstm::fineweb::m": {
+    "dry_run_train::lstm::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902369,
+      "created_utc": 1769003364.819794,
       "depends_on": [],
-      "id": "dry_run_train::lstm::fineweb::m",
+      "id": "dry_run_train::lstm::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1803,22 +1803,22 @@
           "dataset_split": "train",
           "dataset_text_field": "text",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "lstm_fineweb_m__dryrun",
+          "run_name": "lstm_fineweb_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902369
+      "updated_utc": 1769003364.819794
     },
-    "dry_run_train::ntm::clrs::m": {
+    "dry_run_train::ntm::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902407,
+      "created_utc": 1769003364.820076,
       "depends_on": [],
-      "id": "dry_run_train::ntm::clrs::m",
+      "id": "dry_run_train::ntm::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1831,22 +1831,22 @@
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "ntm_clrs_m__dryrun",
+          "run_name": "ntm_clrs_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902407
+      "updated_utc": 1769003364.820076
     },
-    "dry_run_train::ntm::compgen::m": {
+    "dry_run_train::ntm::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902426,
+      "created_utc": 1769003364.820079,
       "depends_on": [],
-      "id": "dry_run_train::ntm::compgen::m",
+      "id": "dry_run_train::ntm::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1855,26 +1855,26 @@
           "block": "ntm",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "ntm_compgen_m__dryrun",
+          "run_name": "ntm_compgen_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902426
+      "updated_utc": 1769003364.820079
     },
-    "dry_run_train::ntm::fineweb::m": {
+    "dry_run_train::ntm::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902405,
+      "created_utc": 1769003364.819833,
       "depends_on": [],
-      "id": "dry_run_train::ntm::fineweb::m",
+      "id": "dry_run_train::ntm::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1887,22 +1887,22 @@
           "dataset_split": "train",
           "dataset_text_field": "text",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "ntm_fineweb_m__dryrun",
+          "run_name": "ntm_fineweb_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902405
+      "updated_utc": 1769003364.819834
     },
-    "dry_run_train::vecstur::clrs::m": {
+    "dry_run_train::vecstur::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902488,
+      "created_utc": 1769003364.8201442,
       "depends_on": [],
-      "id": "dry_run_train::vecstur::clrs::m",
+      "id": "dry_run_train::vecstur::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1915,22 +1915,22 @@
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vecstur_clrs_m__dryrun",
+          "run_name": "vecstur_clrs_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902488
+      "updated_utc": 1769003364.8201442
     },
-    "dry_run_train::vecstur::compgen::m": {
+    "dry_run_train::vecstur::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.9024901,
+      "created_utc": 1769003364.820147,
       "depends_on": [],
-      "id": "dry_run_train::vecstur::compgen::m",
+      "id": "dry_run_train::vecstur::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1939,26 +1939,26 @@
           "block": "vecstur",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vecstur_compgen_m__dryrun",
+          "run_name": "vecstur_compgen_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024901
+      "updated_utc": 1769003364.820147
     },
-    "dry_run_train::vecstur::fineweb::m": {
+    "dry_run_train::vecstur::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902486,
+      "created_utc": 1769003364.820142,
       "depends_on": [],
-      "id": "dry_run_train::vecstur::fineweb::m",
+      "id": "dry_run_train::vecstur::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1971,22 +1971,22 @@
           "dataset_split": "train",
           "dataset_text_field": "text",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vecstur_fineweb_m__dryrun",
+          "run_name": "vecstur_fineweb_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902486
+      "updated_utc": 1769003364.820142
     },
-    "dry_run_train::vectur::clrs::m": {
+    "dry_run_train::vectur::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902456,
+      "created_utc": 1769003364.82011,
       "depends_on": [],
-      "id": "dry_run_train::vectur::clrs::m",
+      "id": "dry_run_train::vectur::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -1999,22 +1999,22 @@
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vectur_clrs_m__dryrun",
+          "run_name": "vectur_clrs_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902456
+      "updated_utc": 1769003364.82011
     },
-    "dry_run_train::vectur::compgen::m": {
+    "dry_run_train::vectur::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902459,
+      "created_utc": 1769003364.820112,
       "depends_on": [],
-      "id": "dry_run_train::vectur::compgen::m",
+      "id": "dry_run_train::vectur::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -2023,26 +2023,26 @@
           "block": "vectur",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vectur_compgen_m__dryrun",
+          "run_name": "vectur_compgen_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902459
+      "updated_utc": 1769003364.820112
     },
-    "dry_run_train::vectur::fineweb::m": {
+    "dry_run_train::vectur::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902454,
+      "created_utc": 1769003364.820107,
       "depends_on": [],
-      "id": "dry_run_train::vectur::fineweb::m",
+      "id": "dry_run_train::vectur::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -2055,30 +2055,30 @@
           "dataset_split": "train",
           "dataset_text_field": "text",
           "dry_run": true,
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vectur_fineweb_m__dryrun",
+          "run_name": "vectur_fineweb_s__dryrun",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902454
+      "updated_utc": 1769003364.820107
     },
-    "eval::arc_challenge_test::attention::attention_fineweb_m": {
+    "eval::arc_challenge_test::attention::attention_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902349,
+      "created_utc": 1769003364.819768,
       "depends_on": [
-        "dry_run_eval::arc_challenge_test::attention::attention_fineweb_m"
+        "dry_run_eval::arc_challenge_test::attention::attention_fineweb_s"
       ],
-      "id": "eval::arc_challenge_test::attention::attention_fineweb_m",
+      "id": "eval::arc_challenge_test::attention::attention_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2095,22 +2095,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902349
+      "updated_utc": 1769003364.819768
     },
-    "eval::arc_challenge_test::lstm::lstm_fineweb_m": {
+    "eval::arc_challenge_test::lstm::lstm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902386,
+      "created_utc": 1769003364.819811,
       "depends_on": [
-        "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_m"
+        "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_s"
       ],
-      "id": "eval::arc_challenge_test::lstm::lstm_fineweb_m",
+      "id": "eval::arc_challenge_test::lstm::lstm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2127,22 +2127,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902386
+      "updated_utc": 1769003364.819811
     },
-    "eval::arc_challenge_test::ntm::ntm_fineweb_m": {
+    "eval::arc_challenge_test::ntm::ntm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024372,
+      "created_utc": 1769003364.8200908,
       "depends_on": [
-        "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_m"
+        "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_s"
       ],
-      "id": "eval::arc_challenge_test::ntm::ntm_fineweb_m",
+      "id": "eval::arc_challenge_test::ntm::ntm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2159,22 +2159,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024372
+      "updated_utc": 1769003364.8200908
     },
-    "eval::arc_challenge_test::vecstur::vecstur_fineweb_m": {
+    "eval::arc_challenge_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9025018,
+      "created_utc": 1769003364.820158,
       "depends_on": [
-        "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_m"
+        "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_s"
       ],
-      "id": "eval::arc_challenge_test::vecstur::vecstur_fineweb_m",
+      "id": "eval::arc_challenge_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2191,22 +2191,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9025018
+      "updated_utc": 1769003364.820158
     },
-    "eval::arc_challenge_test::vectur::vectur_fineweb_m": {
+    "eval::arc_challenge_test::vectur::vectur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024682,
+      "created_utc": 1769003364.820122,
       "depends_on": [
-        "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_m"
+        "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_s"
       ],
-      "id": "eval::arc_challenge_test::vectur::vectur_fineweb_m",
+      "id": "eval::arc_challenge_test::vectur::vectur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2223,22 +2223,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024682
+      "updated_utc": 1769003364.820122
     },
-    "eval::clrs_text_test::attention::attention_clrs_m": {
+    "eval::clrs_text_test::attention::attention_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902358,
+      "created_utc": 1769003364.819778,
       "depends_on": [
-        "dry_run_eval::clrs_text_test::attention::attention_clrs_m"
+        "dry_run_eval::clrs_text_test::attention::attention_clrs_s"
       ],
-      "id": "eval::clrs_text_test::attention::attention_clrs_m",
+      "id": "eval::clrs_text_test::attention::attention_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2254,22 +2254,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902358
+      "updated_utc": 1769003364.819778
     },
-    "eval::clrs_text_test::lstm::lstm_clrs_m": {
+    "eval::clrs_text_test::lstm::lstm_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902394,
+      "created_utc": 1769003364.81982,
       "depends_on": [
-        "dry_run_eval::clrs_text_test::lstm::lstm_clrs_m"
+        "dry_run_eval::clrs_text_test::lstm::lstm_clrs_s"
       ],
-      "id": "eval::clrs_text_test::lstm::lstm_clrs_m",
+      "id": "eval::clrs_text_test::lstm::lstm_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2285,22 +2285,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902394
+      "updated_utc": 1769003364.81982
     },
-    "eval::clrs_text_test::ntm::ntm_clrs_m": {
+    "eval::clrs_text_test::ntm::ntm_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024441,
+      "created_utc": 1769003364.8200982,
       "depends_on": [
-        "dry_run_eval::clrs_text_test::ntm::ntm_clrs_m"
+        "dry_run_eval::clrs_text_test::ntm::ntm_clrs_s"
       ],
-      "id": "eval::clrs_text_test::ntm::ntm_clrs_m",
+      "id": "eval::clrs_text_test::ntm::ntm_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2316,22 +2316,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024441
+      "updated_utc": 1769003364.8200982
     },
-    "eval::clrs_text_test::vecstur::vecstur_clrs_m": {
+    "eval::clrs_text_test::vecstur::vecstur_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902508,
+      "created_utc": 1769003364.8201652,
       "depends_on": [
-        "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_m"
+        "dry_run_eval::clrs_text_test::vecstur::vecstur_clrs_s"
       ],
-      "id": "eval::clrs_text_test::vecstur::vecstur_clrs_m",
+      "id": "eval::clrs_text_test::vecstur::vecstur_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2347,22 +2347,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902508
+      "updated_utc": 1769003364.8201652
     },
-    "eval::clrs_text_test::vectur::vectur_clrs_m": {
+    "eval::clrs_text_test::vectur::vectur_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902477,
+      "created_utc": 1769003364.820132,
       "depends_on": [
-        "dry_run_eval::clrs_text_test::vectur::vectur_clrs_m"
+        "dry_run_eval::clrs_text_test::vectur::vectur_clrs_s"
       ],
-      "id": "eval::clrs_text_test::vectur::vectur_clrs_m",
+      "id": "eval::clrs_text_test::vectur::vectur_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2378,27 +2378,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902477
+      "updated_utc": 1769003364.8201332
     },
-    "eval::compgen_test::attention::attention_compgen_m": {
+    "eval::compgen_test::attention::attention_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902362,
+      "created_utc": 1769003364.819781,
       "depends_on": [
-        "dry_run_eval::compgen_test::attention::attention_compgen_m"
+        "dry_run_eval::compgen_test::attention::attention_compgen_s"
       ],
-      "id": "eval::compgen_test::attention::attention_compgen_m",
+      "id": "eval::compgen_test::attention::attention_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_compgen_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2409,27 +2409,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902362
+      "updated_utc": 1769003364.819781
     },
-    "eval::compgen_test::lstm::lstm_compgen_m": {
+    "eval::compgen_test::lstm::lstm_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9023979,
+      "created_utc": 1769003364.819823,
       "depends_on": [
-        "dry_run_eval::compgen_test::lstm::lstm_compgen_m"
+        "dry_run_eval::compgen_test::lstm::lstm_compgen_s"
       ],
-      "id": "eval::compgen_test::lstm::lstm_compgen_m",
+      "id": "eval::compgen_test::lstm::lstm_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_compgen_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2440,27 +2440,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023979
+      "updated_utc": 1769003364.819823
     },
-    "eval::compgen_test::ntm::ntm_compgen_m": {
+    "eval::compgen_test::ntm::ntm_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902446,
+      "created_utc": 1769003364.8201,
       "depends_on": [
-        "dry_run_eval::compgen_test::ntm::ntm_compgen_m"
+        "dry_run_eval::compgen_test::ntm::ntm_compgen_s"
       ],
-      "id": "eval::compgen_test::ntm::ntm_compgen_m",
+      "id": "eval::compgen_test::ntm::ntm_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_compgen_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2471,27 +2471,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024482
+      "updated_utc": 1769003364.8201
     },
-    "eval::compgen_test::vecstur::vecstur_compgen_m": {
+    "eval::compgen_test::vecstur::vecstur_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9025111,
+      "created_utc": 1769003364.8201668,
       "depends_on": [
-        "dry_run_eval::compgen_test::vecstur::vecstur_compgen_m"
+        "dry_run_eval::compgen_test::vecstur::vecstur_compgen_s"
       ],
-      "id": "eval::compgen_test::vecstur::vecstur_compgen_m",
+      "id": "eval::compgen_test::vecstur::vecstur_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_compgen_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2502,27 +2502,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9025111
+      "updated_utc": 1769003364.8201668
     },
-    "eval::compgen_test::vectur::vectur_compgen_m": {
+    "eval::compgen_test::vectur::vectur_compgen_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024792,
+      "created_utc": 1769003364.8201349,
       "depends_on": [
-        "dry_run_eval::compgen_test::vectur::vectur_compgen_m"
+        "dry_run_eval::compgen_test::vectur::vectur_compgen_s"
       ],
-      "id": "eval::compgen_test::vectur::vectur_compgen_m",
+      "id": "eval::compgen_test::vectur::vectur_compgen_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_compgen_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_compgen_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2533,27 +2533,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024792
+      "updated_utc": 1769003364.8201349
     },
-    "eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m": {
+    "eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9023669,
+      "created_utc": 1769003364.819788,
       "depends_on": [
-        "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m"
+        "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_s"
       ],
-      "id": "eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_m",
+      "id": "eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_clrs_to_compgenft_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2564,27 +2564,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023669
+      "updated_utc": 1769003364.819788
     },
-    "eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m": {
+    "eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902403,
+      "created_utc": 1769003364.819832,
       "depends_on": [
-        "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m"
+        "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s"
       ],
-      "id": "eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_m",
+      "id": "eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_clrs_to_compgenft_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2595,27 +2595,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902403
+      "updated_utc": 1769003364.819832
     },
-    "eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m": {
+    "eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902452,
+      "created_utc": 1769003364.820105,
       "depends_on": [
-        "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m"
+        "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_s"
       ],
-      "id": "eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_m",
+      "id": "eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_clrs_to_compgenft_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2626,27 +2626,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902452
+      "updated_utc": 1769003364.820105
     },
-    "eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m": {
+    "eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902515,
+      "created_utc": 1769003364.820172,
       "depends_on": [
-        "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m"
+        "dry_run_eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_s"
       ],
-      "id": "eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_m",
+      "id": "eval::compgen_test_finetuned::vecstur::vecstur_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_clrs_to_compgenft_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2657,27 +2657,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902515
+      "updated_utc": 1769003364.820172
     },
-    "eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m": {
+    "eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902484,
+      "created_utc": 1769003364.8201401,
       "depends_on": [
-        "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m"
+        "dry_run_eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_s"
       ],
-      "id": "eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_m",
+      "id": "eval::compgen_test_finetuned::vectur::vectur_clrs_to_compgenft_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_clrs_to_compgenft_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_clrs_to_compgenft_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2688,27 +2688,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902484
+      "updated_utc": 1769003364.8201401
     },
-    "eval::compgen_test_zero_shot::attention::attention_clrs_m": {
+    "eval::compgen_test_zero_shot::attention::attention_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902364,
+      "created_utc": 1769003364.8197849,
       "depends_on": [
-        "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_m"
+        "dry_run_eval::compgen_test_zero_shot::attention::attention_clrs_s"
       ],
-      "id": "eval::compgen_test_zero_shot::attention::attention_clrs_m",
+      "id": "eval::compgen_test_zero_shot::attention::attention_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2719,27 +2719,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902364
+      "updated_utc": 1769003364.8197849
     },
-    "eval::compgen_test_zero_shot::lstm::lstm_clrs_m": {
+    "eval::compgen_test_zero_shot::lstm::lstm_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024,
+      "created_utc": 1769003364.819829,
       "depends_on": [
-        "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_m"
+        "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_s"
       ],
-      "id": "eval::compgen_test_zero_shot::lstm::lstm_clrs_m",
+      "id": "eval::compgen_test_zero_shot::lstm::lstm_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2750,27 +2750,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024
+      "updated_utc": 1769003364.819829
     },
-    "eval::compgen_test_zero_shot::ntm::ntm_clrs_m": {
+    "eval::compgen_test_zero_shot::ntm::ntm_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024498,
+      "created_utc": 1769003364.820103,
       "depends_on": [
-        "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_m"
+        "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_s"
       ],
-      "id": "eval::compgen_test_zero_shot::ntm::ntm_clrs_m",
+      "id": "eval::compgen_test_zero_shot::ntm::ntm_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2781,27 +2781,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024498
+      "updated_utc": 1769003364.820103
     },
-    "eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m": {
+    "eval::compgen_test_zero_shot::vecstur::vecstur_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9025128,
+      "created_utc": 1769003364.820169,
       "depends_on": [
-        "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m"
+        "dry_run_eval::compgen_test_zero_shot::vecstur::vecstur_clrs_s"
       ],
-      "id": "eval::compgen_test_zero_shot::vecstur::vecstur_clrs_m",
+      "id": "eval::compgen_test_zero_shot::vecstur::vecstur_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2812,27 +2812,27 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9025128
+      "updated_utc": 1769003364.820169
     },
-    "eval::compgen_test_zero_shot::vectur::vectur_clrs_m": {
+    "eval::compgen_test_zero_shot::vectur::vectur_clrs_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902482,
+      "created_utc": 1769003364.820138,
       "depends_on": [
-        "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_m"
+        "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_s"
       ],
-      "id": "eval::compgen_test_zero_shot::vectur::vectur_clrs_m",
+      "id": "eval::compgen_test_zero_shot::vectur::vectur_clrs_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_clrs_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
               "dataset_config": null,
-              "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+              "dataset_name": "ethanhallphd/compgen-compgen_v1",
               "dataset_split": "test",
               "dataset_text_template": "task={task}\n{x}\n{y}\n",
               "kind": "ppl",
@@ -2843,22 +2843,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902482
+      "updated_utc": 1769003364.820138
     },
-    "eval::gsm8k_test::attention::attention_fineweb_m": {
+    "eval::gsm8k_test::attention::attention_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902346,
+      "created_utc": 1769003364.819765,
       "depends_on": [
-        "dry_run_eval::gsm8k_test::attention::attention_fineweb_m"
+        "dry_run_eval::gsm8k_test::attention::attention_fineweb_s"
       ],
-      "id": "eval::gsm8k_test::attention::attention_fineweb_m",
+      "id": "eval::gsm8k_test::attention::attention_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2875,22 +2875,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902346
+      "updated_utc": 1769003364.819765
     },
-    "eval::gsm8k_test::lstm::lstm_fineweb_m": {
+    "eval::gsm8k_test::lstm::lstm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902383,
+      "created_utc": 1769003364.819809,
       "depends_on": [
-        "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_m"
+        "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_s"
       ],
-      "id": "eval::gsm8k_test::lstm::lstm_fineweb_m",
+      "id": "eval::gsm8k_test::lstm::lstm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2907,22 +2907,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902383
+      "updated_utc": 1769003364.819809
     },
-    "eval::gsm8k_test::ntm::ntm_fineweb_m": {
+    "eval::gsm8k_test::ntm::ntm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902435,
+      "created_utc": 1769003364.8200881,
       "depends_on": [
-        "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_m"
+        "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_s"
       ],
-      "id": "eval::gsm8k_test::ntm::ntm_fineweb_m",
+      "id": "eval::gsm8k_test::ntm::ntm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2939,22 +2939,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902435
+      "updated_utc": 1769003364.8200881
     },
-    "eval::gsm8k_test::vecstur::vecstur_fineweb_m": {
+    "eval::gsm8k_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902499,
+      "created_utc": 1769003364.820155,
       "depends_on": [
-        "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_m"
+        "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_s"
       ],
-      "id": "eval::gsm8k_test::vecstur::vecstur_fineweb_m",
+      "id": "eval::gsm8k_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -2971,22 +2971,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902499
+      "updated_utc": 1769003364.820155
     },
-    "eval::gsm8k_test::vectur::vectur_fineweb_m": {
+    "eval::gsm8k_test::vectur::vectur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902466,
+      "created_utc": 1769003364.82012,
       "depends_on": [
-        "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_m"
+        "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_s"
       ],
-      "id": "eval::gsm8k_test::vectur::vectur_fineweb_m",
+      "id": "eval::gsm8k_test::vectur::vectur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3003,22 +3003,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902466
+      "updated_utc": 1769003364.82012
     },
-    "eval::hellaswag_val::attention::attention_fineweb_m": {
+    "eval::hellaswag_val::attention::attention_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9023528,
+      "created_utc": 1769003364.819773,
       "depends_on": [
-        "dry_run_eval::hellaswag_val::attention::attention_fineweb_m"
+        "dry_run_eval::hellaswag_val::attention::attention_fineweb_s"
       ],
-      "id": "eval::hellaswag_val::attention::attention_fineweb_m",
+      "id": "eval::hellaswag_val::attention::attention_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3035,22 +3035,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023528
+      "updated_utc": 1769003364.819773
     },
-    "eval::hellaswag_val::lstm::lstm_fineweb_m": {
+    "eval::hellaswag_val::lstm::lstm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902389,
+      "created_utc": 1769003364.819813,
       "depends_on": [
-        "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_m"
+        "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_s"
       ],
-      "id": "eval::hellaswag_val::lstm::lstm_fineweb_m",
+      "id": "eval::hellaswag_val::lstm::lstm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3067,22 +3067,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902389
+      "updated_utc": 1769003364.819814
     },
-    "eval::hellaswag_val::ntm::ntm_fineweb_m": {
+    "eval::hellaswag_val::ntm::ntm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024389,
+      "created_utc": 1769003364.820093,
       "depends_on": [
-        "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_m"
+        "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_s"
       ],
-      "id": "eval::hellaswag_val::ntm::ntm_fineweb_m",
+      "id": "eval::hellaswag_val::ntm::ntm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3099,22 +3099,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024389
+      "updated_utc": 1769003364.820093
     },
-    "eval::hellaswag_val::vecstur::vecstur_fineweb_m": {
+    "eval::hellaswag_val::vecstur::vecstur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902504,
+      "created_utc": 1769003364.82016,
       "depends_on": [
-        "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_m"
+        "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_s"
       ],
-      "id": "eval::hellaswag_val::vecstur::vecstur_fineweb_m",
+      "id": "eval::hellaswag_val::vecstur::vecstur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3131,22 +3131,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902504
+      "updated_utc": 1769003364.82016
     },
-    "eval::hellaswag_val::vectur::vectur_fineweb_m": {
+    "eval::hellaswag_val::vectur::vectur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9024699,
+      "created_utc": 1769003364.820124,
       "depends_on": [
-        "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_m"
+        "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_s"
       ],
-      "id": "eval::hellaswag_val::vectur::vectur_fineweb_m",
+      "id": "eval::hellaswag_val::vectur::vectur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3163,22 +3163,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024699
+      "updated_utc": 1769003364.820124
     },
-    "eval::wikitext103_test::attention::attention_fineweb_m": {
+    "eval::wikitext103_test::attention::attention_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902355,
+      "created_utc": 1769003364.8197749,
       "depends_on": [
-        "dry_run_eval::wikitext103_test::attention::attention_fineweb_m"
+        "dry_run_eval::wikitext103_test::attention::attention_fineweb_s"
       ],
-      "id": "eval::wikitext103_test::attention::attention_fineweb_m",
+      "id": "eval::wikitext103_test::attention::attention_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/attention_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/attention_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3194,22 +3194,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902355
+      "updated_utc": 1769003364.8197749
     },
-    "eval::wikitext103_test::lstm::lstm_fineweb_m": {
+    "eval::wikitext103_test::lstm::lstm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902391,
+      "created_utc": 1769003364.8198159,
       "depends_on": [
-        "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_m"
+        "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_s"
       ],
-      "id": "eval::wikitext103_test::lstm::lstm_fineweb_m",
+      "id": "eval::wikitext103_test::lstm::lstm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/lstm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/lstm_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3225,22 +3225,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902391
+      "updated_utc": 1769003364.8198159
     },
-    "eval::wikitext103_test::ntm::ntm_fineweb_m": {
+    "eval::wikitext103_test::ntm::ntm_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902441,
+      "created_utc": 1769003364.820095,
       "depends_on": [
-        "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_m"
+        "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_s"
       ],
-      "id": "eval::wikitext103_test::ntm::ntm_fineweb_m",
+      "id": "eval::wikitext103_test::ntm::ntm_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/ntm_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/ntm_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3256,22 +3256,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902442
+      "updated_utc": 1769003364.820095
     },
-    "eval::wikitext103_test::vecstur::vecstur_fineweb_m": {
+    "eval::wikitext103_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.9025059,
+      "created_utc": 1769003364.820162,
       "depends_on": [
-        "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_m"
+        "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_s"
       ],
-      "id": "eval::wikitext103_test::vecstur::vecstur_fineweb_m",
+      "id": "eval::wikitext103_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vecstur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vecstur_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3287,22 +3287,22 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9025059
+      "updated_utc": 1769003364.820162
     },
-    "eval::wikitext103_test::vectur::vectur_fineweb_m": {
+    "eval::wikitext103_test::vectur::vectur_fineweb_s": {
       "action": "eval",
       "attempts": 0,
-      "created_utc": 1768948389.902473,
+      "created_utc": 1769003364.820127,
       "depends_on": [
-        "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_m"
+        "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_s"
       ],
-      "id": "eval::wikitext103_test::vectur::vectur_fineweb_m",
+      "id": "eval::wikitext103_test::vectur::vectur_fineweb_s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
       "spec": {
         "eval_config": {
-          "checkpoint": "runs/vectur_fineweb_m/checkpoints/latest.pt",
+          "checkpoint": "runs/vectur_fineweb_s/checkpoints/latest.pt",
           "tests": [
             {
               "data_source": "hf_buffer",
@@ -3318,16 +3318,16 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902473
+      "updated_utc": 1769003364.820127
     },
-    "finetune::attention::clrs_to_compgen::m": {
+    "finetune::attention::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.9023418,
+      "created_utc": 1769003364.81976,
       "depends_on": [
-        "dry_run_finetune::attention::clrs_to_compgen::m"
+        "dry_run_finetune::attention::clrs_to_compgen::s"
       ],
-      "id": "finetune::attention::clrs_to_compgen::m",
+      "id": "finetune::attention::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3338,33 +3338,33 @@
             "block": "attention",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "attention_clrs_to_compgenft_m",
+            "run_name": "attention_clrs_to_compgenft_s",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/attention_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/attention_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "attention_clrs_m",
+            "run_name": "attention_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023418
+      "updated_utc": 1769003364.81976
     },
-    "finetune::lstm::clrs_to_compgen::m": {
+    "finetune::lstm::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.902379,
+      "created_utc": 1769003364.819805,
       "depends_on": [
-        "dry_run_finetune::lstm::clrs_to_compgen::m"
+        "dry_run_finetune::lstm::clrs_to_compgen::s"
       ],
-      "id": "finetune::lstm::clrs_to_compgen::m",
+      "id": "finetune::lstm::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3375,33 +3375,33 @@
             "block": "lstm",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "lstm_clrs_to_compgenft_m",
+            "run_name": "lstm_clrs_to_compgenft_s",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/lstm_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/lstm_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "lstm_clrs_m",
+            "run_name": "lstm_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902379
+      "updated_utc": 1769003364.819805
     },
-    "finetune::ntm::clrs_to_compgen::m": {
+    "finetune::ntm::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.902431,
+      "created_utc": 1769003364.8200839,
       "depends_on": [
-        "dry_run_finetune::ntm::clrs_to_compgen::m"
+        "dry_run_finetune::ntm::clrs_to_compgen::s"
       ],
-      "id": "finetune::ntm::clrs_to_compgen::m",
+      "id": "finetune::ntm::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3412,33 +3412,33 @@
             "block": "ntm",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "ntm_clrs_to_compgenft_m",
+            "run_name": "ntm_clrs_to_compgenft_s",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/ntm_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/ntm_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "ntm_clrs_m",
+            "run_name": "ntm_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902431
+      "updated_utc": 1769003364.8200839
     },
-    "finetune::vecstur::clrs_to_compgen::m": {
+    "finetune::vecstur::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.902496,
+      "created_utc": 1769003364.820152,
       "depends_on": [
-        "dry_run_finetune::vecstur::clrs_to_compgen::m"
+        "dry_run_finetune::vecstur::clrs_to_compgen::s"
       ],
-      "id": "finetune::vecstur::clrs_to_compgen::m",
+      "id": "finetune::vecstur::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3449,33 +3449,33 @@
             "block": "vecstur",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "vecstur_clrs_to_compgenft_m",
+            "run_name": "vecstur_clrs_to_compgenft_s",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/vecstur_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/vecstur_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "vecstur_clrs_m",
+            "run_name": "vecstur_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902496
+      "updated_utc": 1769003364.820152
     },
-    "finetune::vectur::clrs_to_compgen::m": {
+    "finetune::vectur::clrs_to_compgen::s": {
       "action": "finetune",
       "attempts": 0,
-      "created_utc": 1768948389.902462,
+      "created_utc": 1769003364.820116,
       "depends_on": [
-        "dry_run_finetune::vectur::clrs_to_compgen::m"
+        "dry_run_finetune::vectur::clrs_to_compgen::s"
       ],
-      "id": "finetune::vectur::clrs_to_compgen::m",
+      "id": "finetune::vectur::clrs_to_compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3486,33 +3486,33 @@
             "block": "vectur",
             "data_source": "hf_buffer",
             "dataset_config": null,
-            "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+            "dataset_name": "ethanhallphd/compgen-compgen_v1",
             "dataset_split": "train",
             "dataset_text_template": "task={task}\n{x}\n{y}\n",
-            "model_size": "m",
+            "model_size": "s",
             "n_layers": 0,
-            "run_name": "vectur_clrs_to_compgenft_m",
+            "run_name": "vectur_clrs_to_compgenft_s",
             "runs_dir": "runs",
             "tokenizer_name": "gpt2"
           },
-          "resume_checkpoint": "runs/vectur_clrs_m/checkpoints/latest.pt",
+          "resume_checkpoint": "runs/vectur_clrs_s/checkpoints/latest.pt",
           "train": {
-            "run_name": "vectur_clrs_m",
+            "run_name": "vectur_clrs_s",
             "runs_dir": "runs"
           }
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902462
+      "updated_utc": 1769003364.820116
     },
-    "train::attention::clrs::m": {
+    "train::attention::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902336,
+      "created_utc": 1769003364.819752,
       "depends_on": [
-        "dry_run_train::attention::clrs::m"
+        "dry_run_train::attention::clrs::s"
       ],
-      "id": "train::attention::clrs::m",
+      "id": "train::attention::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3524,24 +3524,24 @@
           "dataset_name": "tomg-group-umd/CLRS-Text-train",
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "attention_clrs_m",
+          "run_name": "attention_clrs_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902336
+      "updated_utc": 1769003364.819752
     },
-    "train::attention::compgen::m": {
+    "train::attention::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902338,
+      "created_utc": 1769003364.819755,
       "depends_on": [
-        "dry_run_train::attention::compgen::m"
+        "dry_run_train::attention::compgen::s"
       ],
-      "id": "train::attention::compgen::m",
+      "id": "train::attention::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3550,27 +3550,27 @@
           "block": "attention",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "attention_compgen_m",
+          "run_name": "attention_compgen_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902338
+      "updated_utc": 1769003364.819755
     },
-    "train::attention::fineweb::m": {
+    "train::attention::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.9023318,
+      "created_utc": 1769003364.8197482,
       "depends_on": [
-        "dry_run_train::attention::fineweb::m"
+        "dry_run_train::attention::fineweb::s"
       ],
-      "id": "train::attention::fineweb::m",
+      "id": "train::attention::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3582,24 +3582,24 @@
           "dataset_name": "HuggingFaceFW/fineweb-edu",
           "dataset_split": "train",
           "dataset_text_field": "text",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "attention_fineweb_m",
+          "run_name": "attention_fineweb_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9023318
+      "updated_utc": 1769003364.8197482
     },
-    "train::lstm::clrs::m": {
+    "train::lstm::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902373,
+      "created_utc": 1769003364.819798,
       "depends_on": [
-        "dry_run_train::lstm::clrs::m"
+        "dry_run_train::lstm::clrs::s"
       ],
-      "id": "train::lstm::clrs::m",
+      "id": "train::lstm::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3611,24 +3611,24 @@
           "dataset_name": "tomg-group-umd/CLRS-Text-train",
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "lstm_clrs_m",
+          "run_name": "lstm_clrs_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902373
+      "updated_utc": 1769003364.819798
     },
-    "train::lstm::compgen::m": {
+    "train::lstm::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902376,
+      "created_utc": 1769003364.819801,
       "depends_on": [
-        "dry_run_train::lstm::compgen::m"
+        "dry_run_train::lstm::compgen::s"
       ],
-      "id": "train::lstm::compgen::m",
+      "id": "train::lstm::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3637,27 +3637,27 @@
           "block": "lstm",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "lstm_compgen_m",
+          "run_name": "lstm_compgen_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902376
+      "updated_utc": 1769003364.819801
     },
-    "train::lstm::fineweb::m": {
+    "train::lstm::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.90237,
+      "created_utc": 1769003364.819795,
       "depends_on": [
-        "dry_run_train::lstm::fineweb::m"
+        "dry_run_train::lstm::fineweb::s"
       ],
-      "id": "train::lstm::fineweb::m",
+      "id": "train::lstm::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3669,24 +3669,24 @@
           "dataset_name": "HuggingFaceFW/fineweb-edu",
           "dataset_split": "train",
           "dataset_text_field": "text",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "lstm_fineweb_m",
+          "run_name": "lstm_fineweb_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.90237
+      "updated_utc": 1769003364.819795
     },
-    "train::ntm::clrs::m": {
+    "train::ntm::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902408,
+      "created_utc": 1769003364.820077,
       "depends_on": [
-        "dry_run_train::ntm::clrs::m"
+        "dry_run_train::ntm::clrs::s"
       ],
-      "id": "train::ntm::clrs::m",
+      "id": "train::ntm::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3698,24 +3698,24 @@
           "dataset_name": "tomg-group-umd/CLRS-Text-train",
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "ntm_clrs_m",
+          "run_name": "ntm_clrs_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902408
+      "updated_utc": 1769003364.8200781
     },
-    "train::ntm::compgen::m": {
+    "train::ntm::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902427,
+      "created_utc": 1769003364.82008,
       "depends_on": [
-        "dry_run_train::ntm::compgen::m"
+        "dry_run_train::ntm::compgen::s"
       ],
-      "id": "train::ntm::compgen::m",
+      "id": "train::ntm::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3724,27 +3724,27 @@
           "block": "ntm",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "ntm_compgen_m",
+          "run_name": "ntm_compgen_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902427
+      "updated_utc": 1769003364.82008
     },
-    "train::ntm::fineweb::m": {
+    "train::ntm::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902405,
+      "created_utc": 1769003364.819834,
       "depends_on": [
-        "dry_run_train::ntm::fineweb::m"
+        "dry_run_train::ntm::fineweb::s"
       ],
-      "id": "train::ntm::fineweb::m",
+      "id": "train::ntm::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3756,24 +3756,24 @@
           "dataset_name": "HuggingFaceFW/fineweb-edu",
           "dataset_split": "train",
           "dataset_text_field": "text",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "ntm_fineweb_m",
+          "run_name": "ntm_fineweb_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902405
+      "updated_utc": 1769003364.819834
     },
-    "train::vecstur::clrs::m": {
+    "train::vecstur::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.9024892,
+      "created_utc": 1769003364.820145,
       "depends_on": [
-        "dry_run_train::vecstur::clrs::m"
+        "dry_run_train::vecstur::clrs::s"
       ],
-      "id": "train::vecstur::clrs::m",
+      "id": "train::vecstur::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3785,24 +3785,24 @@
           "dataset_name": "tomg-group-umd/CLRS-Text-train",
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vecstur_clrs_m",
+          "run_name": "vecstur_clrs_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024892
+      "updated_utc": 1769003364.820145
     },
-    "train::vecstur::compgen::m": {
+    "train::vecstur::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.9024909,
+      "created_utc": 1769003364.820147,
       "depends_on": [
-        "dry_run_train::vecstur::compgen::m"
+        "dry_run_train::vecstur::compgen::s"
       ],
-      "id": "train::vecstur::compgen::m",
+      "id": "train::vecstur::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3811,27 +3811,27 @@
           "block": "vecstur",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vecstur_compgen_m",
+          "run_name": "vecstur_compgen_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.9024909
+      "updated_utc": 1769003364.820147
     },
-    "train::vecstur::fineweb::m": {
+    "train::vecstur::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902486,
+      "created_utc": 1769003364.8201432,
       "depends_on": [
-        "dry_run_train::vecstur::fineweb::m"
+        "dry_run_train::vecstur::fineweb::s"
       ],
-      "id": "train::vecstur::fineweb::m",
+      "id": "train::vecstur::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3843,24 +3843,24 @@
           "dataset_name": "HuggingFaceFW/fineweb-edu",
           "dataset_split": "train",
           "dataset_text_field": "text",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vecstur_fineweb_m",
+          "run_name": "vecstur_fineweb_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902486
+      "updated_utc": 1769003364.8201432
     },
-    "train::vectur::clrs::m": {
+    "train::vectur::clrs::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902457,
+      "created_utc": 1769003364.82011,
       "depends_on": [
-        "dry_run_train::vectur::clrs::m"
+        "dry_run_train::vectur::clrs::s"
       ],
-      "id": "train::vectur::clrs::m",
+      "id": "train::vectur::clrs::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3872,24 +3872,24 @@
           "dataset_name": "tomg-group-umd/CLRS-Text-train",
           "dataset_split": "train",
           "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vectur_clrs_m",
+          "run_name": "vectur_clrs_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902457
+      "updated_utc": 1769003364.82011
     },
-    "train::vectur::compgen::m": {
+    "train::vectur::compgen::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902459,
+      "created_utc": 1769003364.820113,
       "depends_on": [
-        "dry_run_train::vectur::compgen::m"
+        "dry_run_train::vectur::compgen::s"
       ],
-      "id": "train::vectur::compgen::m",
+      "id": "train::vectur::compgen::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3898,27 +3898,27 @@
           "block": "vectur",
           "data_source": "hf_buffer",
           "dataset_config": null,
-          "dataset_name": "ethanhallphd/compgen-compgen_v1_m",
+          "dataset_name": "ethanhallphd/compgen-compgen_v1",
           "dataset_split": "train",
           "dataset_text_template": "task={task}\n{x}\n{y}\n",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vectur_compgen_m",
+          "run_name": "vectur_compgen_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902459
+      "updated_utc": 1769003364.820113
     },
-    "train::vectur::fineweb::m": {
+    "train::vectur::fineweb::s": {
       "action": "train",
       "attempts": 0,
-      "created_utc": 1768948389.902455,
+      "created_utc": 1769003364.820108,
       "depends_on": [
-        "dry_run_train::vectur::fineweb::m"
+        "dry_run_train::vectur::fineweb::s"
       ],
-      "id": "train::vectur::fineweb::m",
+      "id": "train::vectur::fineweb::s",
       "last_error": null,
       "last_exit_code": null,
       "log_path": null,
@@ -3930,17 +3930,17 @@
           "dataset_name": "HuggingFaceFW/fineweb-edu",
           "dataset_split": "train",
           "dataset_text_field": "text",
-          "model_size": "m",
+          "model_size": "s",
           "n_layers": 0,
-          "run_name": "vectur_fineweb_m",
+          "run_name": "vectur_fineweb_s",
           "runs_dir": "runs",
           "tokenizer_name": "gpt2"
         }
       },
       "status": "not_started",
-      "updated_utc": 1768948389.902455
+      "updated_utc": 1769003364.820108
     }
   },
-  "updated_utc": 1768948389.902516,
+  "updated_utc": 1769003364.820173,
   "version": 2
 }

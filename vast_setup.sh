@@ -38,11 +38,14 @@ echo "[vast_setup] starting..."
 
 RUN_RCLONE_SETUP=false
 SYNC_GIT=false
+LAUNCH_SCHEDULER=false
+LAUNCH_MAX_STAGES=999999
+REMOTE_REPO_DIR_OVERRIDE="workspace/vectur"
 
 usage() {
   cat <<'EOF'
 Usage:
-  bash vast_setup.sh [--rclone] [--sync-git] [--help]
+  bash vast_setup.sh [--rclone] [--sync-git] [--launch] [--max-stages N] [--remote-repo-dir DIR] [--help]
 
 Options:
   --rclone     Run `rclone config` on the remote with port-forwarding (53682).
@@ -51,6 +54,13 @@ Options:
                - Detect repo URL from `git remote -v` (asks you to confirm)
                - If not already present on the instance, `git clone` into /workspace/<repo>
                - Otherwise `git pull` to update it
+  --launch     Start the experiment scheduler on the instance (detached).
+               Uses tmux if available (session: vectur_sched), otherwise falls back to nohup.
+               If you don't pass --sync-git, you should also pass --remote-repo-dir.
+  --max-stages Max number of runnable stages to execute (default: 999999).
+  --remote-repo-dir
+               Absolute path to the repo root on the instance (only used when --sync-git is not set).
+               Example: /workspace/vectur
   --help       Show this help.
 
 Defaults:
@@ -83,6 +93,18 @@ while [[ $# -gt 0 ]]; do
       SYNC_GIT=true
       shift
       ;;
+    --launch)
+      LAUNCH_SCHEDULER=true
+      shift
+      ;;
+    --max-stages)
+      LAUNCH_MAX_STAGES="${2:-}"
+      shift 2
+      ;;
+    --remote-repo-dir)
+      REMOTE_REPO_DIR_OVERRIDE="${2:-}"
+      shift 2
+      ;;
     -h|--help)
       usage
       exit 0
@@ -104,6 +126,13 @@ REPO_URL=""
 REPO_NAME=""
 LOCAL_BRANCH=""
 REMOTE_REPO_BASE_DIR="${REMOTE_REPO_BASE_DIR:-/workspace}"
+# Optional override when not using --sync-git.
+REMOTE_REPO_DIR_OVERRIDE="${REMOTE_REPO_DIR_OVERRIDE:-${REMOTE_REPO_DIR:-}}"
+
+# Convenience: support the older env var names from README drafts.
+LOCAL_RCLONE_REMOTE="${RCLONE_REMOTE:-${VECTUR_RCLONE_REMOTE:-}}"
+LOCAL_RCLONE_ROOT="${RCLONE_ROOT:-${VECTUR_RCLONE_ROOT:-}}"
+LOCAL_OWNER_ID="${OWNER_ID:-${VECTUR_OWNER_ID:-}}"
 
 if [[ "${SYNC_GIT}" == "true" ]]; then
   if ! command -v git >/dev/null 2>&1; then
@@ -236,6 +265,17 @@ fi
 REMOTE_CMD=""
 REMOTE_CMD+=$'set -euo pipefail\n'
 
+# Propagate common remote-state env vars to the instance (best-effort).
+if [[ -n "${LOCAL_RCLONE_REMOTE}" ]]; then
+  REMOTE_CMD+="export RCLONE_REMOTE=$(printf '%q' "${LOCAL_RCLONE_REMOTE}")"$'\n'
+fi
+if [[ -n "${LOCAL_RCLONE_ROOT}" ]]; then
+  REMOTE_CMD+="export RCLONE_ROOT=$(printf '%q' "${LOCAL_RCLONE_ROOT}")"$'\n'
+fi
+if [[ -n "${LOCAL_OWNER_ID}" ]]; then
+  REMOTE_CMD+="export OWNER_ID=$(printf '%q' "${LOCAL_OWNER_ID}")"$'\n'
+fi
+
 if [[ "${SYNC_GIT}" == "true" ]]; then
   # Pass local values safely into the remote script.
   REMOTE_CMD+="REMOTE_REPO_BASE_DIR=$(printf '%q' "${REMOTE_REPO_BASE_DIR}")"$'\n'
@@ -303,6 +343,58 @@ if [[ "${RUN_RCLONE_SETUP}" == "true" ]]; then
   REMOTE_CMD+=$'rclone config\n'
   REMOTE_CMD+=$'echo\n'
   REMOTE_CMD+=$'echo "[vast_setup][remote] rclone config finished."\n'
+fi
+
+if [[ "${LAUNCH_SCHEDULER}" == "true" ]]; then
+  REMOTE_CMD+=$'echo\n'
+  REMOTE_CMD+=$'echo "[vast_setup][remote] Launching scheduler..."\n'
+  REMOTE_CMD+="LAUNCH_MAX_STAGES=$(printf '%q' "${LAUNCH_MAX_STAGES}")"$'\n'
+
+  # If we didn't sync via git, we still need a repo dir to run from.
+  if [[ "${SYNC_GIT}" != "true" ]]; then
+    REMOTE_CMD+="REMOTE_REPO_DIR_OVERRIDE=$(printf '%q' "${REMOTE_REPO_DIR_OVERRIDE}")"$'\n'
+    REMOTE_CMD+=$'if [[ -z "${REMOTE_REPO_DIR_OVERRIDE:-}" ]]; then\n'
+    REMOTE_CMD+=$'  if [[ -d "/workspace/vectur" ]]; then\n'
+    REMOTE_CMD+=$'    REMOTE_REPO_DIR_OVERRIDE="/workspace/vectur"\n'
+    REMOTE_CMD+=$'  fi\n'
+    REMOTE_CMD+=$'fi\n'
+    REMOTE_CMD+=$'if [[ -z "${REMOTE_REPO_DIR_OVERRIDE:-}" ]]; then\n'
+    REMOTE_CMD+=$'  echo "[vast_setup][remote] error: --launch requested but repo dir is unknown."\n'
+    REMOTE_CMD+=$'  echo "[vast_setup][remote]        Re-run with: --remote-repo-dir /workspace/<your_repo_dir>  (or use --sync-git)"\n'
+    REMOTE_CMD+=$'  exit 1\n'
+    REMOTE_CMD+=$'fi\n'
+    REMOTE_CMD+=$'REPO_DIR="${REMOTE_REPO_DIR_OVERRIDE}"\n'
+    REMOTE_CMD+=$'cd "${REPO_DIR}"\n'
+  fi
+
+  REMOTE_CMD+=$'if [[ ! -f "code/run_experiments.py" ]]; then\n'
+  REMOTE_CMD+=$'  echo "[vast_setup][remote] error: expected code/run_experiments.py under ${REPO_DIR}."\n'
+  REMOTE_CMD+=$'  echo "[vast_setup][remote]        Are you in the repo root? (Try --remote-repo-dir /workspace/vectur)"\n'
+  REMOTE_CMD+=$'  exit 1\n'
+  REMOTE_CMD+=$'fi\n'
+  REMOTE_CMD+=$'mkdir -p "code/.experiment_manager"\n'
+  REMOTE_CMD+=$'SCHED_LOG="${REPO_DIR}/code/.experiment_manager/scheduler.log"\n'
+  REMOTE_CMD+=$'PYBIN="python3"\n'
+  REMOTE_CMD+=$'if ! command -v "${PYBIN}" >/dev/null 2>&1; then PYBIN="python"; fi\n'
+  REMOTE_CMD+=$'if ! command -v "${PYBIN}" >/dev/null 2>&1; then\n'
+  REMOTE_CMD+=$'  echo "[vast_setup][remote] error: python not found on instance."\n'
+  REMOTE_CMD+=$'  exit 1\n'
+  REMOTE_CMD+=$'fi\n'
+
+  REMOTE_CMD+=$'if command -v tmux >/dev/null 2>&1; then\n'
+  REMOTE_CMD+=$'  if tmux has-session -t vectur_sched 2>/dev/null; then\n'
+  REMOTE_CMD+=$'    echo "[vast_setup][remote] Scheduler already running (tmux session: vectur_sched)."\n'
+  REMOTE_CMD+=$'    echo "[vast_setup][remote] Attach with: tmux attach -t vectur_sched"\n'
+  REMOTE_CMD+=$'  else\n'
+  REMOTE_CMD+=$'    tmux new-session -d -s vectur_sched "cd ${REPO_DIR} && ${PYBIN} code/run_experiments.py --refresh --max-stages ${LAUNCH_MAX_STAGES} >> ${SCHED_LOG} 2>&1"\n'
+  REMOTE_CMD+=$'    echo "[vast_setup][remote] Started scheduler in tmux session: vectur_sched"\n'
+  REMOTE_CMD+=$'    echo "[vast_setup][remote] Log: ${SCHED_LOG}"\n'
+  REMOTE_CMD+=$'  fi\n'
+  REMOTE_CMD+=$'else\n'
+  REMOTE_CMD+=$'  nohup bash -lc "cd ${REPO_DIR} && ${PYBIN} code/run_experiments.py --refresh --max-stages ${LAUNCH_MAX_STAGES} >> ${SCHED_LOG} 2>&1" >/dev/null 2>&1 &\n'
+  REMOTE_CMD+=$'  echo "[vast_setup][remote] Started scheduler with nohup."\n'
+  REMOTE_CMD+=$'  echo "[vast_setup][remote] Log: ${SCHED_LOG}"\n'
+  REMOTE_CMD+=$'fi\n'
 fi
 
 REMOTE_CMD+=$'echo\n'

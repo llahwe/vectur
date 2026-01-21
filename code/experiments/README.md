@@ -60,7 +60,7 @@ Action `spec` conventions:
 - FineWeb-EDU: `HuggingFaceFW/fineweb-edu` (config `sample-10BT`, split `train`)
 - CLRS-Text train: `tomg-group-umd/CLRS-Text-train` (split `train`)
 - CLRS-Text held-out: `tomg-group-umd/CLRS-Text-test` (split `test`)
-- CompGen: `ethanhallphd/compgen-compgen_v1_m` (splits `train`/`test`, if present)
+- CompGen: `ethanhallphd/compgen-compgen_v1` (splits `train`/`test`, if present)
 - GSM8K: `openai/gsm8k` (config `main`, split `test`)
 - ARC: `allenai/ai2_arc` (config `ARC-Challenge`, split `test`)
 - HellaSwag: `Rowan/hellaswag` (split `validation`)

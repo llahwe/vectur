@@ -57,6 +57,16 @@ python3 run_experiments.py \
   --max-stages 1
 ```
 
+### Optional: one-command launch helper
+
+From your laptop, you can also start the scheduler detached via:
+
+```bash
+bash vectur/vash_setup.sh --launch --remote-repo-dir /workspace/vectur
+```
+
+If `tmux` is installed on the instance, this starts a session named `vectur_sched`.
+
 Notes:
 - `run_experiments.py` uses rclone for **remote locks** + keeping `work_graph.json` authoritative on Drive.
 - `train.py` and `eval.py` automatically:
