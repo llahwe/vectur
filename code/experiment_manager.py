@@ -204,11 +204,17 @@ class ExperimentManager:
         self.graph_path.parent.mkdir(parents=True, exist_ok=True)
         # Best-effort: prefer new path; fall back to legacy basename path.
         remote_new = self._remote_path(self._remote_graph_rel)
+        print(f"[ExperimentManager] Pulling graph from {remote_new} ...")
         cp = self._rclone(["copyto", remote_new, str(self.graph_path)], capture=True, check=False)
         if cp.returncode == 0:
             return
+        print(f"[ExperimentManager] Pull failed (new path): {cp.stderr.strip() or 'unknown error'}")
+        
         remote_legacy = self._remote_path(self._remote_graph_rel_legacy)
+        print(f"[ExperimentManager] Trying legacy path {remote_legacy} ...")
         cp2 = self._rclone(["copyto", remote_legacy, str(self.graph_path)], capture=True, check=False)
+        if cp2.returncode != 0:
+            print(f"[ExperimentManager] Pull failed (legacy path): {cp2.stderr.strip() or 'unknown error'}")
         _ = cp2  # ignore errors ("not found" on first run)
 
     def remote_push_graph(self) -> None:
@@ -228,6 +234,7 @@ class ExperimentManager:
         except Exception:
             pass
         remote = self._remote_path(self._remote_graph_rel)
+        print(f"[ExperimentManager] Pushing graph to {remote} ...")
         self._rclone(["copyto", str(self.graph_path), remote], check=True)
         # Also write legacy location for older workers (best-effort).
         remote_legacy = self._remote_path(self._remote_graph_rel_legacy)
@@ -711,8 +718,14 @@ class ExperimentManager:
             "version": 2,
             "updated_utc": _utc_ts(),
             "nodes": {k: v.to_dict() for k, v in nodes.items()},
+            "remote": {
+                "enabled": bool(self.remote_enabled),
+                "rclone_remote": self.rclone_remote,
+                "rclone_root": self.rclone_root,
+            },
         }
         _write_json(self.graph_path, payload)
+        print(f"[ExperimentManager] Generated initial graph at {self.graph_path}")
         self.remote_push_graph()
 
     def _tmp_cfg_path(self, node_id: str) -> Path:

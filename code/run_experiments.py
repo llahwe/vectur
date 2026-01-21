@@ -66,6 +66,12 @@ def main() -> None:
         owner_id=(str(args.owner_id) if args.owner_id else None),
         lock_ttl_seconds=int(args.lock_ttl_seconds),
     )
+    
+    _banner(f"Remote sync enabled: {mgr.remote_enabled}")
+    if mgr.remote_enabled:
+        _banner(f"  RCLONE_REMOTE: {mgr.rclone_remote}")
+        _banner(f"  RCLONE_ROOT:   {mgr.rclone_root}")
+        _banner(f"  Local State:   {mgr.state_dir}")
 
     if args.init:
         with mgr.graph_mutex():

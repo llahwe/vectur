@@ -205,13 +205,23 @@ class VecTurBlock(nn.Module):
             theta_new = torch.remainder(theta_ + g * dtheta, two_pi)
             w_new = w_ + g * dw
 
+
             # Tape write: U_t = Δ_T(S_t,Q_t) and scatter-add only to {n_i, n_i+1}.
             u_t = self.delta_t(torch.cat([s_t, q_new], dim=-1))  # (B,d_t)
             write_n = (g * (w_ * (1.0 - s))).unsqueeze(-1) * u_t.unsqueeze(1)  # (B,k,d_t)
             write_np = (g * (w_ * s)).unsqueeze(-1) * u_t.unsqueeze(1)  # (B,k,d_t)
 
-            tape_flat_new = tape_flat_.index_add(0, flat_n, write_n.reshape(-1, self.d_t))
-            tape_flat_new = tape_flat_new.index_add(0, flat_np, write_np.reshape(-1, self.d_t))
+            # Debug / shape safety
+            vn_source = write_n.reshape(-1, self.d_t)
+            if vn_source.shape[0] != flat_n.shape[0]:
+                print(f"DEBUG: Shape mismatch in step_fn!")
+                print(f"  flat_n: {flat_n.shape}")
+                print(f"  write_n reshaped: {vn_source.shape}")
+                print(f"  b={b}, k={k}, n_tape={n_tape}, d_t={self.d_t}")
+            
+            tape_flat_new = tape_flat_.index_add(0, flat_n, vn_source.to(tape_flat_.dtype))
+            vn_source_p = write_np.reshape(-1, self.d_t)
+            tape_flat_new = tape_flat_new.index_add(0, flat_np, vn_source_p.to(tape_flat_.dtype))
             return tape_flat_new, q_new, theta_new, w_new, g
 
         # Iterative transition
