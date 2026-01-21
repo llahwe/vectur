@@ -41,6 +41,11 @@ fi
 #   RCLONE_CONFIG_GDRIVE_SERVICE_ACCOUNT_FILE=/workspace/secrets/gdrive-sa.json
 # then `rclone ls gdrive:` should work without an rclone.conf.
 
+
+# Set remote sync configuration (with defaults if not provided)
+export RCLONE_REMOTE="${RCLONE_REMOTE:-gdrive:}"
+export RCLONE_ROOT="${RCLONE_ROOT:-research/papers/vectur}"
+
 # Optional: install python deps with uv (assumes uv is already installed in the image).
 if command -v uv >/dev/null 2>&1; then
   echo "[entrypoint] syncing deps with uv..."
