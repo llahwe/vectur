@@ -19,6 +19,7 @@ import dataclasses
 import datetime as dt
 import io
 import json
+import math
 import os
 import random
 import re
@@ -360,6 +361,14 @@ class TrainConfig:
     rclone_remote: str | None = "gdrive:"  # e.g. "gdrive:"
     rclone_root: str | None = "research/papers/vectur"  # e.g. "research/papers/vectur/code"
 
+    # Validation
+    val_split_ratio: float = 0.1  # 10% validation, 90% train
+    val_every_steps: int = 500  # Run validation every N steps
+    val_batch_size: int = 4  # Batch size for validation
+    val_max_batches: int = 100  # Maximum batches to evaluate during validation
+    early_stop: bool = True  # Enable early stopping
+    early_stop_patience: int = 5  # Stop if no improvement for N consecutive validations
+
     # Dry run
     dry_run: bool = False
     dry_run_steps: int = 2
@@ -505,6 +514,93 @@ def _make_random_batch(
     x = torch.randint(0, vocab_size, (microbatch_size, seq_len), device=device, dtype=torch.long)
     y = torch.randint(0, vocab_size, (microbatch_size, seq_len), device=device, dtype=torch.long)
     return x, y
+
+
+def _split_token_buffer(flat: torch.Tensor, val_split_ratio: float) -> tuple[torch.Tensor, torch.Tensor]:
+    """
+    Split a flat token buffer into train and validation sets.
+    
+    Args:
+        flat: 1D tensor of token IDs
+        val_split_ratio: Fraction of data to use for validation (0.0 to 1.0)
+    
+    Returns:
+        train_flat: Training token buffer
+        val_flat: Validation token buffer
+    """
+    if val_split_ratio <= 0.0 or val_split_ratio >= 1.0:
+        raise ValueError(f"val_split_ratio must be between 0.0 and 1.0, got {val_split_ratio}")
+    
+    total = flat.numel()
+    val_size = int(total * val_split_ratio)
+    train_size = total - val_size
+    
+    if train_size <= 0 or val_size <= 0:
+        raise ValueError(f"Split results in empty set: total={total}, train={train_size}, val={val_size}")
+    
+    train_flat = flat[:train_size].contiguous()
+    val_flat = flat[train_size:train_size + val_size].contiguous()
+    
+    return train_flat, val_flat
+
+
+def _iter_val_spans(flat: torch.Tensor, *, batch_size: int, seq_len: int, max_batches: int) -> torch.Tensor:
+    """
+    Deterministic slicing of spans from the beginning of the validation buffer.
+    Produces (B,T+1) chunks until max_batches is hit.
+    Similar to eval.py's _iter_spans but for validation.
+    """
+    span = seq_len + 1
+    total = flat.numel()
+    step = batch_size * span
+    n_batches = min(max_batches, max(0, (total // step)))
+    for i in range(n_batches):
+        start = i * step
+        chunk = flat[start : start + step].view(batch_size, span).to(dtype=torch.long)
+        yield chunk
+
+
+@torch.no_grad()
+def _evaluate_validation(
+    *,
+    model: torch.nn.Module,
+    val_flat: torch.Tensor,
+    batch_size: int,
+    seq_len: int,
+    max_batches: int,
+    device: torch.device,
+    amp_dtype: torch.dtype,
+) -> tuple[float, float]:
+    """
+    Evaluate model on validation set.
+    
+    Returns:
+        mean_loss: Average cross-entropy loss
+        perplexity: Perplexity (exp(mean_loss))
+    """
+    model.eval()
+    total_loss = 0.0
+    total_tokens = 0
+    
+    for chunk in _iter_val_spans(val_flat, batch_size=batch_size, seq_len=seq_len, max_batches=max_batches):
+        x = chunk[:, :-1].to(device, non_blocking=True)
+        y = chunk[:, 1:].to(device, non_blocking=True)
+        
+        if amp_dtype == torch.float32:
+            logits = model(x)  # (B,T,V)
+            loss = torch.nn.functional.cross_entropy(logits.reshape(-1, logits.size(-1)), y.reshape(-1))
+        else:
+            with torch.autocast(device_type=device.type, dtype=amp_dtype):
+                logits = model(x)
+                loss = torch.nn.functional.cross_entropy(logits.reshape(-1, logits.size(-1)), y.reshape(-1))
+        
+        b, t = x.shape
+        total_loss += float(loss.item()) * (b * t)
+        total_tokens += int(b * t)
+    
+    mean_loss = total_loss / max(1, total_tokens)
+    ppl = float(math.exp(mean_loss)) if mean_loss < 50 else float("inf")
+    return mean_loss, ppl
 
 
 def _checkpoint(
@@ -854,6 +950,14 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--ckpt-keep-last", type=int, default=8)
     p.add_argument("--no-ckpt-prune", action="store_true")
 
+    # Validation
+    p.add_argument("--val-split-ratio", type=float, default=0.1, help="Fraction of data for validation (0.0 to 1.0)")
+    p.add_argument("--val-every-steps", type=int, default=500, help="Run validation every N steps")
+    p.add_argument("--val-batch-size", type=int, default=4, help="Batch size for validation")
+    p.add_argument("--val-max-batches", type=int, default=100, help="Maximum batches to evaluate during validation")
+    p.add_argument("--no-early-stop", action="store_false", dest="early_stop", help="Disable early stopping based on validation loss (enabled by default)")
+    p.add_argument("--early-stop-patience", type=int, default=5, help="Stop if no improvement for N consecutive validations")
+
     # Remote persistence (rclone)
     p.add_argument(
         "--remote-sync",
@@ -933,6 +1037,12 @@ def main() -> None:
             remote_sync=(False if bool(args.no_remote_sync) else (True if bool(args.remote_sync) else True)),
             rclone_remote=(str(args.rclone_remote) if args.rclone_remote else None),
             rclone_root=(str(args.rclone_root) if args.rclone_root else None),
+            val_split_ratio=float(args.val_split_ratio),
+            val_every_steps=int(args.val_every_steps),
+            val_batch_size=int(args.val_batch_size),
+            val_max_batches=int(args.val_max_batches),
+            early_stop=bool(getattr(args, "early_stop", True)),  # Default True if not set
+            early_stop_patience=int(args.early_stop_patience),
             dry_run=bool(args.dry_run),
             dry_run_steps=int(args.dry_run_steps),
             dry_run_seq_len=int(args.dry_run_seq_len),
@@ -1030,15 +1140,24 @@ def main_with_cfg(cfg: TrainConfig) -> None:
         # Data
         tokenizer = None
         flat = None
+        val_flat = None
         if cfg.dry_run or cfg.data_source == "random":
             vocab_size = int(cfg.dry_run_vocab_size)
         elif cfg.data_source == "hf_buffer":
             flat, tokenizer = _build_or_load_token_buffer_hf(cfg=cfg, run_dir=run_dir)
             # tokenizer may report a larger embedding size than actual ids used; still a good default.
             vocab_size = int(getattr(tokenizer, "vocab_size", cfg.dry_run_vocab_size))
+            # Split into train/val if validation is enabled
+            if not cfg.dry_run and cfg.val_split_ratio > 0.0:
+                flat, val_flat = _split_token_buffer(flat, cfg.val_split_ratio)
+                print(f"Split data: train={flat.numel()} tokens, val={val_flat.numel()} tokens")
         elif cfg.data_source == "pt_buffer":
             flat = _load_token_buffer_pt(cfg.token_buffer_path)
             vocab_size = int(flat.max().item()) + 1
+            # Split into train/val if validation is enabled
+            if not cfg.dry_run and cfg.val_split_ratio > 0.0:
+                flat, val_flat = _split_token_buffer(flat, cfg.val_split_ratio)
+                print(f"Split data: train={flat.numel()} tokens, val={val_flat.numel()} tokens")
         else:
             raise ValueError(f"Unknown data_source: {cfg.data_source}")
     
@@ -1124,6 +1243,11 @@ def main_with_cfg(cfg: TrainConfig) -> None:
     
         step = int(start_step)
         target_steps = int(cfg.dry_run_steps if cfg.dry_run else cfg.max_steps)
+        
+        # Early stopping state
+        best_val_loss = float("inf")
+        val_loss_no_improve_count = 0
+        should_early_stop = False
     
         while True:
             elapsed = time.time() - t_start
@@ -1133,6 +1257,9 @@ def main_with_cfg(cfg: TrainConfig) -> None:
                 if cfg.max_time_seconds > 0 and elapsed >= cfg.max_time_seconds:
                     break
                 if cfg.max_steps > 0 and step >= cfg.max_steps:
+                    break
+                if should_early_stop:
+                    print(f"[step {step}] Early stopping triggered")
                     break
     
             optimizer.zero_grad(set_to_none=True)
@@ -1204,6 +1331,44 @@ def main_with_cfg(cfg: TrainConfig) -> None:
                 )
                 t_last_log = time.time()
                 tokens_since_log = 0
+            
+            # Periodic validation
+            if not cfg.dry_run and val_flat is not None and step % int(cfg.val_every_steps) == 0 and step > 0:
+                val_loss, val_ppl = _evaluate_validation(
+                    model=model,
+                    val_flat=val_flat,
+                    batch_size=cfg.val_batch_size,
+                    seq_len=cfg.seq_len,
+                    max_batches=cfg.val_max_batches,
+                    device=device,
+                    amp_dtype=amp_dtype,
+                )
+                model.train()  # Switch back to training mode
+                
+                # Log validation metrics
+                val_record = {
+                    "step": step,
+                    "elapsed_s": time.time() - t_start,
+                    "val_loss": val_loss,
+                    "val_ppl": val_ppl,
+                    "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+                }
+                _append_jsonl(metrics_path, val_record)
+                print(f"[step {step}] val_loss={val_loss:.4f} val_ppl={val_ppl:.2f}")
+                
+                # Early stopping logic
+                if cfg.early_stop:
+                    if val_loss < best_val_loss:
+                        best_val_loss = val_loss
+                        val_loss_no_improve_count = 0
+                        print(f"[step {step}] New best validation loss: {best_val_loss:.4f}")
+                    else:
+                        val_loss_no_improve_count += 1
+                        print(f"[step {step}] No improvement ({val_loss_no_improve_count}/{cfg.early_stop_patience})")
+                        
+                        if val_loss_no_improve_count >= cfg.early_stop_patience:
+                            should_early_stop = True
+                            print(f"[step {step}] Early stopping triggered after {val_loss_no_improve_count} validations without improvement")
     
             if not cfg.dry_run and (time.time() - t_last_ckpt) >= float(cfg.ckpt_every_seconds):
                 path = _checkpoint(
