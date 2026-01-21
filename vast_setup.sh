@@ -41,15 +41,20 @@ SYNC_GIT=false
 LAUNCH_SCHEDULER=false
 LAUNCH_MAX_STAGES=999999
 REMOTE_REPO_DIR_OVERRIDE="workspace/vectur"
+RCLONE_AUTH_PORT_FLAG=""
 
 usage() {
   cat <<'EOF'
 Usage:
-  bash vast_setup.sh [--rclone] [--sync-git] [--launch] [--max-stages N] [--remote-repo-dir DIR] [--help]
+  bash vast_setup.sh [--rclone] [--rclone-port PORT] [--sync-git] [--launch] [--max-stages N] [--remote-repo-dir DIR] [--help]
 
 Options:
-  --rclone     Run `rclone config` on the remote with port-forwarding (53682).
+  --rclone     Run `rclone config` on the remote with port-forwarding (default: 53682).
                This is needed if you want to authenticate rclone via your local browser.
+  --rclone-port PORT
+               Port to use for rclone OAuth forwarding on both local and remote (default: 53682).
+               Use a different port if 53682 is already in use (e.g., for a second instance).
+               The same port number is used on both local and remote for consistency.
   --sync-git   Sync this repo onto the Vast instance:
                - Detect repo URL from `git remote -v` (asks you to confirm)
                - If not already present on the instance, `git clone` into /workspace/<repo>
@@ -88,6 +93,10 @@ while [[ $# -gt 0 ]]; do
     --rclone)
       RUN_RCLONE_SETUP=true
       shift
+      ;;
+    --rclone-port)
+      RCLONE_AUTH_PORT_FLAG="${2:-}"
+      shift 2
       ;;
     --sync-git)
       SYNC_GIT=true
@@ -243,7 +252,17 @@ else
 fi
 
 # rclone OAuth callback port (local forwarded -> remote).
-RCLONE_AUTH_PORT="${RCLONE_AUTH_PORT:-53682}"
+# Local port is configurable via --rclone-port flag or RCLONE_AUTH_PORT env var.
+# The same port is used on both local and remote for consistency.
+if [[ -n "${RCLONE_AUTH_PORT_FLAG}" ]]; then
+  RCLONE_AUTH_PORT="${RCLONE_AUTH_PORT_FLAG}"
+elif [[ -n "${RCLONE_AUTH_PORT:-}" ]]; then
+  RCLONE_AUTH_PORT="${RCLONE_AUTH_PORT}"
+else
+  RCLONE_AUTH_PORT="53682"
+fi
+# Use the same port on remote as local for consistency
+RCLONE_AUTH_PORT_REMOTE="${RCLONE_AUTH_PORT}"
 
 # Get SSH connection info from Vast.
 # Depending on Vast CLI version, this may be:
@@ -334,9 +353,12 @@ fi
 
 if [[ "${RUN_RCLONE_SETUP}" == "true" ]]; then
   REMOTE_CMD+=$'echo\n'
-  REMOTE_CMD+=$'echo "[vast_setup][remote] Port-forward is active."\n'
-  REMOTE_CMD+=$'echo "[vast_setup][remote] Running: rclone config"\n'
-  REMOTE_CMD+=$'echo "[vast_setup][remote] When rclone prints a URL with 127.0.0.1:53682, open it in your LOCAL browser."\n'
+  REMOTE_CMD+="RCLONE_PORT=$(printf '%q' "${RCLONE_AUTH_PORT_REMOTE}")"$'\n'
+  REMOTE_CMD+=$'export RCLONE_CONFIG_OAUTH_PORT="${RCLONE_PORT}"\n'
+  REMOTE_CMD+="LOCAL_RCLONE_PORT=$(printf '%q' "${RCLONE_AUTH_PORT}")"$'\n'
+  REMOTE_CMD+=$'echo "[vast_setup][remote] Port-forward is active (local port ${LOCAL_RCLONE_PORT} -> remote ${RCLONE_PORT})."\n'
+  REMOTE_CMD+=$'echo "[vast_setup][remote] Running: rclone config (configured to use port ${RCLONE_PORT})"\n'
+  REMOTE_CMD+=$'echo "[vast_setup][remote] When rclone prints a URL with 127.0.0.1:${RCLONE_PORT}, open it in your LOCAL browser at 127.0.0.1:${LOCAL_RCLONE_PORT}"\n'
   REMOTE_CMD+=$'echo\n'
   REMOTE_CMD+=$'if ! command -v rclone >/dev/null 2>&1; then\n'
   REMOTE_CMD+=$'  echo "[vast_setup][remote] rclone not found; attempting install (best-effort)..."\n'
@@ -445,13 +467,13 @@ if [[ "${SSH_URL}" =~ ^ssh://([^@]+)@([^:]+):([0-9]+) ]]; then
   SSH_PORT="${BASH_REMATCH[3]}"
 
   if [[ "${RUN_RCLONE_SETUP}" == "true" ]]; then
-    echo "[vast_setup] connecting to ${SSH_USER}@${SSH_HOST}:${SSH_PORT} with port-forward ${RCLONE_AUTH_PORT} (rclone setup enabled)..."
+    echo "[vast_setup] connecting to ${SSH_USER}@${SSH_HOST}:${SSH_PORT} with port-forward ${RCLONE_AUTH_PORT}->${RCLONE_AUTH_PORT_REMOTE} (rclone setup enabled)..."
     ssh \
       "${SSH_IDENTITY_ARGS[@]}" \
       -o ExitOnForwardFailure=yes \
       -o ServerAliveInterval=30 \
       -o ServerAliveCountMax=3 \
-      -L "${RCLONE_AUTH_PORT}:127.0.0.1:${RCLONE_AUTH_PORT}" \
+      -L "${RCLONE_AUTH_PORT}:127.0.0.1:${RCLONE_AUTH_PORT_REMOTE}" \
       -p "${SSH_PORT}" \
       "${SSH_USER}@${SSH_HOST}" \
       -t "bash -lc $(printf '%q' "${REMOTE_CMD}")"
@@ -476,13 +498,13 @@ if [[ "${SSH_URL}" =~ -p[[:space:]]*([0-9]+)[[:space:]]+([^[:space:]]+) ]]; then
   SSH_DEST="${BASH_REMATCH[2]}"
 
   if [[ "${RUN_RCLONE_SETUP}" == "true" ]]; then
-    echo "[vast_setup] connecting to ${SSH_DEST} (port ${SSH_PORT}) with port-forward ${RCLONE_AUTH_PORT} (rclone setup enabled)..."
+    echo "[vast_setup] connecting to ${SSH_DEST} (port ${SSH_PORT}) with port-forward ${RCLONE_AUTH_PORT}->${RCLONE_AUTH_PORT_REMOTE} (rclone setup enabled)..."
     ssh \
       "${SSH_IDENTITY_ARGS[@]}" \
       -o ExitOnForwardFailure=yes \
       -o ServerAliveInterval=30 \
       -o ServerAliveCountMax=3 \
-      -L "${RCLONE_AUTH_PORT}:127.0.0.1:${RCLONE_AUTH_PORT}" \
+      -L "${RCLONE_AUTH_PORT}:127.0.0.1:${RCLONE_AUTH_PORT_REMOTE}" \
       -p "${SSH_PORT}" \
       "${SSH_DEST}" \
       -t "bash -lc $(printf '%q' "${REMOTE_CMD}")"
@@ -514,7 +536,7 @@ if [[ "${RUN_RCLONE_SETUP}" == "true" ]]; then
     -o ExitOnForwardFailure=yes \
     -o ServerAliveInterval=30 \
     -o ServerAliveCountMax=3 \
-    -L "${RCLONE_AUTH_PORT}:127.0.0.1:${RCLONE_AUTH_PORT}" \
+    -L "${RCLONE_AUTH_PORT}:127.0.0.1:${RCLONE_AUTH_PORT_REMOTE}" \
     ${SSH_ARGS} \
     -t "bash -lc $(printf '%q' "${REMOTE_CMD}")"
 else
