@@ -1,0 +1,20 @@
+{
+      "checkpoint": "runs/attention_clrs_s/checkpoints/latest.pt",
+      "eval": {
+        "batch_size": 4,
+        "seq_len": 1024,
+        "max_batches": 100
+      },
+      "tests": [
+        {
+          "name": "clrs_text_test",
+          "kind": "ppl",
+          "data_source": "hf_buffer",
+          "dataset_name": "tomg-group-umd/CLRS-Text-test",
+          "dataset_config": null,
+          "dataset_split": "test",
+          "dataset_text_template": "algo={algo_name}\n q: {question}\n a: {answer}\n",
+          "tokenizer_name": "gpt2"
+        }
+      ]
+    }
