@@ -104,6 +104,7 @@ def main() -> None:
             return
 
         ran_one = False
+        attempted_unlocked = False
         for n in runnables:
             _banner(f"Running Stage {n.id} ...")
             ok, msg = mgr.run_node(n.id)
@@ -115,9 +116,15 @@ def main() -> None:
             if "Locked" in msg:
                 _banner("Skipped (locked by another worker).")
                 continue
+            attempted_unlocked = True
             _banner(f"Failed: {msg}")
-            return
+            # Continue: attempt other runnable stages in this invocation.
+            continue
         if not ran_one:
+            if attempted_unlocked:
+                # We tried at least one stage and it failed; reload and see if any other
+                # branches remain runnable now that the graph has been updated.
+                continue
             _banner("No runnable stages (all currently locked by other workers).")
             return
         ran += 1
