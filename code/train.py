@@ -409,7 +409,8 @@ def _build_or_load_token_buffer_hf(*, cfg: TrainConfig, run_dir: Path) -> tuple[
     else:
         ds = load_dataset(ds_name, str(ds_config), split=cfg.dataset_split, streaming=True)
     needed = int(cfg.buffer_tokens)
-    pieces: list[torch.Tensor] = []
+    # Pre-allocate buffer to avoid RAM spikes from accumulating a huge list of tensors.
+    flat = torch.empty(needed, dtype=torch.int32)
     total = 0
     started = time.time()
 
@@ -430,17 +431,20 @@ def _build_or_load_token_buffer_hf(*, cfg: TrainConfig, run_dir: Path) -> tuple[
         if not text:
             continue
         ids = tokenizer(text, add_special_tokens=False, return_tensors="pt")["input_ids"][0]
-        if ids.numel() == 0:
+        n_ids = int(ids.numel())
+        if n_ids == 0:
             continue
-        pieces.append(ids)
-        total += int(ids.numel())
+        
+        # Copy into pre-allocated buffer
+        to_copy = min(n_ids, needed - total)
+        flat[total : total + to_copy] = ids[:to_copy].to(dtype=torch.int32)
+        total += to_copy
+        
         if total >= needed:
             break
 
     if total < needed:
         raise RuntimeError(f"Could only collect {total} tokens, need {needed}.")
-
-    flat = torch.cat(pieces, dim=0)[:needed].to(dtype=torch.int32).contiguous()
     torch.save(flat, buffer_path)
     _write_json(
         meta_path,
@@ -1023,186 +1027,210 @@ def main_with_cfg(cfg: TrainConfig) -> None:
     sys.stdout = _Tee(orig_out, log_f)
     sys.stderr = _Tee(orig_err, log_f, prefix="[stderr] ")
     try:
-
-    # Data
-    tokenizer = None
-    flat = None
-    if cfg.dry_run or cfg.data_source == "random":
-        vocab_size = int(cfg.dry_run_vocab_size)
-    elif cfg.data_source == "hf_buffer":
-        flat, tokenizer = _build_or_load_token_buffer_hf(cfg=cfg, run_dir=run_dir)
-        # tokenizer may report a larger embedding size than actual ids used; still a good default.
-        vocab_size = int(getattr(tokenizer, "vocab_size", cfg.dry_run_vocab_size))
-    elif cfg.data_source == "pt_buffer":
-        flat = _load_token_buffer_pt(cfg.token_buffer_path)
-        vocab_size = int(flat.max().item()) + 1
-    else:
-        raise ValueError(f"Unknown data_source: {cfg.data_source}")
-
-    eff_mb = int(cfg.dry_run_microbatch_size if cfg.dry_run else cfg.microbatch_size)
-    eff_global_bs = int(eff_mb * cfg.grad_accum_steps)
-
-    # Finalize model dims/depth now that vocab_size is known.
-    merged_block_kwargs = _default_block_kwargs_for_size(block=cfg.block, size=cfg.model_size, dim=cfg.dim)
-    if cfg.block_kwargs:
-        merged_block_kwargs.update(cfg.block_kwargs)
-    object.__setattr__(cfg, "block_kwargs", merged_block_kwargs)  # type: ignore[misc]
-
-    if cfg.hidden_dim is None:
-        object.__setattr__(cfg, "hidden_dim", int(4 * cfg.dim))  # type: ignore[misc]
-
-    if int(cfg.n_layers) <= 0:
-        target = int(_SIZE_TARGET_PARAMS[cfg.model_size])
-        solved_layers = _solve_n_layers_for_target(
-            target_params=target,
-            vocab_size=vocab_size,
-            dim=cfg.dim,
-            hidden_dim=int(cfg.hidden_dim or 4 * cfg.dim),
-            block=cfg.block,
-            block_kwargs=cfg.block_kwargs or {},
-            min_layers=1,
-            max_layers=256,
-        )
-        object.__setattr__(cfg, "n_layers", int(solved_layers))  # type: ignore[misc]
-
-    model = ModularLlama(
-        vocab_size=vocab_size,
-        n_layers=cfg.n_layers,
-        dim=cfg.dim,
-        max_seq_len=max(cfg.max_seq_len, cfg.seq_len),
-        hidden_dim=cfg.hidden_dim,
-        block_factory=get_block_factory(cfg.block, kwargs=cfg.block_kwargs or {}),
-        grad_checkpoint=bool(cfg.grad_checkpoint),
-    ).to(device)
-
-    if cfg.compile:
-        # Compilation cost amortizes over longer runs.
-        model = torch.compile(model)  # type: ignore[assignment]
-
-    _write_json(
-        run_dir / "config.json",
-        dataclasses.asdict(cfg)
-        | {
-            "selected_device": str(device),
-            "vocab_size": vocab_size,
-            "effective_microbatch_size": eff_mb,
-            "effective_global_batch_size": eff_global_bs,
-            "torch_version": torch.__version__,
-            "cuda_available": bool(torch.cuda.is_available()),
-            "mps_available": bool(torch.backends.mps.is_available() and torch.backends.mps.is_built()),
-            "compiled": bool(cfg.compile),
-            "param_counts": _param_breakdown(model),
-            **_try_get_git_metadata(),
-        },
-    )
-
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
-
-    start_step = 0
-    if cfg.resume:
-        # If resuming and the checkpoint isn't local, fetch it from the remote.
-        try:
-            _maybe_remote_fetch_missing(
-                enabled=remote_enabled,
-                remote=remote_name,
-                root=remote_root,
-                local_path=Path(str(cfg.resume)),
-            )
-        except Exception as e:
-            raise RuntimeError(f"Failed to fetch resume checkpoint from remote: {e}") from e
-        start_step = _try_resume(Path(cfg.resume), device=device, model=model, optimizer=optimizer, scaler=scaler)
-
-    model.train()
-    metrics_path = run_dir / "metrics.jsonl"
-    t_start = time.time()
-    t_last_ckpt = time.time()
-    t_last_log = time.time()
-    tokens_since_log = 0
-
-    step = int(start_step)
-    target_steps = int(cfg.dry_run_steps if cfg.dry_run else cfg.max_steps)
-
-    while True:
-        elapsed = time.time() - t_start
-        if cfg.dry_run and step >= target_steps:
-            break
-        if not cfg.dry_run:
-            if cfg.max_time_seconds > 0 and elapsed >= cfg.max_time_seconds:
-                break
-            if cfg.max_steps > 0 and step >= cfg.max_steps:
-                break
-
-        optimizer.zero_grad(set_to_none=True)
-        total_loss = 0.0
-
-        for _ in range(int(cfg.grad_accum_steps)):
-            if cfg.dry_run or cfg.data_source == "random":
-                x, y = _make_random_batch(
-                    microbatch_size=int(cfg.dry_run_microbatch_size if cfg.dry_run else cfg.microbatch_size),
-                    seq_len=int(cfg.dry_run_seq_len if cfg.dry_run else cfg.seq_len),
-                    vocab_size=int(vocab_size),
-                    device=device,
-                )
-            else:
-                assert flat is not None
-                x, y = _sample_batch_from_flat(
-                    flat,
-                    microbatch_size=int(cfg.microbatch_size),
-                    seq_len=int(cfg.seq_len),
-                    device=device,
-                )
-
-            if amp_dtype == torch.float32:
-                logits = model(x)  # (B,T,V)
-                loss = torch.nn.functional.cross_entropy(logits.reshape(-1, logits.size(-1)), y.reshape(-1))
-            else:
-                with torch.autocast(device_type=device.type, dtype=amp_dtype):
-                    logits = model(x)
-                    loss = torch.nn.functional.cross_entropy(logits.reshape(-1, logits.size(-1)), y.reshape(-1))
-
-            loss_to_backprop = loss / int(cfg.grad_accum_steps)
-            if scaler.is_enabled():
-                scaler.scale(loss_to_backprop).backward()
-            else:
-                loss_to_backprop.backward()
-
-            total_loss += float(loss.item())
-            tokens_since_log += int(x.shape[0] * x.shape[1])
-
-        if scaler.is_enabled():
-            scaler.unscale_(optimizer)
-        grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip_norm)
-
-        if scaler.is_enabled():
-            scaler.step(optimizer)
-            scaler.update()
+        # Data
+        tokenizer = None
+        flat = None
+        if cfg.dry_run or cfg.data_source == "random":
+            vocab_size = int(cfg.dry_run_vocab_size)
+        elif cfg.data_source == "hf_buffer":
+            flat, tokenizer = _build_or_load_token_buffer_hf(cfg=cfg, run_dir=run_dir)
+            # tokenizer may report a larger embedding size than actual ids used; still a good default.
+            vocab_size = int(getattr(tokenizer, "vocab_size", cfg.dry_run_vocab_size))
+        elif cfg.data_source == "pt_buffer":
+            flat = _load_token_buffer_pt(cfg.token_buffer_path)
+            vocab_size = int(flat.max().item()) + 1
         else:
-            optimizer.step()
-
-        step += 1
-
-        if step % int(cfg.log_every_steps) == 0:
-            dt_log = max(1e-9, time.time() - t_last_log)
-            toks_per_s = tokens_since_log / dt_log
-            record = {
-                "step": step,
-                "elapsed_s": time.time() - t_start,
-                "loss": total_loss / int(cfg.grad_accum_steps),
-                "tokens_per_s": toks_per_s,
-                "device": str(device),
-                "precision": str(amp_dtype),
-                "grad_norm": float(grad_norm.detach().cpu()) if isinstance(grad_norm, torch.Tensor) else float(grad_norm),
-                "lr": optimizer.param_groups[0]["lr"],
-                "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-            }
-            _append_jsonl(metrics_path, record)
-            print(
-                f"[step {step}] loss={record['loss']:.4f} tok/s={record['tokens_per_s']:.0f} grad_norm={record['grad_norm']:.3f}"
+            raise ValueError(f"Unknown data_source: {cfg.data_source}")
+    
+        eff_mb = int(cfg.dry_run_microbatch_size if cfg.dry_run else cfg.microbatch_size)
+        eff_global_bs = int(eff_mb * cfg.grad_accum_steps)
+    
+        # Finalize model dims/depth now that vocab_size is known.
+        merged_block_kwargs = _default_block_kwargs_for_size(block=cfg.block, size=cfg.model_size, dim=cfg.dim)
+        if cfg.block_kwargs:
+            merged_block_kwargs.update(cfg.block_kwargs)
+        object.__setattr__(cfg, "block_kwargs", merged_block_kwargs)  # type: ignore[misc]
+    
+        if cfg.hidden_dim is None:
+            object.__setattr__(cfg, "hidden_dim", int(4 * cfg.dim))  # type: ignore[misc]
+    
+        if int(cfg.n_layers) <= 0:
+            target = int(_SIZE_TARGET_PARAMS[cfg.model_size])
+            solved_layers = _solve_n_layers_for_target(
+                target_params=target,
+                vocab_size=vocab_size,
+                dim=cfg.dim,
+                hidden_dim=int(cfg.hidden_dim or 4 * cfg.dim),
+                block=cfg.block,
+                block_kwargs=cfg.block_kwargs or {},
+                min_layers=1,
+                max_layers=256,
             )
-            t_last_log = time.time()
-            tokens_since_log = 0
-
-        if not cfg.dry_run and (time.time() - t_last_ckpt) >= float(cfg.ckpt_every_seconds):
+            object.__setattr__(cfg, "n_layers", int(solved_layers))  # type: ignore[misc]
+    
+        model = ModularLlama(
+            vocab_size=vocab_size,
+            n_layers=cfg.n_layers,
+            dim=cfg.dim,
+            max_seq_len=max(cfg.max_seq_len, cfg.seq_len),
+            hidden_dim=cfg.hidden_dim,
+            block_factory=get_block_factory(cfg.block, kwargs=cfg.block_kwargs or {}),
+            grad_checkpoint=bool(cfg.grad_checkpoint),
+        ).to(device)
+    
+        if cfg.compile:
+            # Compilation cost amortizes over longer runs.
+            model = torch.compile(model)  # type: ignore[assignment]
+    
+        _write_json(
+            run_dir / "config.json",
+            dataclasses.asdict(cfg)
+            | {
+                "selected_device": str(device),
+                "vocab_size": vocab_size,
+                "effective_microbatch_size": eff_mb,
+                "effective_global_batch_size": eff_global_bs,
+                "torch_version": torch.__version__,
+                "cuda_available": bool(torch.cuda.is_available()),
+                "mps_available": bool(torch.backends.mps.is_available() and torch.backends.mps.is_built()),
+                "compiled": bool(cfg.compile),
+                "param_counts": _param_breakdown(model),
+                **_try_get_git_metadata(),
+            },
+        )
+    
+        optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
+    
+        start_step = 0
+        if cfg.resume:
+            # If resuming and the checkpoint isn't local, fetch it from the remote.
+            try:
+                _maybe_remote_fetch_missing(
+                    enabled=remote_enabled,
+                    remote=remote_name,
+                    root=remote_root,
+                    local_path=Path(str(cfg.resume)),
+                )
+            except Exception as e:
+                raise RuntimeError(f"Failed to fetch resume checkpoint from remote: {e}") from e
+            start_step = _try_resume(Path(cfg.resume), device=device, model=model, optimizer=optimizer, scaler=scaler)
+    
+        model.train()
+        metrics_path = run_dir / "metrics.jsonl"
+        t_start = time.time()
+        t_last_ckpt = time.time()
+        t_last_log = time.time()
+        tokens_since_log = 0
+    
+        step = int(start_step)
+        target_steps = int(cfg.dry_run_steps if cfg.dry_run else cfg.max_steps)
+    
+        while True:
+            elapsed = time.time() - t_start
+            if cfg.dry_run and step >= target_steps:
+                break
+            if not cfg.dry_run:
+                if cfg.max_time_seconds > 0 and elapsed >= cfg.max_time_seconds:
+                    break
+                if cfg.max_steps > 0 and step >= cfg.max_steps:
+                    break
+    
+            optimizer.zero_grad(set_to_none=True)
+            total_loss = 0.0
+    
+            for _ in range(int(cfg.grad_accum_steps)):
+                if cfg.dry_run or cfg.data_source == "random":
+                    x, y = _make_random_batch(
+                        microbatch_size=int(cfg.dry_run_microbatch_size if cfg.dry_run else cfg.microbatch_size),
+                        seq_len=int(cfg.dry_run_seq_len if cfg.dry_run else cfg.seq_len),
+                        vocab_size=int(vocab_size),
+                        device=device,
+                    )
+                else:
+                    assert flat is not None
+                    x, y = _sample_batch_from_flat(
+                        flat,
+                        microbatch_size=int(cfg.microbatch_size),
+                        seq_len=int(cfg.seq_len),
+                        device=device,
+                    )
+    
+                if amp_dtype == torch.float32:
+                    logits = model(x)  # (B,T,V)
+                    loss = torch.nn.functional.cross_entropy(logits.reshape(-1, logits.size(-1)), y.reshape(-1))
+                else:
+                    with torch.autocast(device_type=device.type, dtype=amp_dtype):
+                        logits = model(x)
+                        loss = torch.nn.functional.cross_entropy(logits.reshape(-1, logits.size(-1)), y.reshape(-1))
+    
+                loss_to_backprop = loss / int(cfg.grad_accum_steps)
+                if scaler.is_enabled():
+                    scaler.scale(loss_to_backprop).backward()
+                else:
+                    loss_to_backprop.backward()
+    
+                total_loss += float(loss.item())
+                tokens_since_log += int(x.shape[0] * x.shape[1])
+    
+            if scaler.is_enabled():
+                scaler.unscale_(optimizer)
+            grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip_norm)
+    
+            if scaler.is_enabled():
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                optimizer.step()
+    
+            step += 1
+    
+            if step % int(cfg.log_every_steps) == 0:
+                dt_log = max(1e-9, time.time() - t_last_log)
+                toks_per_s = tokens_since_log / dt_log
+                record = {
+                    "step": step,
+                    "elapsed_s": time.time() - t_start,
+                    "loss": total_loss / int(cfg.grad_accum_steps),
+                    "tokens_per_s": toks_per_s,
+                    "device": str(device),
+                    "precision": str(amp_dtype),
+                    "grad_norm": float(grad_norm.detach().cpu()) if isinstance(grad_norm, torch.Tensor) else float(grad_norm),
+                    "lr": optimizer.param_groups[0]["lr"],
+                    "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+                }
+                _append_jsonl(metrics_path, record)
+                print(
+                    f"[step {step}] loss={record['loss']:.4f} tok/s={record['tokens_per_s']:.0f} grad_norm={record['grad_norm']:.3f}"
+                )
+                t_last_log = time.time()
+                tokens_since_log = 0
+    
+            if not cfg.dry_run and (time.time() - t_last_ckpt) >= float(cfg.ckpt_every_seconds):
+                path = _checkpoint(
+                    ckpt_dir=ckpt_dir,
+                    model=model,
+                    optimizer=optimizer,
+                    scaler=(scaler if scaler.is_enabled() else None),
+                    step=step,
+                    cfg=cfg,
+                )
+                try:
+                    _maybe_remote_sync_run(
+                        enabled=remote_enabled,
+                        remote=remote_name,
+                        root=remote_root,
+                        run_dir=run_dir,
+                        ckpt_path=path,
+                    )
+                except Exception as e:
+                    print(f"[warn] remote sync failed: {e}")
+                if cfg.ckpt_prune:
+                    _prune_checkpoints(ckpt_dir=ckpt_dir, keep_last=int(cfg.ckpt_keep_last))
+                print(f"Saved checkpoint: {path}")
+                t_last_ckpt = time.time()
+    
+        # Final ckpt for non-dry runs.
+        if not cfg.dry_run:
             path = _checkpoint(
                 ckpt_dir=ckpt_dir,
                 model=model,
@@ -1223,35 +1251,10 @@ def main_with_cfg(cfg: TrainConfig) -> None:
                 print(f"[warn] remote sync failed: {e}")
             if cfg.ckpt_prune:
                 _prune_checkpoints(ckpt_dir=ckpt_dir, keep_last=int(cfg.ckpt_keep_last))
-            print(f"Saved checkpoint: {path}")
-            t_last_ckpt = time.time()
-
-    # Final ckpt for non-dry runs.
-    if not cfg.dry_run:
-        path = _checkpoint(
-            ckpt_dir=ckpt_dir,
-            model=model,
-            optimizer=optimizer,
-            scaler=(scaler if scaler.is_enabled() else None),
-            step=step,
-            cfg=cfg,
-        )
-        try:
-            _maybe_remote_sync_run(
-                enabled=remote_enabled,
-                remote=remote_name,
-                root=remote_root,
-                run_dir=run_dir,
-                ckpt_path=path,
-            )
-        except Exception as e:
-            print(f"[warn] remote sync failed: {e}")
-        if cfg.ckpt_prune:
-            _prune_checkpoints(ckpt_dir=ckpt_dir, keep_last=int(cfg.ckpt_keep_last))
-        print(f"Finished. Final checkpoint: {path}")
-    else:
-        print("Dry run finished successfully.")
-
+            print(f"Finished. Final checkpoint: {path}")
+        else:
+            print("Dry run finished successfully.")
+    
     finally:
         try:
             sys.stdout = orig_out
