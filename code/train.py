@@ -21,6 +21,7 @@ import json
 import os
 import random
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -347,6 +348,14 @@ class TrainConfig:
     ckpt_prune: bool = True
     resume: str | None = None
 
+    # Remote persistence (e.g. Google Drive via rclone).
+    #
+    # If remote_sync is None (default), we auto-enable when both RCLONE_REMOTE and RCLONE_ROOT
+    # are set in the environment (these are also used by `ExperimentManager` for work_graph.json).
+    remote_sync: bool | None = None
+    rclone_remote: str | None = None  # e.g. "gdrive:"
+    rclone_root: str | None = None  # e.g. "research/papers/vectur/code"
+
     # Dry run
     dry_run: bool = False
     dry_run_steps: int = 2
@@ -547,6 +556,129 @@ def _try_get_git_metadata() -> dict[str, Any]:
         return {}
 
 
+def _normalize_rclone_remote(remote: str) -> str:
+    r = str(remote).strip()
+    if not r:
+        return ""
+    return r if r.endswith(":") else (r + ":")
+
+
+def _resolve_remote_cfg(cfg: TrainConfig) -> tuple[bool, str | None, str | None]:
+    """
+    Returns (enabled, remote, root).
+    - remote should look like "gdrive:" (with trailing colon).
+    - root is a POSIX-ish folder path without leading slash.
+    """
+    env_remote = os.environ.get("RCLONE_REMOTE")
+    env_root = os.environ.get("RCLONE_ROOT")
+    remote = _normalize_rclone_remote(cfg.rclone_remote or env_remote or "")
+    root = (str(cfg.rclone_root or env_root or "").strip().strip("/") or None)
+
+    if cfg.remote_sync is None:
+        enabled = bool(remote and root)
+    else:
+        enabled = bool(cfg.remote_sync)
+
+    if enabled and (not remote or not root):
+        raise RuntimeError("remote_sync enabled but missing rclone remote/root (set RCLONE_REMOTE and RCLONE_ROOT).")
+    return enabled, (remote or None), (root or None)
+
+
+def _rel_to_cwd(path: Path) -> str:
+    """
+    Return path relative to current working directory, if possible.
+    Falls back to basename for paths outside CWD.
+    """
+    try:
+        rel = path.resolve().relative_to(Path.cwd().resolve())
+        return str(rel).replace("\\", "/")
+    except Exception:
+        return path.name
+
+
+def _rclone_copyto(src: Path, dst: str) -> None:
+    if shutil.which("rclone") is None:
+        raise RuntimeError("rclone not found on PATH; install it or disable remote sync.")
+    subprocess.run(["rclone", "copyto", str(src), str(dst)], check=True)
+
+
+def _rclone_copyto_remote_to_local(src_remote: str, dst_local: Path) -> None:
+    if shutil.which("rclone") is None:
+        raise RuntimeError("rclone not found on PATH; cannot fetch remote file.")
+    dst_local.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["rclone", "copyto", str(src_remote), str(dst_local)], check=True)
+
+
+def _remote_path(remote: str, root: str, rel: str) -> str:
+    rel2 = str(rel).lstrip("/").replace("\\", "/")
+    root2 = str(root).strip("/").rstrip("/")
+    return f"{_normalize_rclone_remote(remote)}{root2}/{rel2}"
+
+
+def _rclone_mkdir(remote_dir: str) -> None:
+    """
+    Best-effort remote directory creation.
+    For Drive remotes, this creates the folder chain if missing.
+    """
+    if shutil.which("rclone") is None:
+        raise RuntimeError("rclone not found on PATH; cannot create remote directories.")
+    subprocess.run(["rclone", "mkdir", str(remote_dir)], check=False)
+
+
+def _maybe_remote_fetch_missing(*, enabled: bool, remote: str | None, root: str | None, local_path: Path) -> None:
+    if not enabled or not remote or not root:
+        return
+    if local_path.exists():
+        return
+    rel = _rel_to_cwd(local_path)
+    src = _remote_path(remote, root, rel)
+    _rclone_copyto_remote_to_local(src, local_path)
+
+
+def _maybe_remote_sync_run(
+    *,
+    enabled: bool,
+    remote: str | None,
+    root: str | None,
+    run_dir: Path,
+    ckpt_path: Path | None,
+) -> None:
+    if not enabled or not remote or not root:
+        return
+
+    # Small metadata files.
+    config_path = run_dir / "config.json"
+    metrics_path = run_dir / "metrics.jsonl"
+
+    for p in (config_path, metrics_path):
+        if p.exists():
+            rel = _rel_to_cwd(p)
+            dst = _remote_path(remote, root, rel)
+            # Ensure remote parent directory exists (best-effort).
+            parent_rel = rel.rsplit("/", 1)[0] if "/" in rel else ""
+            if parent_rel:
+                _rclone_mkdir(_remote_path(remote, root, parent_rel))
+            _rclone_copyto(p, dst)
+
+    # Checkpoints (potentially large).
+    if ckpt_path is not None and ckpt_path.exists():
+        rel_ckpt = _rel_to_cwd(ckpt_path)
+        dst = _remote_path(remote, root, rel_ckpt)
+        parent_rel = rel_ckpt.rsplit("/", 1)[0] if "/" in rel_ckpt else ""
+        if parent_rel:
+            _rclone_mkdir(_remote_path(remote, root, parent_rel))
+        _rclone_copyto(ckpt_path, dst)
+
+        latest = ckpt_path.parent / "latest.pt"
+        if latest.exists():
+            rel_latest = _rel_to_cwd(latest)
+            dst_latest = _remote_path(remote, root, rel_latest)
+            parent_rel = rel_latest.rsplit("/", 1)[0] if "/" in rel_latest else ""
+            if parent_rel:
+                _rclone_mkdir(_remote_path(remote, root, parent_rel))
+            _rclone_copyto(latest, dst_latest)
+
+
 def _try_resume(
     resume_path: Path,
     *,
@@ -706,6 +838,20 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--ckpt-keep-last", type=int, default=8)
     p.add_argument("--no-ckpt-prune", action="store_true")
 
+    # Remote persistence (rclone)
+    p.add_argument(
+        "--remote-sync",
+        action="store_true",
+        help="Enable rclone sync of run artifacts (config, metrics, checkpoints).",
+    )
+    p.add_argument(
+        "--no-remote-sync",
+        action="store_true",
+        help="Disable rclone sync even if RCLONE_REMOTE/RCLONE_ROOT are set.",
+    )
+    p.add_argument("--rclone-remote", type=str, default=None, help="Override rclone remote name (e.g. 'gdrive:').")
+    p.add_argument("--rclone-root", type=str, default=None, help="Override remote root folder (e.g. 'research/papers/vectur/code').")
+
     # Dry-run
     p.add_argument("--dry-run", action="store_true", help="Short offline sanity run and exit.")
     p.add_argument("--dry-run-steps", type=int, default=2)
@@ -768,6 +914,9 @@ def main() -> None:
             ckpt_every_seconds=int(args.ckpt_every_seconds),
             ckpt_keep_last=int(args.ckpt_keep_last),
             ckpt_prune=not bool(args.no_ckpt_prune),
+            remote_sync=(False if bool(args.no_remote_sync) else (True if bool(args.remote_sync) else None)),
+            rclone_remote=(str(args.rclone_remote) if args.rclone_remote else None),
+            rclone_root=(str(args.rclone_root) if args.rclone_root else None),
             dry_run=bool(args.dry_run),
             dry_run_steps=int(args.dry_run_steps),
             dry_run_seq_len=int(args.dry_run_seq_len),
@@ -784,6 +933,8 @@ def main() -> None:
 def main_with_cfg(cfg: TrainConfig) -> None:
     device = _select_device(cfg.device)
     _seed_all(cfg.seed)
+
+    remote_enabled, remote_name, remote_root = _resolve_remote_cfg(cfg)
 
     # If user specifies global_batch_size, compute grad_accum_steps from it.
     if cfg.global_batch_size is not None:
@@ -893,6 +1044,16 @@ def main_with_cfg(cfg: TrainConfig) -> None:
 
     start_step = 0
     if cfg.resume:
+        # If resuming and the checkpoint isn't local, fetch it from the remote.
+        try:
+            _maybe_remote_fetch_missing(
+                enabled=remote_enabled,
+                remote=remote_name,
+                root=remote_root,
+                local_path=Path(str(cfg.resume)),
+            )
+        except Exception as e:
+            raise RuntimeError(f"Failed to fetch resume checkpoint from remote: {e}") from e
         start_step = _try_resume(Path(cfg.resume), device=device, model=model, optimizer=optimizer, scaler=scaler)
 
     model.train()
@@ -994,6 +1155,16 @@ def main_with_cfg(cfg: TrainConfig) -> None:
                 step=step,
                 cfg=cfg,
             )
+            try:
+                _maybe_remote_sync_run(
+                    enabled=remote_enabled,
+                    remote=remote_name,
+                    root=remote_root,
+                    run_dir=run_dir,
+                    ckpt_path=path,
+                )
+            except Exception as e:
+                print(f"[warn] remote sync failed: {e}")
             if cfg.ckpt_prune:
                 _prune_checkpoints(ckpt_dir=ckpt_dir, keep_last=int(cfg.ckpt_keep_last))
             print(f"Saved checkpoint: {path}")
@@ -1009,6 +1180,16 @@ def main_with_cfg(cfg: TrainConfig) -> None:
             step=step,
             cfg=cfg,
         )
+        try:
+            _maybe_remote_sync_run(
+                enabled=remote_enabled,
+                remote=remote_name,
+                root=remote_root,
+                run_dir=run_dir,
+                ckpt_path=path,
+            )
+        except Exception as e:
+            print(f"[warn] remote sync failed: {e}")
         if cfg.ckpt_prune:
             _prune_checkpoints(ckpt_dir=ckpt_dir, keep_last=int(cfg.ckpt_keep_last))
         print(f"Finished. Final checkpoint: {path}")

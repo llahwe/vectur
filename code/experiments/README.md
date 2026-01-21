@@ -11,6 +11,16 @@ This directory uses **`work_graph.json` as the sole source of truth** for experi
 
 No per-stage config files are committed here.
 
+### Remote persistence (Google Drive via rclone)
+
+`run_experiments.py` supports persisting the authoritative `work_graph.json` and using remote lockfiles via:
+- `--rclone-remote gdrive:` (or any rclone remote prefix)
+- `--rclone-root "research/papers/vectur/code"` (folder under that remote)
+
+When remote is enabled, `train.py` and `eval.py` also use the same remote settings to:
+- upload checkpoints/metadata under `runs/**`
+- download missing checkpoints on demand (helpful after preemption/restart)
+
 ### Status model (manual intervention required)
 
 Each node has exactly one status:

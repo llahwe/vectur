@@ -13,6 +13,9 @@ import argparse
 import collections
 import json
 import math
+import os
+import shutil
+import subprocess
 import sys
 import time
 from dataclasses import dataclass
@@ -173,10 +176,49 @@ def _iter_spans(flat: torch.Tensor, *, batch_size: int, seq_len: int, max_batche
 
 
 def _load_checkpoint(path: str) -> dict[str, Any]:
+    _maybe_fetch_remote_checkpoint(path)
     ckpt = torch.load(path, map_location="cpu")
     if not isinstance(ckpt, dict):
         raise ValueError(f"Checkpoint must be a dict, got {type(ckpt)}")
     return ckpt
+
+
+def _normalize_rclone_remote(remote: str) -> str:
+    r = str(remote).strip()
+    if not r:
+        return ""
+    return r if r.endswith(":") else (r + ":")
+
+
+def _rel_to_cwd(path: Path) -> str:
+    try:
+        rel = path.resolve().relative_to(Path.cwd().resolve())
+        return str(rel).replace("\\", "/")
+    except Exception:
+        return path.name
+
+
+def _maybe_fetch_remote_checkpoint(path: str) -> None:
+    """
+    If `path` doesn't exist locally and RCLONE_REMOTE/RCLONE_ROOT are set, fetch it via rclone.
+    This enables running eval stages after preemption/restart on Vast.
+    """
+    p = Path(str(path))
+    if p.exists():
+        return
+
+    remote = _normalize_rclone_remote(os.environ.get("RCLONE_REMOTE", ""))
+    root = str(os.environ.get("RCLONE_ROOT", "")).strip().strip("/")
+    if not remote or not root:
+        # No remote configured; let the usual FileNotFoundError happen downstream.
+        return
+    if shutil.which("rclone") is None:
+        raise RuntimeError("Missing checkpoint and rclone not found; cannot fetch from remote.")
+
+    rel = _rel_to_cwd(p)
+    src = f"{remote}{root}/{rel.lstrip('/')}"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["rclone", "copyto", src, str(p)], check=True)
 
 
 def _parse_args() -> argparse.Namespace:

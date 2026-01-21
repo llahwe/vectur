@@ -152,8 +152,15 @@ class ExperimentManager:
         self.lock_ttl_seconds = int(lock_ttl_seconds)
 
         # Where the authoritative graph JSON and lockfiles live on the remote.
-        # If graph_path is e.g. ".../experiments/work_graph.json", this remote name matches the basename.
-        self._remote_graph_rel = self.graph_path.name
+        # Prefer to preserve the path relative to code_dir (so we can store e.g. "experiments/work_graph.json"
+        # on the remote). Fall back to basename for paths outside the code directory.
+        #
+        # Backward compat: older versions stored only the basename at the remote root.
+        try:
+            self._remote_graph_rel = str(self.graph_path.resolve().relative_to(self.code_dir().resolve())).replace("\\", "/")
+        except Exception:
+            self._remote_graph_rel = self.graph_path.name
+        self._remote_graph_rel_legacy = self.graph_path.name
         self._remote_locks_rel = "locks"
         self._remote_stage_locks_rel = "locks/stages"
         self._remote_graph_lock_rel = "locks/graph.lock.json"
@@ -186,12 +193,14 @@ class ExperimentManager:
         if not self.remote_enabled:
             return
         self.graph_path.parent.mkdir(parents=True, exist_ok=True)
-        remote = self._remote_path(self._remote_graph_rel)
-        # Best-effort: if remote file doesn't exist, we keep local as-is.
-        cp = self._rclone(["copyto", remote, str(self.graph_path)], capture=True, check=False)
-        if cp.returncode != 0:
-            # Ignore "not found" errors (first run).
+        # Best-effort: prefer new path; fall back to legacy basename path.
+        remote_new = self._remote_path(self._remote_graph_rel)
+        cp = self._rclone(["copyto", remote_new, str(self.graph_path)], capture=True, check=False)
+        if cp.returncode == 0:
             return
+        remote_legacy = self._remote_path(self._remote_graph_rel_legacy)
+        cp2 = self._rclone(["copyto", remote_legacy, str(self.graph_path)], capture=True, check=False)
+        _ = cp2  # ignore errors ("not found" on first run)
 
     def remote_push_graph(self) -> None:
         if not self.remote_enabled:
@@ -201,8 +210,20 @@ class ExperimentManager:
         # Ensure directories exist.
         self._rclone(["mkdir", self._remote_path(self._remote_locks_rel)], check=False)
         self._rclone(["mkdir", self._remote_path(self._remote_stage_locks_rel)], check=False)
+        # Ensure parent directory exists for the graph (best-effort).
+        try:
+            rel = str(self._remote_graph_rel).replace("\\", "/")
+            parent_rel = rel.rsplit("/", 1)[0] if "/" in rel else ""
+            if parent_rel:
+                self._rclone(["mkdir", self._remote_path(parent_rel)], check=False)
+        except Exception:
+            pass
         remote = self._remote_path(self._remote_graph_rel)
         self._rclone(["copyto", str(self.graph_path), remote], check=True)
+        # Also write legacy location for older workers (best-effort).
+        remote_legacy = self._remote_path(self._remote_graph_rel_legacy)
+        if remote_legacy != remote:
+            self._rclone(["copyto", str(self.graph_path), remote_legacy], check=False)
 
     def _remote_lock_path(self, rel: str) -> str:
         return self._remote_path(rel)
@@ -875,7 +896,14 @@ class ExperimentManager:
                 lf.write(f"cmd: {' '.join(cmd)}\n\n")
                 lf.flush()
 
-                proc = subprocess.run(cmd, cwd=cwd, stdout=lf, stderr=subprocess.STDOUT, env=os.environ.copy())
+                env = os.environ.copy()
+                # Propagate remote settings to child processes so `train.py`/`eval.py` can fetch/sync checkpoints.
+                if self.remote_enabled:
+                    env["RCLONE_REMOTE"] = str(self.rclone_remote)
+                    env["RCLONE_ROOT"] = str(self.rclone_root)
+                    env["OWNER_ID"] = str(self.owner_id)
+
+                proc = subprocess.run(cmd, cwd=cwd, stdout=lf, stderr=subprocess.STDOUT, env=env)
                 exit_code = int(proc.returncode)
                 ok = proc.returncode == 0
                 msg = "Success" if ok else f"Failed (exit {proc.returncode})"
