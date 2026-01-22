@@ -185,7 +185,19 @@ def _default_block_kwargs_for_size(*, block: str, size: ModelSize, dim: int) -> 
         }
     if block == "vectur" or block == "vecstur":
         # Keep paper-default block hyperparams. (t_max affects compute, not params.)
-        return {"k": 8, "t_max": 4, "expansion": 4}
+        # Enable gradient stability options by default to prevent gradient explosion
+        return {
+            "k": 8,
+            "t_max": 4,
+            "expansion": 4,
+            "clip_delta_q": 5.0,
+            "clip_delta_theta": 1.0,
+            "clip_delta_w": 2.0,
+            "clip_delta_t": 5.0,
+            "clip_tape": 10.0,
+            "clip_w": 10.0,
+            "normalize_q": False,
+        }
     if block.startswith("identity"):
         return {}
     # Fallback for unknown/experimental blocks.
@@ -1225,6 +1237,18 @@ def main_with_cfg(cfg: TrainConfig) -> None:
         if cfg.block_kwargs:
             merged_block_kwargs.update(cfg.block_kwargs)
         object.__setattr__(cfg, "block_kwargs", merged_block_kwargs)  # type: ignore[misc]
+        
+        # Adjust training hyperparameters for VecTur blocks to improve stability
+        # (only if user hasn't explicitly overridden them)
+        if (cfg.block == "vectur" or cfg.block == "vecstur") and not cfg.dry_run:
+            # Use more conservative gradient clipping for VecTur (helps with gradient explosion)
+            if cfg.grad_clip_norm == 1.0:  # Only adjust if using default
+                object.__setattr__(cfg, "grad_clip_norm", 0.5)  # type: ignore[misc]
+                print(f"[VecTur] Adjusted grad_clip_norm to {cfg.grad_clip_norm} for stability")
+            # Use slightly lower learning rate for VecTur (helps with stability)
+            if cfg.lr == 3e-4:  # Only adjust if using default
+                object.__setattr__(cfg, "lr", 1e-4)  # type: ignore[misc]
+                print(f"[VecTur] Adjusted learning rate to {cfg.lr} for stability")
     
         if cfg.hidden_dim is None:
             object.__setattr__(cfg, "hidden_dim", int(4 * cfg.dim))  # type: ignore[misc]

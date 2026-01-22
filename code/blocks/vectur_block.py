@@ -12,10 +12,14 @@ This implements the *block* described in `paper/paper.tex` with concrete choices
 - I_t = (θ_t, w_t): head angles and weights; dense J(I_t) is never materialized
 
 Efficiency notes:
-- The paper’s addressing map E(θ) is 2-sparse (linear interpolation between adjacent tape cells),
+- The paper's addressing map E(θ) is 2-sparse (linear interpolation between adjacent tape cells),
   so J(I_t) has at most 2k nonzeros.
 - Reads/writes are implemented via gather + `index_add` on only those 2k locations (no dense Δ tensor).
 - Optional per-step activation checkpointing can reduce MLP activation memory without truncating BPTT.
+
+Stability notes:
+- Gradient explosion can occur due to iterative unrolling and tape accumulation.
+- Configurable clipping options are provided to stabilize training (enabled by default).
 """
 
 from dataclasses import dataclass
@@ -47,6 +51,15 @@ class VecTurConfig:
     halt_eps: float = 1e-3
     early_stop: bool = True
     checkpoint_steps: bool = True  # activation checkpointing for Δ networks
+    # Gradient stability options (None = disabled, float = clip value)
+    # Defaults are enabled to prevent gradient explosion
+    clip_delta_q: float | None = 5.0  # Clip dq updates
+    clip_delta_theta: float | None = 1.0  # Clip dtheta updates
+    clip_delta_w: float | None = 2.0  # Clip dw updates
+    clip_delta_t: float | None = 5.0  # Clip u_t (tape write) updates
+    clip_tape: float | None = 10.0  # Clip tape values after writes
+    clip_w: float | None = 10.0  # Clip w values
+    normalize_q: bool = False  # Normalize Q state (L2) to prevent unbounded growth
 
 
 class VecTurBlock(nn.Module):
@@ -92,7 +105,9 @@ class VecTurBlock(nn.Module):
         self.out = nn.Linear(self.d_t, d, bias=False) if self.d_t != d else nn.Identity()
 
         # Halting target state q0 (learned).
+        # Initialize with small values to prevent early instability
         self.q0 = nn.Parameter(torch.zeros(self.d_q))
+        nn.init.normal_(self.q0, std=0.01)
 
     def _make_z(self, x: torch.Tensor) -> Optional[torch.Tensor]:
         if not self.cfg.stochastic:
@@ -107,14 +122,14 @@ class VecTurBlock(nn.Module):
     def _gate(self, *, kappa: torch.Tensor, t: int, q: torch.Tensor) -> torch.Tensor:
         """
         Paper gate:
-          g_t = sigmoid((-kappa * t) / max(1, ||Q_t - q0||^2))
+          g_t = sigmoid((-kappa * t) / max(eps, ||Q_t - q0||^2))
 
         kappa: (B,1), q: (B,d_q)
         """
-        # ||Q_t - q0||^2 with eps for stability.
+        # ||Q_t - q0||^2 with eps for stability (use cfg.eps instead of 1.0 for better numerical stability).
         diff = q - self.q0.view(1, -1)
         dq2 = diff.pow(2).sum(dim=-1, keepdim=True)
-        denom = torch.clamp(dq2, min=1.0)
+        denom = torch.clamp(dq2, min=self.cfg.eps)
         g = torch.sigmoid((-kappa * float(t)) / denom)
         return g
 
@@ -184,7 +199,17 @@ class VecTurBlock(nn.Module):
             # Early stop condition (control-flow). We stop outside step_fn.
             # Control update.
             dq = self.delta_q(torch.cat([s_t, q_], dim=-1))
+            
+            # Clip delta updates to prevent large steps that cause gradient explosion
+            if self.cfg.clip_delta_q is not None:
+                dq = torch.clamp(dq, min=-self.cfg.clip_delta_q, max=self.cfg.clip_delta_q)
+            
             q_new = q_ + g * dq
+            
+            # Normalize Q state to prevent unbounded growth (optional)
+            if self.cfg.normalize_q:
+                q_norm = torch.linalg.vector_norm(q_new, dim=-1, keepdim=True)
+                q_new = q_new / (q_norm + self.cfg.eps)
 
             # Head updates (per-head MLPs on [S,Q,sinθ,cosθ,w]).
             sin_th = torch.sin(theta_mod)
@@ -202,12 +227,27 @@ class VecTurBlock(nn.Module):
 
             dtheta = self.delta_theta(per_head).squeeze(-1)  # (B,k)
             dw = self.delta_w(per_head).squeeze(-1)  # (B,k)
+            
+            # Clip delta updates to prevent large steps
+            if self.cfg.clip_delta_theta is not None:
+                dtheta = torch.clamp(dtheta, min=-self.cfg.clip_delta_theta, max=self.cfg.clip_delta_theta)
+            if self.cfg.clip_delta_w is not None:
+                dw = torch.clamp(dw, min=-self.cfg.clip_delta_w, max=self.cfg.clip_delta_w)
+            
             theta_new = torch.remainder(theta_ + g * dtheta, two_pi)
             w_new = w_ + g * dw
-
+            
+            # Clip w values to prevent extreme weights
+            if self.cfg.clip_w is not None:
+                w_new = torch.clamp(w_new, min=-self.cfg.clip_w, max=self.cfg.clip_w)
 
             # Tape write: U_t = Δ_T(S_t,Q_t) and scatter-add only to {n_i, n_i+1}.
             u_t = self.delta_t(torch.cat([s_t, q_new], dim=-1))  # (B,d_t)
+            
+            # Clip tape write updates to prevent large writes
+            if self.cfg.clip_delta_t is not None:
+                u_t = torch.clamp(u_t, min=-self.cfg.clip_delta_t, max=self.cfg.clip_delta_t)
+            
             write_n = (g * (w_ * (1.0 - s))).unsqueeze(-1) * u_t.unsqueeze(1)  # (B,k,d_t)
             write_np = (g * (w_ * s)).unsqueeze(-1) * u_t.unsqueeze(1)  # (B,k,d_t)
 
@@ -222,6 +262,11 @@ class VecTurBlock(nn.Module):
             tape_flat_new = tape_flat_.index_add(0, flat_n, vn_source.to(tape_flat_.dtype))
             vn_source_p = write_np.reshape(-1, self.d_t)
             tape_flat_new = tape_flat_new.index_add(0, flat_np, vn_source_p.to(tape_flat_.dtype))
+            
+            # Clip tape values to prevent accumulation explosion
+            if self.cfg.clip_tape is not None:
+                tape_flat_new = torch.clamp(tape_flat_new, min=-self.cfg.clip_tape, max=self.cfg.clip_tape)
+            
             return tape_flat_new, q_new, theta_new, w_new, g
 
         # Iterative transition
@@ -247,8 +292,36 @@ class VecTurBlock(nn.Module):
         return self.out(tape_out)
 
 
-def make_vectur_block(*, dim: int, k: int = 8, t_max: int = 4, expansion: int = 4) -> VecTurBlock:
-    return VecTurBlock(VecTurConfig(dim=dim, k=k, t_max=t_max, expansion=expansion, stochastic=False))
+def make_vectur_block(
+    *,
+    dim: int,
+    k: int = 8,
+    t_max: int = 4,
+    expansion: int = 4,
+    clip_delta_q: float | None = 5.0,
+    clip_delta_theta: float | None = 1.0,
+    clip_delta_w: float | None = 2.0,
+    clip_delta_t: float | None = 5.0,
+    clip_tape: float | None = 10.0,
+    clip_w: float | None = 10.0,
+    normalize_q: bool = False,
+) -> VecTurBlock:
+    return VecTurBlock(
+        VecTurConfig(
+            dim=dim,
+            k=k,
+            t_max=t_max,
+            expansion=expansion,
+            stochastic=False,
+            clip_delta_q=clip_delta_q,
+            clip_delta_theta=clip_delta_theta,
+            clip_delta_w=clip_delta_w,
+            clip_delta_t=clip_delta_t,
+            clip_tape=clip_tape,
+            clip_w=clip_w,
+            normalize_q=normalize_q,
+        )
+    )
 
 
 def make_vecstur_block(
@@ -258,8 +331,28 @@ def make_vecstur_block(
     t_max: int = 4,
     expansion: int = 4,
     z_ratio: float = 1.0,
+    clip_delta_q: float | None = 5.0,
+    clip_delta_theta: float | None = 1.0,
+    clip_delta_w: float | None = 2.0,
+    clip_delta_t: float | None = 5.0,
+    clip_tape: float | None = 10.0,
+    clip_w: float | None = 10.0,
+    normalize_q: bool = False,
 ) -> VecTurBlock:
     return VecTurBlock(
-        VecTurConfig(dim=dim, k=k, t_max=t_max, expansion=expansion, stochastic=True, z_ratio=float(z_ratio))
+        VecTurConfig(
+            dim=dim,
+            k=k,
+            t_max=t_max,
+            expansion=expansion,
+            stochastic=True,
+            z_ratio=float(z_ratio),
+            clip_delta_q=clip_delta_q,
+            clip_delta_theta=clip_delta_theta,
+            clip_delta_w=clip_delta_w,
+            clip_delta_t=clip_delta_t,
+            clip_tape=clip_tape,
+            clip_w=clip_w,
+            normalize_q=normalize_q,
+        )
     )
-
