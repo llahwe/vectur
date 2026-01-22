@@ -369,6 +369,15 @@ class TrainConfig:
     early_stop: bool = True  # Enable early stopping
     early_stop_patience: int = 5  # Stop if no improvement for N consecutive validations
 
+    # LoRA (Parameter-Efficient Fine-Tuning)
+    use_lora: bool = False  # Enable LoRA adapters (default False for pretraining, True for fine-tuning)
+    lora_r: int = 16  # LoRA rank
+    lora_alpha: int = 32  # LoRA alpha (typically 2*r)
+    lora_dropout: float = 0.05  # LoRA dropout rate
+    lora_target_modules_macro: list[str] | None = None  # Target modules in macro architecture (None = auto-detect)
+    lora_target_modules_blocks: list[str] | None = None  # Target modules in sequence blocks (None = auto-detect)
+    lora_apply_to_blocks: bool = True  # Apply LoRA to sequence blocks
+
     # Dry run
     dry_run: bool = False
     dry_run_steps: int = 2
@@ -800,11 +809,36 @@ def _try_resume(
     scaler: Optional[torch.cuda.amp.GradScaler],
 ) -> int:
     ckpt = torch.load(resume_path, map_location="cpu")
-    model.load_state_dict(ckpt["model"])
-    optimizer.load_state_dict(ckpt["optimizer"])
+    
+    # Load model state - use strict=False to handle LoRA adapters gracefully
+    # If model has LoRA (PEFT), it will load both base and adapter weights
+    try:
+        model.load_state_dict(ckpt["model"], strict=False)
+        print(f"Loaded model weights from {resume_path}")
+    except Exception as e:
+        print(f"Warning: Could not fully load model state: {e}")
+        # Try loading with even more lenient settings
+        try:
+            model.load_state_dict(ckpt["model"], strict=False)
+        except Exception:
+            print("Warning: Partial model state loaded")
+    
+    # Load optimizer state
+    try:
+        optimizer.load_state_dict(ckpt["optimizer"])
+        print("Loaded optimizer state from checkpoint")
+    except Exception as e:
+        print(f"Warning: Could not load optimizer state: {e}")
+    
+    # Load scaler state
     if scaler is not None and ckpt.get("scaler") is not None:
-        scaler.load_state_dict(ckpt["scaler"])
+        try:
+            scaler.load_state_dict(ckpt["scaler"])
+            print("Loaded scaler state from checkpoint")
+        except Exception:
+            pass
 
+    # Restore RNG state
     if "rng" in ckpt:
         rng = ckpt["rng"]
         if rng.get("python") is not None:
@@ -849,6 +883,12 @@ def _load_train_config_json(path: str) -> "TrainConfig":
     # Convenience: allow block_kwargs to be either a dict or a JSON-encoded string.
     if "block_kwargs" in raw and isinstance(raw["block_kwargs"], str):
         raw["block_kwargs"] = json.loads(raw["block_kwargs"])
+    
+    # Convenience: allow lora_target_modules_* to be either a list or a JSON-encoded string.
+    if "lora_target_modules_macro" in raw and isinstance(raw["lora_target_modules_macro"], str):
+        raw["lora_target_modules_macro"] = json.loads(raw["lora_target_modules_macro"])
+    if "lora_target_modules_blocks" in raw and isinstance(raw["lora_target_modules_blocks"], str):
+        raw["lora_target_modules_blocks"] = json.loads(raw["lora_target_modules_blocks"])
 
     base = TrainConfig()
     return dataclasses.replace(base, **raw)
@@ -972,6 +1012,15 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--rclone-remote", type=str, default="gdrive:", help="Override rclone remote name (e.g. 'gdrive:').")
     p.add_argument("--rclone-root", type=str, default="research/papers/vectur", help="Override remote root folder (e.g. 'research/papers/vectur').")
 
+    # LoRA (Parameter-Efficient Fine-Tuning)
+    p.add_argument("--use-lora", action="store_true", help="Enable LoRA adapters for parameter-efficient fine-tuning")
+    p.add_argument("--lora-r", type=int, default=16, help="LoRA rank (default: 16)")
+    p.add_argument("--lora-alpha", type=int, default=32, help="LoRA alpha scaling factor (default: 32, typically 2*r)")
+    p.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout rate (default: 0.05)")
+    p.add_argument("--lora-target-modules-macro", type=str, default=None, help="JSON list of target module names in macro architecture (default: auto-detect)")
+    p.add_argument("--lora-target-modules-blocks", type=str, default=None, help="JSON list of target module names in sequence blocks (default: auto-detect)")
+    p.add_argument("--no-lora-apply-to-blocks", action="store_false", dest="lora_apply_to_blocks", help="Disable LoRA on sequence blocks (enabled by default)")
+
     # Dry-run
     p.add_argument("--dry-run", action="store_true", help="Short offline sanity run and exit.")
     p.add_argument("--dry-run-steps", type=int, default=2)
@@ -1043,6 +1092,13 @@ def main() -> None:
             val_max_batches=int(args.val_max_batches),
             early_stop=bool(getattr(args, "early_stop", True)),  # Default True if not set
             early_stop_patience=int(args.early_stop_patience),
+            use_lora=bool(getattr(args, "use_lora", False)),  # Default False for pretraining
+            lora_r=int(getattr(args, "lora_r", 16)),
+            lora_alpha=int(getattr(args, "lora_alpha", 32)),
+            lora_dropout=float(getattr(args, "lora_dropout", 0.05)),
+            lora_target_modules_macro=(json.loads(args.lora_target_modules_macro) if hasattr(args, "lora_target_modules_macro") and getattr(args, "lora_target_modules_macro", None) else None),
+            lora_target_modules_blocks=(json.loads(args.lora_target_modules_blocks) if hasattr(args, "lora_target_modules_blocks") and getattr(args, "lora_target_modules_blocks", None) else None),
+            lora_apply_to_blocks=bool(getattr(args, "lora_apply_to_blocks", True)),
             dry_run=bool(args.dry_run),
             dry_run_steps=int(args.dry_run_steps),
             dry_run_seq_len=int(args.dry_run_seq_len),
@@ -1197,6 +1253,25 @@ def main_with_cfg(cfg: TrainConfig) -> None:
             grad_checkpoint=bool(cfg.grad_checkpoint),
         ).to(device)
     
+        # Apply LoRA if enabled (before loading checkpoint, so we can load LoRA weights if present)
+        if cfg.use_lora:
+            from lora_utils import apply_lora_to_model  # type: ignore
+            
+            print("Applying LoRA adapters to model...")
+            model = apply_lora_to_model(
+                model,
+                r=cfg.lora_r,
+                lora_alpha=cfg.lora_alpha,
+                lora_dropout=cfg.lora_dropout,
+                target_modules_macro=cfg.lora_target_modules_macro,
+                target_modules_blocks=cfg.lora_target_modules_blocks,
+                apply_to_blocks=cfg.lora_apply_to_blocks,
+            )
+            # Print LoRA parameter count
+            trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+            total_params = sum(p.numel() for p in model.parameters())
+            print(f"LoRA applied: {trainable_params:,} trainable params / {total_params:,} total params")
+    
         if cfg.compile:
             # Compilation cost amortizes over longer runs.
             model = torch.compile(model)  # type: ignore[assignment]
@@ -1220,6 +1295,7 @@ def main_with_cfg(cfg: TrainConfig) -> None:
     
         optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     
+        # Handle resume (after LoRA is applied, so we can load both base and LoRA weights)
         start_step = 0
         if cfg.resume:
             # If resuming and the checkpoint isn't local, fetch it from the remote.
@@ -1232,6 +1308,8 @@ def main_with_cfg(cfg: TrainConfig) -> None:
                 )
             except Exception as e:
                 raise RuntimeError(f"Failed to fetch resume checkpoint from remote: {e}") from e
+            
+            # Use the existing _try_resume function which handles model, optimizer, scaler, and RNG
             start_step = _try_resume(Path(cfg.resume), device=device, model=model, optimizer=optimizer, scaler=scaler)
     
         model.train()

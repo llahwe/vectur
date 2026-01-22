@@ -101,6 +101,20 @@ def main() -> None:
         if "run_name" not in finetune_train or not finetune_train["run_name"]:
             # Default finetune run name to the config stem if available.
             finetune_train["run_name"] = Path(str(args.config)).stem
+        
+        # Enable LoRA by default for fine-tuning (unless explicitly disabled)
+        if "use_lora" not in finetune_train:
+            finetune_train["use_lora"] = True
+        # Set good default LoRA hyperparameters if not specified
+        if finetune_train.get("use_lora", False):
+            if "lora_r" not in finetune_train:
+                finetune_train["lora_r"] = 16
+            if "lora_alpha" not in finetune_train:
+                finetune_train["lora_alpha"] = 32
+            if "lora_dropout" not in finetune_train:
+                finetune_train["lora_dropout"] = 0.05
+            if "lora_apply_to_blocks" not in finetune_train:
+                finetune_train["lora_apply_to_blocks"] = True
 
         # Load directly from the derived finetune TrainConfig object.
         cfg = train_mod._load_train_config_json(str(_write_tmp_train_config(finetune_train)))  # type: ignore[attr-defined]
@@ -114,6 +128,21 @@ def main() -> None:
             raise ValueError("--train-config must be a JSON object.")
         raw["resume"] = str(args.resume)
         raw["run_name"] = str(args.run_name)
+        
+        # Enable LoRA by default for fine-tuning (unless explicitly disabled)
+        if "use_lora" not in raw:
+            raw["use_lora"] = True
+        # Set good default LoRA hyperparameters if not specified
+        if raw.get("use_lora", False):
+            if "lora_r" not in raw:
+                raw["lora_r"] = 16
+            if "lora_alpha" not in raw:
+                raw["lora_alpha"] = 32
+            if "lora_dropout" not in raw:
+                raw["lora_dropout"] = 0.05
+            if "lora_apply_to_blocks" not in raw:
+                raw["lora_apply_to_blocks"] = True
+        
         cfg_path = _write_tmp_train_config(raw)
         cfg = train_mod._load_train_config_json(str(cfg_path))  # type: ignore[attr-defined]
         train_mod.main_with_cfg(cfg)  # type: ignore[attr-defined]
