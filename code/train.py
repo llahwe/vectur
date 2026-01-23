@@ -1309,6 +1309,16 @@ def main_with_cfg(cfg: TrainConfig) -> None:
     
         # Apply LoRA if enabled (before loading checkpoint, so we can load LoRA weights if present)
         if cfg.use_lora:
+            # Check for peft availability early with a clear error message
+            try:
+                import peft  # type: ignore
+            except ImportError:
+                raise ImportError(
+                    "LoRA is enabled (use_lora=True) but the 'peft' library is not installed.\n"
+                    "Install it with: python3 -m pip install peft\n"
+                    "Or disable LoRA by setting use_lora=False in your configuration."
+                ) from None
+            
             from lora_utils import apply_lora_to_model  # type: ignore
             
             print("Applying LoRA adapters to model...")

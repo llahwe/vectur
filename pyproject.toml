@@ -9,6 +9,7 @@ dependencies = [
     "numpy",
     "datasets",
     "transformers",
+    "peft",
 ]
 
 # This is the "magic" section that allows GPU support in a .toml
