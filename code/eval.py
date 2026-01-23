@@ -115,10 +115,40 @@ def _build_or_load_token_buffer_hf(
     ds_cfg = dataset_config
     if isinstance(ds_cfg, str) and ds_cfg.strip() == "":
         ds_cfg = None
-    if ds_cfg is None:
-        ds = load_dataset(str(dataset_name), split=str(dataset_split), streaming=True)
-    else:
-        ds = load_dataset(str(dataset_name), str(ds_cfg), split=str(dataset_split), streaming=True)
+    
+    # Try to load the requested split, handling the case where it doesn't exist
+    try:
+        if ds_cfg is None:
+            ds = load_dataset(str(dataset_name), split=str(dataset_split), streaming=True)
+        else:
+            ds = load_dataset(str(dataset_name), str(ds_cfg), split=str(dataset_split), streaming=True)
+    except ValueError as e:
+        # If the split doesn't exist and we're looking for "test", try to concatenate test_* splits
+        if "Bad split" in str(e) and dataset_split == "test":
+            # Parse available splits from error message or try common test split names
+            # Try test_1 through test_10
+            test_splits = [f"test_{i}" for i in range(1, 11)]
+            datasets_list = []
+            for split_name in test_splits:
+                try:
+                    if ds_cfg is None:
+                        datasets_list.append(load_dataset(str(dataset_name), split=split_name, streaming=True))
+                    else:
+                        datasets_list.append(load_dataset(str(dataset_name), str(ds_cfg), split=split_name, streaming=True))
+                except ValueError:
+                    # This split doesn't exist, skip it
+                    continue
+            
+            if not datasets_list:
+                # If we couldn't find any test_* splits, try to get available splits from the error
+                available_splits_str = str(e).split("Available splits: ")[-1] if "Available splits: " in str(e) else "unknown"
+                raise ValueError(f"Split 'test' not found and no 'test_*' splits available. Available splits: {available_splits_str}") from e
+            
+            # Concatenate all test_* splits using interleave_datasets for streaming
+            from datasets import interleave_datasets
+            ds = interleave_datasets(datasets_list)
+        else:
+            raise
 
     needed = int(buffer_tokens)
     pieces: list[torch.Tensor] = []
