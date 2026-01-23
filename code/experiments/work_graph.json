@@ -1,3 +1,7 @@
+
+Folder highlights
+Training logs detail LSTM, NTM, and Attention models on CLRS and Fineweb, with recent runs completed on Jan 22, 2026.
+
 {
   "nodes": {
     "dry_run_eval::arc_challenge_test::attention::attention_fineweb_s": {
@@ -39,14 +43,14 @@
     },
     "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8198102,
       "depends_on": [
         "train::lstm::fineweb::s"
       ],
       "id": "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -71,8 +75,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.8198102
+      "status": "completed",
+      "updated_utc": 1769091756.5589194
     },
     "dry_run_eval::arc_challenge_test::ntm::ntm_fineweb_s": {
       "action": "eval",
@@ -113,14 +117,14 @@
     },
     "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8201568,
       "depends_on": [
         "train::vecstur::fineweb::s"
       ],
       "id": "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -145,8 +149,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.8201568
+      "status": "completed",
+      "updated_utc": 1769127514.5117154
     },
     "dry_run_eval::arc_challenge_test::vectur::vectur_fineweb_s": {
       "action": "eval",
@@ -223,7 +227,7 @@
     },
     "dry_run_eval::clrs_text_test::lstm::lstm_clrs_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819819,
       "depends_on": [
         "train::lstm::clrs::s"
@@ -255,7 +259,7 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.819819
+      "updated_utc": 1769053183.3161843
     },
     "dry_run_eval::clrs_text_test::ntm::ntm_clrs_s": {
       "action": "eval",
@@ -331,7 +335,7 @@
     },
     "dry_run_eval::clrs_text_test::vectur::vectur_clrs_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.82013,
       "depends_on": [
         "train::vectur::clrs::s"
@@ -363,7 +367,7 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.820131
+      "updated_utc": 1769131776.65496
     },
     "dry_run_eval::compgen_test::attention::attention_compgen_s": {
       "action": "eval",
@@ -403,14 +407,14 @@
     },
     "dry_run_eval::compgen_test::lstm::lstm_compgen_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819822,
       "depends_on": [
         "train::lstm::compgen::s"
       ],
       "id": "dry_run_eval::compgen_test::lstm::lstm_compgen_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -434,8 +438,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819822
+      "status": "completed",
+      "updated_utc": 1769072309.4596317
     },
     "dry_run_eval::compgen_test::ntm::ntm_compgen_s": {
       "action": "eval",
@@ -511,14 +515,14 @@
     },
     "dry_run_eval::compgen_test::vectur::vectur_compgen_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820134,
       "depends_on": [
         "train::vectur::compgen::s"
       ],
       "id": "dry_run_eval::compgen_test::vectur::vectur_compgen_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -542,8 +546,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820134
+      "status": "completed",
+      "updated_utc": 1769137186.145135
     },
     "dry_run_eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_s": {
       "action": "eval",
@@ -583,14 +587,14 @@
     },
     "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8198311,
       "depends_on": [
         "finetune::lstm::clrs_to_compgen::s"
       ],
       "id": "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -614,8 +618,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.8198311
+      "status": "completed",
+      "updated_utc": 1769072410.9293234
     },
     "dry_run_eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_s": {
       "action": "eval",
@@ -763,14 +767,14 @@
     },
     "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819828,
       "depends_on": [
         "train::lstm::clrs::s"
       ],
       "id": "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -794,8 +798,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819828
+      "status": "completed",
+      "updated_utc": 1769053262.6954393
     },
     "dry_run_eval::compgen_test_zero_shot::ntm::ntm_clrs_s": {
       "action": "eval",
@@ -871,14 +875,14 @@
     },
     "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820137,
       "depends_on": [
         "train::vectur::clrs::s"
       ],
       "id": "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -902,8 +906,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820137
+      "status": "completed",
+      "updated_utc": 1769131910.2407176
     },
     "dry_run_eval::gsm8k_test::attention::attention_fineweb_s": {
       "action": "eval",
@@ -944,14 +948,14 @@
     },
     "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819808,
       "depends_on": [
         "train::lstm::fineweb::s"
       ],
       "id": "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -976,8 +980,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819808
+      "status": "completed",
+      "updated_utc": 1769091863.1570702
     },
     "dry_run_eval::gsm8k_test::ntm::ntm_fineweb_s": {
       "action": "eval",
@@ -1018,14 +1022,14 @@
     },
     "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8201542,
       "depends_on": [
         "train::vecstur::fineweb::s"
       ],
       "id": "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -1050,8 +1054,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820155
+      "status": "completed",
+      "updated_utc": 1769127589.3862875
     },
     "dry_run_eval::gsm8k_test::vectur::vectur_fineweb_s": {
       "action": "eval",
@@ -1129,14 +1133,14 @@
     },
     "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819813,
       "depends_on": [
         "train::lstm::fineweb::s"
       ],
       "id": "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -1161,8 +1165,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819813
+      "status": "completed",
+      "updated_utc": 1769091974.743695
     },
     "dry_run_eval::hellaswag_val::ntm::ntm_fineweb_s": {
       "action": "eval",
@@ -1203,14 +1207,14 @@
     },
     "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820159,
       "depends_on": [
         "train::vecstur::fineweb::s"
       ],
       "id": "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -1235,8 +1239,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820159
+      "status": "completed",
+      "updated_utc": 1769127669.4332032
     },
     "dry_run_eval::hellaswag_val::vectur::vectur_fineweb_s": {
       "action": "eval",
@@ -1313,14 +1317,14 @@
     },
     "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819815,
       "depends_on": [
         "train::lstm::fineweb::s"
       ],
       "id": "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -1344,8 +1348,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819815
+      "status": "completed",
+      "updated_utc": 1769092076.6463926
     },
     "dry_run_eval::wikitext103_test::ntm::ntm_fineweb_s": {
       "action": "eval",
@@ -1385,14 +1389,14 @@
     },
     "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820161,
       "depends_on": [
         "train::vecstur::fineweb::s"
       ],
       "id": "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -1416,8 +1420,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820161
+      "status": "completed",
+      "updated_utc": 1769127747.5164125
     },
     "dry_run_eval::wikitext103_test::vectur::vectur_fineweb_s": {
       "action": "eval",
@@ -1495,14 +1499,14 @@
     },
     "dry_run_finetune::lstm::clrs_to_compgen::s": {
       "action": "finetune",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819804,
       "depends_on": [
         "train::lstm::clrs::s"
       ],
       "id": "dry_run_finetune::lstm::clrs_to_compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "experiment_config": {
@@ -1528,8 +1532,8 @@
           }
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819804
+      "status": "completed",
+      "updated_utc": 1769053333.2340786
     },
     "dry_run_finetune::ntm::clrs_to_compgen::s": {
       "action": "finetune",
@@ -1609,7 +1613,7 @@
     },
     "dry_run_finetune::vectur::clrs_to_compgen::s": {
       "action": "finetune",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8201149,
       "depends_on": [
         "train::vectur::clrs::s"
@@ -1643,16 +1647,16 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.8201149
+      "updated_utc": 1769132559.5167437
     },
     "dry_run_train::attention::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819751,
       "depends_on": [],
       "id": "dry_run_train::attention::clrs::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1670,17 +1674,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819751
+      "status": "completed",
+      "updated_utc": 1769017797.2934442
     },
     "dry_run_train::attention::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819754,
       "depends_on": [],
       "id": "dry_run_train::attention::compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1698,17 +1702,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819754
+      "status": "completed",
+      "updated_utc": 1769017893.9371762
     },
     "dry_run_train::attention::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819745,
       "depends_on": [],
       "id": "dry_run_train::attention::fineweb::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1726,17 +1730,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819746
+      "status": "completed",
+      "updated_utc": 1769017985.812966
     },
     "dry_run_train::lstm::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819797,
       "depends_on": [],
       "id": "dry_run_train::lstm::clrs::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1754,17 +1758,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819797
+      "status": "completed",
+      "updated_utc": 1769018085.2638202
     },
     "dry_run_train::lstm::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8198001,
       "depends_on": [],
       "id": "dry_run_train::lstm::compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1782,17 +1786,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.8198001
+      "status": "completed",
+      "updated_utc": 1769018172.6614308
     },
     "dry_run_train::lstm::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819794,
       "depends_on": [],
       "id": "dry_run_train::lstm::fineweb::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1810,17 +1814,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819794
+      "status": "completed",
+      "updated_utc": 1769018259.545574
     },
     "dry_run_train::ntm::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820076,
       "depends_on": [],
       "id": "dry_run_train::ntm::clrs::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1838,17 +1842,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820076
+      "status": "completed",
+      "updated_utc": 1769018412.4949684
     },
     "dry_run_train::ntm::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820079,
       "depends_on": [],
       "id": "dry_run_train::ntm::compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1866,17 +1870,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820079
+      "status": "completed",
+      "updated_utc": 1769018567.3233166
     },
     "dry_run_train::ntm::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819833,
       "depends_on": [],
       "id": "dry_run_train::ntm::fineweb::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1894,17 +1898,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819834
+      "status": "completed",
+      "updated_utc": 1769018725.098952
     },
     "dry_run_train::vecstur::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8201442,
       "depends_on": [],
       "id": "dry_run_train::vecstur::clrs::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1922,17 +1926,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.8201442
+      "status": "completed",
+      "updated_utc": 1769018821.692409
     },
     "dry_run_train::vecstur::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820147,
       "depends_on": [],
       "id": "dry_run_train::vecstur::compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1950,17 +1954,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820147
+      "status": "completed",
+      "updated_utc": 1769018915.0328882
     },
     "dry_run_train::vecstur::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820142,
       "depends_on": [],
       "id": "dry_run_train::vecstur::fineweb::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -1978,17 +1982,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820142
+      "status": "completed",
+      "updated_utc": 1769019008.5342193
     },
     "dry_run_train::vectur::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.82011,
       "depends_on": [],
       "id": "dry_run_train::vectur::clrs::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -2006,17 +2010,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.82011
+      "status": "completed",
+      "updated_utc": 1769019104.4304614
     },
     "dry_run_train::vectur::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820112,
       "depends_on": [],
       "id": "dry_run_train::vectur::compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -2034,17 +2038,17 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820112
+      "status": "completed",
+      "updated_utc": 1769019193.522757
     },
     "dry_run_train::vectur::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820107,
       "depends_on": [],
       "id": "dry_run_train::vectur::fineweb::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -2062,8 +2066,8 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820107
+      "status": "completed",
+      "updated_utc": 1769019285.3888867
     },
     "eval::arc_challenge_test::attention::attention_fineweb_s": {
       "action": "eval",
@@ -2099,14 +2103,14 @@
     },
     "eval::arc_challenge_test::lstm::lstm_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819811,
       "depends_on": [
         "dry_run_eval::arc_challenge_test::lstm::lstm_fineweb_s"
       ],
       "id": "eval::arc_challenge_test::lstm::lstm_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2126,8 +2130,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819811
+      "status": "completed",
+      "updated_utc": 1769092181.1592877
     },
     "eval::arc_challenge_test::ntm::ntm_fineweb_s": {
       "action": "eval",
@@ -2163,14 +2167,14 @@
     },
     "eval::arc_challenge_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820158,
       "depends_on": [
         "dry_run_eval::arc_challenge_test::vecstur::vecstur_fineweb_s"
       ],
       "id": "eval::arc_challenge_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2190,8 +2194,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820158
+      "status": "completed",
+      "updated_utc": 1769127822.0414937
     },
     "eval::arc_challenge_test::vectur::vectur_fineweb_s": {
       "action": "eval",
@@ -2413,14 +2417,14 @@
     },
     "eval::compgen_test::lstm::lstm_compgen_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819823,
       "depends_on": [
         "dry_run_eval::compgen_test::lstm::lstm_compgen_s"
       ],
       "id": "eval::compgen_test::lstm::lstm_compgen_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2439,8 +2443,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819823
+      "status": "completed",
+      "updated_utc": 1769072525.8773708
     },
     "eval::compgen_test::ntm::ntm_compgen_s": {
       "action": "eval",
@@ -2506,14 +2510,14 @@
     },
     "eval::compgen_test::vectur::vectur_compgen_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8201349,
       "depends_on": [
         "dry_run_eval::compgen_test::vectur::vectur_compgen_s"
       ],
       "id": "eval::compgen_test::vectur::vectur_compgen_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2532,8 +2536,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.8201349
+      "status": "completed",
+      "updated_utc": 1769137266.0159519
     },
     "eval::compgen_test_finetuned::attention::attention_clrs_to_compgenft_s": {
       "action": "eval",
@@ -2568,14 +2572,14 @@
     },
     "eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819832,
       "depends_on": [
         "dry_run_eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s"
       ],
       "id": "eval::compgen_test_finetuned::lstm::lstm_clrs_to_compgenft_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2594,8 +2598,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819832
+      "status": "completed",
+      "updated_utc": 1769072631.0463874
     },
     "eval::compgen_test_finetuned::ntm::ntm_clrs_to_compgenft_s": {
       "action": "eval",
@@ -2723,14 +2727,14 @@
     },
     "eval::compgen_test_zero_shot::lstm::lstm_clrs_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819829,
       "depends_on": [
         "dry_run_eval::compgen_test_zero_shot::lstm::lstm_clrs_s"
       ],
       "id": "eval::compgen_test_zero_shot::lstm::lstm_clrs_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2749,8 +2753,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819829
+      "status": "completed",
+      "updated_utc": 1769053421.7741935
     },
     "eval::compgen_test_zero_shot::ntm::ntm_clrs_s": {
       "action": "eval",
@@ -2816,14 +2820,14 @@
     },
     "eval::compgen_test_zero_shot::vectur::vectur_clrs_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820138,
       "depends_on": [
         "dry_run_eval::compgen_test_zero_shot::vectur::vectur_clrs_s"
       ],
       "id": "eval::compgen_test_zero_shot::vectur::vectur_clrs_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2842,8 +2846,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820138
+      "status": "completed",
+      "updated_utc": 1769132691.2641053
     },
     "eval::gsm8k_test::attention::attention_fineweb_s": {
       "action": "eval",
@@ -2879,14 +2883,14 @@
     },
     "eval::gsm8k_test::lstm::lstm_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819809,
       "depends_on": [
         "dry_run_eval::gsm8k_test::lstm::lstm_fineweb_s"
       ],
       "id": "eval::gsm8k_test::lstm::lstm_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2906,8 +2910,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819809
+      "status": "completed",
+      "updated_utc": 1769092294.266536
     },
     "eval::gsm8k_test::ntm::ntm_fineweb_s": {
       "action": "eval",
@@ -2943,14 +2947,14 @@
     },
     "eval::gsm8k_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820155,
       "depends_on": [
         "dry_run_eval::gsm8k_test::vecstur::vecstur_fineweb_s"
       ],
       "id": "eval::gsm8k_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -2970,8 +2974,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820155
+      "status": "completed",
+      "updated_utc": 1769127902.6702971
     },
     "eval::gsm8k_test::vectur::vectur_fineweb_s": {
       "action": "eval",
@@ -3039,14 +3043,14 @@
     },
     "eval::hellaswag_val::lstm::lstm_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819813,
       "depends_on": [
         "dry_run_eval::hellaswag_val::lstm::lstm_fineweb_s"
       ],
       "id": "eval::hellaswag_val::lstm::lstm_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -3066,8 +3070,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819814
+      "status": "completed",
+      "updated_utc": 1769092414.4726295
     },
     "eval::hellaswag_val::ntm::ntm_fineweb_s": {
       "action": "eval",
@@ -3103,14 +3107,14 @@
     },
     "eval::hellaswag_val::vecstur::vecstur_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.82016,
       "depends_on": [
         "dry_run_eval::hellaswag_val::vecstur::vecstur_fineweb_s"
       ],
       "id": "eval::hellaswag_val::vecstur::vecstur_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -3130,8 +3134,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.82016
+      "status": "completed",
+      "updated_utc": 1769127980.307482
     },
     "eval::hellaswag_val::vectur::vectur_fineweb_s": {
       "action": "eval",
@@ -3198,14 +3202,14 @@
     },
     "eval::wikitext103_test::lstm::lstm_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8198159,
       "depends_on": [
         "dry_run_eval::wikitext103_test::lstm::lstm_fineweb_s"
       ],
       "id": "eval::wikitext103_test::lstm::lstm_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -3224,8 +3228,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.8198159
+      "status": "completed",
+      "updated_utc": 1769092524.7609067
     },
     "eval::wikitext103_test::ntm::ntm_fineweb_s": {
       "action": "eval",
@@ -3260,14 +3264,14 @@
     },
     "eval::wikitext103_test::vecstur::vecstur_fineweb_s": {
       "action": "eval",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820162,
       "depends_on": [
         "dry_run_eval::wikitext103_test::vecstur::vecstur_fineweb_s"
       ],
       "id": "eval::wikitext103_test::vecstur::vecstur_fineweb_s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "eval_config": {
@@ -3286,8 +3290,8 @@
           ]
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820162
+      "status": "completed",
+      "updated_utc": 1769128059.494764
     },
     "eval::wikitext103_test::vectur::vectur_fineweb_s": {
       "action": "eval",
@@ -3359,14 +3363,14 @@
     },
     "finetune::lstm::clrs_to_compgen::s": {
       "action": "finetune",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819805,
       "depends_on": [
         "dry_run_finetune::lstm::clrs_to_compgen::s"
       ],
       "id": "finetune::lstm::clrs_to_compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "experiment_config": {
@@ -3391,8 +3395,8 @@
           }
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819805
+      "status": "completed",
+      "updated_utc": 1769072185.406916
     },
     "finetune::ntm::clrs_to_compgen::s": {
       "action": "finetune",
@@ -3507,7 +3511,7 @@
     },
     "train::attention::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819752,
       "depends_on": [
         "dry_run_train::attention::clrs::s"
@@ -3532,11 +3536,11 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.819752
+      "updated_utc": 1769019333.5290163
     },
     "train::attention::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819755,
       "depends_on": [
         "dry_run_train::attention::compgen::s"
@@ -3561,11 +3565,11 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.819755
+      "updated_utc": 1769020496.0082922
     },
     "train::attention::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8197482,
       "depends_on": [
         "dry_run_train::attention::fineweb::s"
@@ -3590,18 +3594,18 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.8197482
+      "updated_utc": 1769020562.966641
     },
     "train::lstm::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819798,
       "depends_on": [
         "dry_run_train::lstm::clrs::s"
       ],
       "id": "train::lstm::clrs::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -3618,19 +3622,19 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819798
+      "status": "completed",
+      "updated_utc": 1769053107.7000632
     },
     "train::lstm::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819801,
       "depends_on": [
         "dry_run_train::lstm::compgen::s"
       ],
       "id": "train::lstm::compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -3647,19 +3651,19 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819801
+      "status": "completed",
+      "updated_utc": 1769061630.2143838
     },
     "train::lstm::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819795,
       "depends_on": [
         "dry_run_train::lstm::fineweb::s"
       ],
       "id": "train::lstm::fineweb::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -3676,12 +3680,12 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.819795
+      "status": "completed",
+      "updated_utc": 1769091651.9640288
     },
     "train::ntm::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820077,
       "depends_on": [
         "dry_run_train::ntm::clrs::s"
@@ -3706,11 +3710,11 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.8200781
+      "updated_utc": 1769092582.361425
     },
     "train::ntm::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.82008,
       "depends_on": [
         "dry_run_train::ntm::compgen::s"
@@ -3735,11 +3739,11 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.82008
+      "updated_utc": 1769108073.3980482
     },
     "train::ntm::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.819834,
       "depends_on": [
         "dry_run_train::ntm::fineweb::s"
@@ -3764,11 +3768,11 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.819834
+      "updated_utc": 1769112774.0398397
     },
     "train::vecstur::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820145,
       "depends_on": [
         "dry_run_train::vecstur::clrs::s"
@@ -3793,11 +3797,11 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.820145
+      "updated_utc": 1769112037.7047868
     },
     "train::vecstur::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820147,
       "depends_on": [
         "dry_run_train::vecstur::compgen::s"
@@ -3822,18 +3826,18 @@
         }
       },
       "status": "not_started",
-      "updated_utc": 1769003364.820147
+      "updated_utc": 1769112839.2642665
     },
     "train::vecstur::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.8201432,
       "depends_on": [
         "dry_run_train::vecstur::fineweb::s"
       ],
       "id": "train::vecstur::fineweb::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -3850,19 +3854,19 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.8201432
+      "status": "completed",
+      "updated_utc": 1769127437.7956939
     },
     "train::vectur::clrs::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.82011,
       "depends_on": [
         "dry_run_train::vectur::clrs::s"
       ],
       "id": "train::vectur::clrs::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -3879,19 +3883,19 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.82011
+      "status": "completed",
+      "updated_utc": 1769131021.0342946
     },
     "train::vectur::compgen::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820113,
       "depends_on": [
         "dry_run_train::vectur::compgen::s"
       ],
       "id": "train::vectur::compgen::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -3908,19 +3912,19 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820113
+      "status": "completed",
+      "updated_utc": 1769137106.7338457
     },
     "train::vectur::fineweb::s": {
       "action": "train",
-      "attempts": 0,
+      "attempts": 1,
       "created_utc": 1769003364.820108,
       "depends_on": [
         "dry_run_train::vectur::fineweb::s"
       ],
       "id": "train::vectur::fineweb::s",
       "last_error": null,
-      "last_exit_code": null,
+      "last_exit_code": 0,
       "log_path": null,
       "spec": {
         "train_config": {
@@ -3937,10 +3941,15 @@
           "tokenizer_name": "gpt2"
         }
       },
-      "status": "not_started",
-      "updated_utc": 1769003364.820108
+      "status": "completed",
+      "updated_utc": 1769143894.6277344
     }
   },
-  "updated_utc": 1769003364.820173,
+  "remote": {
+    "enabled": true,
+    "rclone_remote": "gdrive:",
+    "rclone_root": "research/papers/vectur"
+  },
+  "updated_utc": 1769143894.6277375,
   "version": 2
 }
